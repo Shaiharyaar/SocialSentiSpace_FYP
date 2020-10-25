@@ -3,17 +3,22 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+
+var cors = require("cors");
+
 var mongoose = require("mongoose");
+var passport = require("passport");
+
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-var passport = require("passport");
-var cors = require("cors");
-const connection = mongoose.connect("mongodb://localhost:27017/fyp", {
-  useNewUrlParser: true,
 
+var app = express();
+
+const connection = mongoose.connect("mongodb://localhost:27017/SSS_DB", {
+  useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-var app = express();
+
 connection.then(
   (db) => {
     console.log("Connected correctly to server");
@@ -26,15 +31,18 @@ connection.then(
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
-app.use(passport.initialize());
-app.use(passport.session());
+
 app.use(logger("dev"));
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(cors());
+
+app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler
