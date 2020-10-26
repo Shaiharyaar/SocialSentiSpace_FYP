@@ -1,0 +1,218 @@
+/* ------------------------------ */
+/* -------  GENERAL  ------------ */
+/* ------------------------------ */
+
+h1 {
+  text-align: center;
+  color: #fff;
+  z-index: 1500;
+}
+h2 {
+  margin-left: 15px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  width: fit-content;
+  border-bottom: 0.5px solid #000;
+}
+
+.header {
+  background-image: -webkit-linear-gradient(
+      rgba(0, 0, 0, 0.7),
+      rgba(0, 0, 0, 0.7)
+    ),
+    url("https://ipullrank.com/wp-content/uploads/2017/04/sentiment-analysis-tools-1400.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  background-attachment: fixed;
+}
+.body {
+  background-color: #fff;
+  color: #555;
+  font-family: "Lato", "Arial", sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+}
+
+.header h1 {
+  margin-left: 10%;
+  margin-top: 190px;
+  text-align: left !important;
+}
+.header a:first-child {
+  margin-left: 10%;
+}
+.header a {
+  margin: 1em 0em 1em;
+  width: 150px;
+}
+
+/* ----- BUTTONS ----- */
+.btn:link,
+.btn:visited {
+  display: inline-block;
+  padding: 6px 21px;
+  font-weight: 300;
+  text-decoration: none;
+  border-radius: 50px;
+  -webkit-transition: background-color 0.2s, border 0.2s, color 0.2s;
+  transition: background-color 0.2s, border 0.2s, color 0.2s;
+}
+
+.btn-full:link,
+.btn-full:visited {
+  background-color: #e67a22;
+  border: 1px solid #e67a22;
+  color: #fff;
+  margin-right: 15px;
+}
+
+.btn-ghost:link,
+.btn-ghost:visited {
+  border: 1px solid #e67a22;
+  color: #e67a22;
+}
+
+.btn:hover,
+.btn:active {
+  background-color: #cf6d17;
+}
+
+.btn-full:hover,
+.btn-full:active {
+  border: 1px solid #cf6d17;
+}
+
+.btn-ghost:hover,
+.btn-ghost:active {
+  border: 1px solid #cf6d17;
+  color: #fff;
+}
+
+/* MainScreen */
+
+.Mainscreen {
+  background-color: #555;
+  margin-left: 60px;
+  overflow-x: hidden;
+  background-color: rgba(240, 240, 240, 0.7);
+  padding: 0;
+  transition: all 0.5s;
+}
+
+.headbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  background-color: #212121;
+  padding: 5px;
+  height: 95px;
+  z-index: 1499;
+}
+
+/* ------------------------------ */
+/* -------  SCREENS  ------------ */
+/* ------------------------------ */
+
+.screens {
+  margin-top: 105px;
+  justify-content: center;
+  padding-right: 15px;
+  padding-left: 15px;
+  background-color: #eed;
+}
+
+/* ------------------------------ */
+/* -------  SUB-SCREENS --------- */
+/* ------------------------------ */
+
+/* ------------------------------ */
+
+/* ------------------------------ */
+/* ------- DASHBOARD ------------ */
+/* ------------------------------ */
+
+.masterbox {
+  padding: 4px;
+}
+.minibox {
+  background-color: #fff;
+  padding: 20px;
+}
+
+/* ------------------------------ */
+/* ------- Counters ------------ */
+/* ------------------------------ */
+.counterboxes {
+  text-align: center;
+}
+.counterboxes div {
+  padding: 5px;
+}
+.counterboxes .box {
+  margin: 25px;
+  display: grid;
+  margin-bottom: 85px;
+  justify-content: center;
+}
+
+.box:last-child .MuiCircularProgress-root {
+  color: orange !important;
+}
+.box:nth-last-child(2) .MuiCircularProgress-root {
+  color: rgb(78, 184, 119);
+}
+
+/* ------------------------------ */
+/* =------- Twitter =------------ */
+/* ------------------------------ */
+
+.selectloc {
+  text-align: center;
+  margin: 20px 150px 20px 150px;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  border-radius: 10px;
+  padding: 2% 0;
+  background-color: #fff;
+}
+
+#trendfield {
+  visibility: hidden;
+}
+
+.emptyComp {
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  text-align: center;
+  margin: 2% 2%;
+  border-radius: 40px;
+  padding: 2% 22%;
+}
+
+.trendbtn span {
+  font-size: 18px;
+}
+.trendbtn span:hover {
+  font-size: 22px;
+}
+
+/* ------------------------------ */
+/* =------- Instagram ----------- */
+/* ------------------------------ */
+
+.boxes:nth-child(2) {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.MuiFormLabel-root {
+  font-size: 18px !important;
+}

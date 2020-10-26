@@ -1,0 +1,10 @@
+/* ----------------------------------------------- */
+/* Sidenav  */
+/* ----------------------------------------------- */
+
+@media screen and (min-width: 800px) {
+  .main-menu:hover ~ .Mainscreen {
+    margin-left: 200px;
+    transition: all 0.5s;
+  }
+}
