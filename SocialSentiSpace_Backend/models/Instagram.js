@@ -6,20 +6,9 @@ var instagramSchema = new Schema({
     type: String,
     required: true,
   },
-
-  latestHashtagList: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
   Result: {
     type: mongoose.Types.ObjectId,
     ref: "Result",
-  },
-  totalComments: {
-    type: Number,
-    required: true,
   },
   latestPost: {
     type: mongoose.Types.ObjectId,

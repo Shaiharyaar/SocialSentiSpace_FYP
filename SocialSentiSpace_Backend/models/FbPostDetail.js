@@ -6,12 +6,10 @@ var fbpostSchema = new Schema({
     type: String,
     required: true,
   },
-
-  Detail: {
+  post: {
     type: String,
     required: true,
   },
-
   DateTime: {
     type: String,
     required: true,

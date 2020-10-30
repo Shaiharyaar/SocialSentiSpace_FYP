@@ -126,7 +126,7 @@ userRouter.post("/updatechips", function (req, res) {
   var username = req.body.username;
   var chips = req.body.chip;
   console.log(req.body);
-  Users.findOneAndUpdat (
+  Users.findOneAndUpdate (
     { username: username },
     { $set: { chips: chips } },
     function (err, user) {

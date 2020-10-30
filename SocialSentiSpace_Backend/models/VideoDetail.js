@@ -6,6 +6,10 @@ var videoSchema = new Schema({
     type: String,
     required: true,
   },
+  videoURL: {
+    type: String,
+    required: true,
+  },
   videoName: {
     type: String,
     required: true,

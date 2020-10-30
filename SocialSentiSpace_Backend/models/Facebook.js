@@ -11,10 +11,6 @@ var facebookSchema = new Schema({
     type: mongoose.Types.ObjectId,
     ref: "Result",
   },
-  totalComments: {
-    type: Number,
-    required: true,
-  },
   postDetail: {
     type: mongoose.Types.ObjectId,
     ref: "Fb_post_detail",
