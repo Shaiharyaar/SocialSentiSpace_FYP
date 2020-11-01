@@ -6,7 +6,7 @@ class PieChart extends React.Component {
     super(props);
     this.state = {
       option: {
-        labels: ["Neutral", "Happy", "Sad"],
+        labels: ["Neutral", "Positive", "Negative"],
         chart: {
           type: "donut",
         },

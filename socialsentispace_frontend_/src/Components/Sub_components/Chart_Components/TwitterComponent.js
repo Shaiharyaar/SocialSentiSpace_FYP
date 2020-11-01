@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import { Maincard } from "../ParentCard";
 import { FaTwitter } from "react-icons/fa";
-
+import axiosInstance from "../../../jwt";
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
@@ -28,10 +28,50 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Twittercomponent = (props) => {
+  useEffect(() => {
+    loadTwitterinfo();
+  }, []);
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [location, setLocation] = React.useState("");
   const [trend, setTrend] = React.useState("");
+
+  const [list, setlist] = useState([20, 50, 10]);
+
+  const loadTwitterinfo = async () => {
+    var newdata = "";
+    var newinfo = {
+      title1: "Information",
+      title2: "Latest Tweet",
+      title3: "tweeted",
+      post: "",
+      name: "",
+      line1: "This was tweeted at",
+      dt: "",
+    };
+
+    await axiosInstance
+      .getTwitterInfo()
+      .then((res) => {
+        newdata = res.data.result;
+        console.log("INFO: " + newdata.trend);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    newinfo.name = newdata.LatestTweet.username;
+    newinfo.post = newdata.LatestTweet.tweet;
+    newinfo.dt = newdata.LatestTweet.DateTime;
+
+    setlist([
+      newdata.Result.neutral,
+      newdata.Result.positive,
+      newdata.Result.negative,
+    ]);
+    console.log("list: ", list);
+    setinfo(newinfo);
+  };
   const [info, setinfo] = useState({
     title1: "Information",
     title2: "Latest Tweet",
@@ -41,18 +81,21 @@ export const Twittercomponent = (props) => {
     line1: "This was tweeted at",
     dt: "date and time",
   });
-
+  const [chartdata, setchartdata] = useState({
+    line: "Tweets per hr",
+    data: [128, 229, 33, 436, 99, 132, 233],
+  });
+  const [newdata, setStatenewdata] = useState(false);
   const handleLocation = (event) => {
     setLocation(event.target.value || "");
     if (event.target.value != "")
       document.getElementById("trendfield").style.visibility = "visible";
     else document.getElementById("trendfield").style.visibility = "hidden";
   };
-
   const handleTrend = (event) => {
     setTrend(event.target.value || "");
+    console.log(event.target.value);
 
-    console.log(document.getElementById("okbtn"));
     if (event.target.value != "") {
       document.getElementById("okbtn").style.visibility = "visible";
       document.getElementById("span").style.visibility = "hidden";
@@ -68,6 +111,10 @@ export const Twittercomponent = (props) => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleok = () => {
+    setOpen(false);
+    setStatenewdata(true);
   };
 
   return (
@@ -122,7 +169,7 @@ export const Twittercomponent = (props) => {
                   <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value={10}>{"#DonaldTrump"}Donaldtrump</MenuItem>
+                  <MenuItem value={"#DonaldTrump"}>#Donaldtrump</MenuItem>
                   <MenuItem value={"#ObamaCare"}>#ObamaCare</MenuItem>
                   <MenuItem value={"#Pewdiepie"}>#Pewdiepie</MenuItem>
                 </Select>
@@ -135,7 +182,7 @@ export const Twittercomponent = (props) => {
             </Button>
             <Button
               id="okbtn"
-              onClick={handleClose}
+              onClick={handleok}
               style={{ visibility: "hidden" }}
               color="primary"
             >
@@ -156,30 +203,48 @@ export const Twittercomponent = (props) => {
           </DialogActions>
         </Dialog>
       </div>
-      <LoadComponent />
-      <Maincard
+      <LoadComponent
+        check={newdata}
         info={info}
-        countervalues={[20, 10, 70]}
-        data={[128, 229, 33, 436, 99, 132, 233]}
+        list={list}
+        trend={trend}
+        chartdata={chartdata}
       />
+      <Maincard info={info} countervalues={list} data={chartdata} />
     </div>
   );
 };
 
 const LoadComponent = (props) => {
-  // if (props.check) {
-  //   return <YoutubeAnalysis url={props.url} />;
-  // } else {
-  return (
-    <div className="container">
-      <div className="col">
-        <div className="row">
-          <div className="emptyComp">
-            <h3>Your Search Result Will appear here</h3>
-          </div>{" "}
+  if (props.check) {
+    return (
+      <div>
+        <div className="row screens">
+          <h3>Twitter Analysis on {props.trend} </h3>
+          <FaTwitter color="blue" size="2.2em" style={{ marginLeft: 10 }} />
+        </div>
+        <Maincard
+          info={props.info}
+          countervalues={props.list}
+          data={props.chartdata}
+        />
+        <div className="row screens">
+          <h3>Twitter Analysis </h3>
+          <FaTwitter color="blue" size="2.2em" style={{ marginLeft: 10 }} />
         </div>
       </div>
-    </div>
-  );
-  // }
+    );
+  } else {
+    return (
+      <div className="container">
+        <div className="col">
+          <div className="row">
+            <div className="emptyComp">
+              <h3>Your Search Result Will appear here</h3>
+            </div>{" "}
+          </div>
+        </div>
+      </div>
+    );
+  }
 };

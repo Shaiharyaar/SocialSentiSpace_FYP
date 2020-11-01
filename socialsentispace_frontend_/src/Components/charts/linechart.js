@@ -8,7 +8,7 @@ class LineChart extends React.Component {
       series: [
         {
           name: "2020",
-          data: this.props.data,
+          data: this.props.data.data,
         },
       ],
       options: {
@@ -67,7 +67,7 @@ class LineChart extends React.Component {
           max: 500,
         },
         title: {
-          text: "Tweets per hr",
+          text: this.props.data.line,
           align: "left",
         },
         legend: {

@@ -23,6 +23,18 @@ class axiosInstance {
   getAuthHeader() {
     return { headers: { Authorization: "bearer " + this.getUserInfo().token } };
   }
+  getTwitterInfo() {
+    return Axios.get(USER_API_BASE_URL + "dashboard/getTwitter");
+  }
+  getYoutubeInfo() {
+    return Axios.get(USER_API_BASE_URL + "dashboard/getYoutube");
+  }
+  getInstagramInfo() {
+    return Axios.get(USER_API_BASE_URL + "dashboard/getInstagram");
+  }
+  getFacebookInfo() {
+    return Axios.get(USER_API_BASE_URL + "dashboard/getFacebook");
+  }
   logOut() {
     localStorage.removeItem("UserInfo");
     console.log("UserInfo: ", localStorage.getItem("UserInfo"));
@@ -34,59 +46,5 @@ class axiosInstance {
     const data = JSON.parse(localStorage.getItem("UserInfo"));
     return Axios.get(USER_API_BASE_URL + "users/authenticate", data);
   }
-  // getUserProducts() {
-  //   return axios.get(
-  //     USER_API_BASE_URL +
-  //       `farmerProducts/?username=${this.getUserInfo().user.username}`,
-  //     this.getAuthHeader()
-  //   );
-  // }
-
-  // getProfile() {
-  //   return axios.get(
-  //     USER_API_BASE_URL + "users/" + this.getUserInfo().user.pk + "/",
-  //     this.getAuthHeader()
-  //   );
-  // }
-
-  // getDetailofProduct(productID) {
-  //   console.log("detailofproduct: ", productID);
-  //   return axios.get(
-  //     USER_API_BASE_URL + "farmerProducts/" + productID + "/",
-  //     this.getAuthHeader()
-  //   );
-  // }
-
-  // addProduct(credentials) {
-  //   return axios.post(
-  //     USER_API_BASE_URL + "farmerProducts/",
-  //     credentials,
-  //     this.getAuthHeader()
-  //   );
-  // }
-  // deleteproduct(itemid) {
-  //   console.log("detailofproduct: ", itemid);
-  //   return axios.delete(
-  //     USER_API_BASE_URL + "farmerProducts/" + itemid + "/",
-  //     this.getAuthHeader()
-  //   );
-  // }
-  // updateproduct(itemid, data) {
-  //   console.log("detailofproduct: ", itemid);
-  //   return axios.put(
-  //     USER_API_BASE_URL + "farmerProducts/" + itemid + "/",
-  //     data,
-  //     this.getAuthHeader()
-  //   );
-  // }
-
-  // getVendorProducts() {
-  //   return axios.get(
-  //     USER_API_BASE_URL +
-  //       `vendorProducts/?username=${this.getUserInfo().user.username}`,
-  //     this.getAuthHeader()
-  //   );
-  // }
 }
-
 export default new axiosInstance();

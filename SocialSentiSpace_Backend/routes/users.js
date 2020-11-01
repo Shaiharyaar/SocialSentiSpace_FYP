@@ -59,6 +59,7 @@ userRouter.route("/getUsers").get((req, res, next) => {
 
 userRouter.post("/signup", upload.single("image"), (req, res, next) => {
   try {
+    
     console.log("FILE NAME: ", req.file.filename);
     Users.register(
       new Users({

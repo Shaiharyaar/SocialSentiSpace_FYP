@@ -6,7 +6,6 @@ var facebookSchema = new Schema({
     type: String,
     required: true,
   },
-
   Result: {
     type: mongoose.Types.ObjectId,
     ref: "Result",
