@@ -16,8 +16,8 @@ export const Dashboard = () => {
     loadcomponentinfo(comp, id);
   }, []);
 
-  const [comp, setcomp] = useState("Twitter");
-  const [id, setid] = useState("5f9aa366a88a56128c3b17e9");
+  const [comp, setcomp] = useState("");
+  const [id, setid] = useState("");
   const [chip, setchip] = useState({
     label: "",
     socialType: "",
@@ -42,7 +42,8 @@ export const Dashboard = () => {
       youtuber: "",
       videoname: "",
     };
-    if (media == "Twitter") {
+    if (media == "") {
+    } else if (media == "Twitter") {
       newinfo.title1 = "Information";
       newinfo.title2 = "Latest Tweet";
       newinfo.title3 = "tweeted";
@@ -127,12 +128,13 @@ export const Dashboard = () => {
       newinfo.post = newdata.postDetail.post;
       newinfo.dt = newdata.postDetail.DateTime;
     }
-    setlist([
-      newdata.Result.neutral,
-      newdata.Result.positive,
-      newdata.Result.negative,
-    ]);
-    console.log("list: ", list);
+    if (media != "") {
+      setlist([
+        newdata.Result.neutral,
+        newdata.Result.positive,
+        newdata.Result.negative,
+      ]);
+    }
     setinfo(newinfo);
   };
   const [info, setinfo] = useState({
@@ -157,13 +159,19 @@ export const Dashboard = () => {
     setchip(new_chip[0]);
     setcomp(new_chip[0].socialType);
   };
-  const handleRefresh = () => {};
+  const handleRefresh = () => {
+    alert(chip.label);
+  };
   return (
     <div>
       <div className={"container chips_div"}>
         <ChipsArray compload={LoadComponent} />
       </div>
-
+      {comp == "" ? (
+        <h1>Click on the chips above to show data</h1>
+      ) : (
+        <div></div>
+      )}
       {loadingcomponent ? (
         <div>
           <div class="button-show-data">

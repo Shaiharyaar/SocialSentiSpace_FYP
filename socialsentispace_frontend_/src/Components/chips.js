@@ -230,8 +230,6 @@ export default function ChipsArray(props) {
       .then((res) => {
         if (res.status === 200) {
           console.log("Chip added.");
-
-          updatechips();
         } else {
           alert("login not successful, try again!");
         }
@@ -247,13 +245,17 @@ export default function ChipsArray(props) {
     setOpen(false);
   };
   const handleOk = async () => {
-    // setuserloadChips(false);
+    setuserloadChips(false);
     console.log("HANDLE OK: ", userloadChips);
     var id = "";
     if (socialMedia == "Twitter") {
       var id = await axiosInstance.addtwitterinfo(name);
     } else if (socialMedia == "Youtube") {
       var id = await axiosInstance.addYoutubeinfo(name);
+    } else if (socialMedia == "Facebook") {
+      var id = await axiosInstance.addFacebookinfo(name);
+    } else if (socialMedia == "Instagram") {
+      var id = await axiosInstance.addInstagraminfo(name);
     }
     const list = {
       userid: user._id,
@@ -263,7 +265,8 @@ export default function ChipsArray(props) {
       Data: data,
     };
     setOpen(false);
-    addchip(list);
+    await addchip(list);
+    updatechips();
     setsocialMedia("");
   };
   return (

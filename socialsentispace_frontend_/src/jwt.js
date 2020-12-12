@@ -82,15 +82,100 @@ class axiosInstance {
         })
         .catch((error) => alert("Error loading chips"));
     } else if (media == "Youtube") {
+      await this.getYoutubeInfo(social_id).then((res) => {
+        detail_id = res.data.result.VideoDetail._id;
+        result_id = res.data.result.Result._id;
+      });
+      //deleting Twitter data
+      await this.deleteyoutube(social_id)
+        .then((res) => {
+          console.log(res.body);
+          if (res.status === 200) {
+            console.log("Youtube data deleted.");
+          } else {
+            alert("Loading Youtube data not successful. Try Again!");
+          }
+        })
+        .catch((error) => alert("Error loading chips"));
+
+      //deleting youtube video data
+      await this.deleteyoutubedetails(detail_id)
+        .then((res) => {
+          console.log(res.body);
+          if (res.status === 200) {
+            console.log("Latest Video data deleted.");
+          } else {
+            alert("Loading video data not successful. Try Again!");
+          }
+        })
+        .catch((error) => alert("Error deleting video data"));
+    } else if (media == "Facebook") {
+      alert("Facebook");
+      await this.getFacebookInfo(social_id).then((res) => {
+        detail_id = res.data.result.postDetail._id;
+        result_id = res.data.result.Result._id;
+      });
+      //deleting Facebook data
+      await this.deletefacebook(social_id)
+        .then((res) => {
+          console.log(res.body);
+          if (res.status === 200) {
+            console.log("Facebook data deleted.");
+          } else {
+            alert("Deleting Facbook data not successful. Try Again!");
+          }
+        })
+        .catch((error) => alert("Error Deleting Facebook data"));
+
+      //deleting Facebook detail data
+      await this.deleteFbDetails(detail_id)
+        .then((res) => {
+          console.log(res.body);
+          if (res.status === 200) {
+            console.log("Latest fb detail data deleted.");
+          } else {
+            alert("Deleting fb details data not successful. Try Again!");
+          }
+        })
+        .catch((error) => alert("Error deleting fb detail data"));
+    } else if (media == "Instagram") {
+      await this.getInstagramInfo(social_id).then((res) => {
+        detail_id = res.data.result.latestPost._id;
+        result_id = res.data.result.Result._id;
+      });
+      //deleting Instagram data
+      await this.deleteinstagram(social_id)
+        .then((res) => {
+          console.log(res.body);
+          if (res.status === 200) {
+            console.log("Instagram data deleted.");
+          } else {
+            alert("Deleting Instagram data not successful. Try Again!");
+          }
+        })
+        .catch((error) => alert("Error Deleting Instagram data"));
+
+      //deleting Facebook detail data
+      await this.deleteInstaPost(detail_id)
+        .then((res) => {
+          console.log(res.body);
+          if (res.status === 200) {
+            console.log("Latest insta detail data deleted.");
+          } else {
+            alert("Deleting insta details data not successful. Try Again!");
+          }
+        })
+        .catch((error) => alert("Error deleting insta detail data"));
     }
+
     // deleting Result data
     await this.deleteresult(result_id)
       .then((res) => {
         console.log(res.body);
         if (res.status === 200) {
-          console.log("Latest tweet data deleted.");
+          console.log("result data deleted.");
         } else {
-          alert("Loading Latest tweet data not successful. Try Again!");
+          alert("Loading result was not successful. Try Again!");
         }
       })
       .catch((error) => alert("Error loading chips"));
@@ -118,6 +203,38 @@ class axiosInstance {
       id: id,
     });
   }
+
+  deleteyoutube(id) {
+    return Axios.post(USER_API_BASE_URL + "dashboard/deleteYoutube", {
+      id: id,
+    });
+  }
+  deleteyoutubedetails(id) {
+    return Axios.post(USER_API_BASE_URL + "dashboard/deleteYoutubeDetails", {
+      id: id,
+    });
+  }
+  deletefacebook(id) {
+    return Axios.post(USER_API_BASE_URL + "dashboard/deleteFacebook", {
+      id: id,
+    });
+  }
+  deleteFbDetails(id) {
+    return Axios.post(USER_API_BASE_URL + "dashboard/deleteFbDetails", {
+      id: id,
+    });
+  }
+  deleteinstagram(id) {
+    return Axios.post(USER_API_BASE_URL + "dashboard/deleteInstagram", {
+      id: id,
+    });
+  }
+  deleteInstaPost(id) {
+    return Axios.post(USER_API_BASE_URL + "dashboard/deleteInstaPost", {
+      id: id,
+    });
+  }
+
   deletechip(id) {
     return Axios.post(USER_API_BASE_URL + "dashboard/deleteChips", {
       chipid: id,
@@ -135,6 +252,8 @@ class axiosInstance {
 
     return true;
   }
+
+  //adding Twiiter Information
 
   async addtwitterinfo(label) {
     //get data on label
@@ -168,6 +287,8 @@ class axiosInstance {
 
     return twitterid;
   }
+
+  //adding youtube Information
 
   async addYoutubeinfo(label) {
     //get data on label
@@ -208,6 +329,83 @@ class axiosInstance {
     return id;
   }
 
+  //Adding facebook information
+
+  async addFacebookinfo(label) {
+    //get data on label
+
+    const result = { positive: 10, negative: 50, neutral: 40 };
+
+    const detail = {
+      username: label,
+      post: label,
+      DateTime: label,
+    };
+
+    var resultid = "",
+      detailid = "",
+      id = "";
+
+    await this.addresult(result).then((res) => {
+      if (res.status == 200) {
+        resultid = res.data.result._id;
+      }
+    });
+
+    await this.addfacebookdetail(detail).then((res) => {
+      if (res.status == 200) {
+        detailid = res.data.result._id;
+      }
+    });
+
+    const data = { postURL: label, Result: resultid, postDetail: detailid };
+    await this.addfacebook(data).then((res) => {
+      if (res.status == 200) {
+        id = res.data.result._id;
+      }
+    });
+
+    return id;
+  }
+
+  //Adding Instagram information
+
+  async addInstagraminfo(label) {
+    //get data on label
+
+    const result = { positive: 10, negative: 50, neutral: 40 };
+
+    const detail = {
+      username: label,
+      postDetails: label,
+      DateTime: label,
+    };
+
+    var resultid = "",
+      detailid = "",
+      id = "";
+
+    await this.addresult(result).then((res) => {
+      if (res.status == 200) {
+        resultid = res.data.result._id;
+      }
+    });
+
+    await this.addinstagramdetail(detail).then((res) => {
+      if (res.status == 200) {
+        detailid = res.data.result._id;
+      }
+    });
+
+    const data = { hashtag: label, Result: resultid, latestPost: detailid };
+    await this.addinstagram(data).then((res) => {
+      if (res.status == 200) {
+        id = res.data.result._id;
+      }
+    });
+
+    return id;
+  }
   addresult(result) {
     return Axios.post(USER_API_BASE_URL + "dashboard/setResult", result);
   }

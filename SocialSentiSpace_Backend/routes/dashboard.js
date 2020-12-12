@@ -20,7 +20,13 @@ const VideoDetail = require("../models/VideoDetail");
 
 dashboardrouter.post("/setChips", (req, res, next) => {
   DashboardChips.create(req.body).then((result) => {
-    console.log(result);
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json({
+      success: true,
+      status: "Loading chips Successful!",
+      result: result,
+    });
   });
 });
 
