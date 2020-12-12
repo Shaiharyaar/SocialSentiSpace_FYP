@@ -94,15 +94,18 @@ h2 {
 .btn-ghost:active {
   border: 1px solid #cf6d17;
   color: #fff;
-}
-
+} 
 /* MainScreen */
+.button-show-data{
+  display: flex;
+  flex-direction: row-reverse;
+}
 
 .Mainscreen {
   background-color: #555;
   margin-left: 60px;
   overflow-x: hidden;
-  background-color: rgba(240, 240, 240, 0.7);
+  background-color: #d5d3dc;
   padding: 0;
   transition: all 0.5s;
 }
@@ -121,12 +124,16 @@ h2 {
 /* -------  SCREENS  ------------ */
 /* ------------------------------ */
 
+.chips_div{
+  margin-top: 110px;
+}
+
 .screens {
-  margin-top: 105px;
+  margin-top: 10px;
   justify-content: center;
   padding-right: 15px;
   padding-left: 15px;
-  background-color: #eed;
+  background-color: #d5d3dc;
 }
 
 /* ------------------------------ */
@@ -205,7 +212,7 @@ h2 {
 }
 
 /* ------------------------------ */
-/* =------- Instagram ----------- */
+/* =------- E X T R A ----------- */
 /* ------------------------------ */
 
 .boxes:nth-child(2) {
@@ -215,4 +222,8 @@ h2 {
 
 .MuiFormLabel-root {
   font-size: 18px !important;
+}
+.MuiDialog-container{
+  margin-top: 80px !important;
+  height: 90% !important;
 }

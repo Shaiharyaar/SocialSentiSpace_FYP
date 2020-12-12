@@ -13,6 +13,7 @@ import {
   FormControl,
   Select,
 } from "@material-ui/core";
+
 import { Maincard } from "../ParentCard";
 import { FaTwitter } from "react-icons/fa";
 import axiosInstance from "../../../jwt";
@@ -116,7 +117,9 @@ export const Twittercomponent = (props) => {
     setOpen(false);
     setStatenewdata(true);
   };
-
+  const closecomponent = () => {
+    setStatenewdata(false);
+  };
   return (
     <div>
       <div className="row screens">
@@ -209,6 +212,7 @@ export const Twittercomponent = (props) => {
         list={list}
         trend={trend}
         chartdata={chartdata}
+        closecomponent={closecomponent}
       />
       <Maincard info={info} countervalues={list} data={chartdata} />
     </div>
@@ -216,12 +220,114 @@ export const Twittercomponent = (props) => {
 };
 
 const LoadComponent = (props) => {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   if (props.check) {
     return (
       <div>
         <div className="row screens">
           <h3>Twitter Analysis on {props.trend} </h3>
           <FaTwitter color="blue" size="2.2em" style={{ marginLeft: 10 }} />
+        </div>
+        <div class="button-show-data">
+          <div style={{ marginLeft: 20 }}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={props.closecomponent}
+            >
+              Close
+            </Button>
+          </div>
+          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+            Open form dialog
+          </Button>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            maxWidth={"md"}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogTitle id="form-dialog-title">Data Obtained</DialogTitle>
+            <DialogContent>
+              <div className="showData-tablediv">
+                <table className="showData-table">
+                  <tr>
+                    <th>id</th>
+                    <th>comment</th>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
         <Maincard
           info={props.info}

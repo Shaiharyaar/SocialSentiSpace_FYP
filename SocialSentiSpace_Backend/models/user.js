@@ -21,16 +21,16 @@ var userSchema = new Schema({
   chips: {
     type: String,
   },
-  // dashboardChips: {
-  //   $type: [
-  //     {
-  //       chips_id: {
-  //         type: mongoose.Types.ObjectId,
-  //         ref: "DashboardChips",
-  //       },
-  //     },
-  //   ],
-  // },
+  dashboardChips: {
+    $type: [
+      {
+        chips_id: {
+          type: mongoose.Types.ObjectId,
+          ref: "DashboardChips",
+        },
+      },
+    ],
+  },
 });
 userSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model("User", userSchema);

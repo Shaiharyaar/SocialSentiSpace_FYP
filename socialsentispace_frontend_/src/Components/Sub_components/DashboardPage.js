@@ -8,15 +8,26 @@ import { Instagramcomponent } from "./Chart_Components/InstagramComponent";
 import { Twittercomponent } from "./Chart_Components/TwitterComponent";
 import { Youtubecomponent } from "./Chart_Components/YoutubeComponent";
 import axiosInstance from "../../jwt";
+import { Cardloader } from "../loading_animations/cardloading";
+import { Button } from "@material-ui/core";
 
 export const Dashboard = () => {
-  const [comp, setcomp] = useState("Twitter");
-  const [list, setlist] = useState([20, 50, 10]);
   useEffect(() => {
-    loadcomponentinfo(comp);
+    loadcomponentinfo(comp, id);
   }, []);
 
-  const loadcomponentinfo = async (media) => {
+  const [comp, setcomp] = useState("Twitter");
+  const [id, setid] = useState("5f9aa366a88a56128c3b17e9");
+  const [chip, setchip] = useState({
+    label: "",
+    socialType: "",
+    social_id: "",
+  });
+  const [list, setlist] = useState([20, 50, 10]);
+  const [loadingcomponent, setloadingcomponent] = useState(false);
+  const loadcomponentinfo = async (media, id) => {
+    setloadingcomponent(false);
+
     var newdata = "";
     var newinfo = {
       title1: "Information",
@@ -37,10 +48,13 @@ export const Dashboard = () => {
       newinfo.title3 = "tweeted";
       newinfo.line1 = "This was tweeted at";
       await axiosInstance
-        .getTwitterInfo()
+        .getTwitterInfo(id)
         .then((res) => {
           newdata = res.data.result;
           console.log("INFO: " + newdata.trend);
+          setTimeout(() => {
+            setloadingcomponent(true);
+          }, 2000);
         })
         .catch((error) => {
           console.log(error);
@@ -54,10 +68,13 @@ export const Dashboard = () => {
       newinfo.title3 = "Video Description";
 
       await axiosInstance
-        .getYoutubeInfo()
+        .getYoutubeInfo(id)
         .then((res) => {
           newdata = res.data.result;
           console.log("INFO: " + newdata.trend);
+          setTimeout(() => {
+            setloadingcomponent(true);
+          }, 2000);
         })
         .catch((error) => {
           console.log(error);
@@ -74,10 +91,13 @@ export const Dashboard = () => {
       newinfo.title3 = "posted";
 
       await axiosInstance
-        .getInstagramInfo()
+        .getInstagramInfo(id)
         .then((res) => {
           newdata = res.data.result;
           console.log("INFO: " + newdata.trend);
+          setTimeout(() => {
+            setloadingcomponent(true);
+          }, 2000);
         })
         .catch((error) => {
           console.log(error);
@@ -91,11 +111,14 @@ export const Dashboard = () => {
       newinfo.title3 = "posted";
 
       await axiosInstance
-        .getFacebookInfo()
+        .getFacebookInfo(id)
         .then((res) => {
           console.log(res);
           newdata = res.data.result;
           console.log("INFO: " + newdata.trend);
+          setTimeout(() => {
+            setloadingcomponent(true);
+          }, 2000);
         })
         .catch((error) => {
           console.log(error);
@@ -129,17 +152,30 @@ export const Dashboard = () => {
     line: "Tweets per hr",
     data: [128, 229, 33, 436, 99, 132, 233],
   });
-  const LoadComponent = async (c) => {
-    await loadcomponentinfo(c);
-    setcomp(c);
+  const LoadComponent = async (new_chip) => {
+    await loadcomponentinfo(new_chip[0].socialType, new_chip[0].social_id);
+    setchip(new_chip[0]);
+    setcomp(new_chip[0].socialType);
   };
-
+  const handleRefresh = () => {};
   return (
     <div>
-      <div className={"container"}>
+      <div className={"container chips_div"}>
         <ChipsArray compload={LoadComponent} />
       </div>
-      <CompCheck c={comp} info={info} list={list} chart={chartdata} />
+
+      {loadingcomponent ? (
+        <div>
+          <div class="button-show-data">
+            <Button variant="outlined" color="default" onClick={handleRefresh}>
+              Refresh
+            </Button>
+          </div>
+          <CompCheck c={comp} info={info} list={list} chart={chartdata} />
+        </div>
+      ) : (
+        <Cardloader />
+      )}
     </div>
   );
 };

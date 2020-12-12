@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import { Grid, Chip, Fab, Paper } from "@material-ui/core";
@@ -16,7 +16,7 @@ import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import { Autocomplete } from "@material-ui/lab";
 import axiosInstance from "../jwt";
-
+import { Chiploader } from "./loading_animations/chiploading";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -56,14 +56,19 @@ export default function ChipsArray(props) {
   const classes = useStyles();
   const classes2 = useStyles2();
 
-  const [open, setOpen] = React.useState(false);
-  const [name, setName] = React.useState("No Label");
-  const [socialMedia, setsocialMedia] = React.useState("");
-  const [fieldLabel, setfieldLabel] = React.useState("");
-  const [data, setData] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("No Label");
+  const [socialMedia, setsocialMedia] = useState("");
+  const [fieldLabel, setfieldLabel] = useState("");
+  const [data, setData] = useState("");
+  const [currentkey, setcurrentkey] = useState(0);
+  const [social_id, setsocial_id] = useState("");
+  const [loadingChips, setloadingChips] = useState(false);
+  const [userloadChips, setuserloadChips] = useState(false);
+
   const demo = [];
 
-  var user = JSON.parse(localStorage.getItem("UserInfo"));
+  // var user = JSON.parse(localStorage.getItem("UserInfo"));
 
   const handlesocialMedia = (event) => {
     setsocialMedia(event.target.value || "");
@@ -94,59 +99,144 @@ export default function ChipsArray(props) {
 
   const classes1 = useStyles1();
   const [chipData, setChipData] = React.useState([]);
-
+  const [defaultchips, setdefaultchips] = React.useState([]);
+  const user = JSON.parse(localStorage.getItem("UserInfo")).data.User;
   React.useEffect(() => {
+    loaddefault_chips();
     updatechips();
   }, []);
+  const loaddefault_chips = async () => {
+    // await axiosInstance
+    //   .getuser({ username: user.data.User.username })
+    //   .then((res) => {
+    //     console.log(res.body);
+    //     if (res.status === 200) {
+    //       localStorage.setItem("UserInfo", JSON.stringify(res));
+    //     } else {
+    //       alert("Loading chips not successful. Try Again!");
+    //     }
+    //     console.log(res);
+    //   })
+    //   .catch((error) => alert("Error loading chips"));
 
-  const updatechips = async () => {
+    var list = [];
     await axiosInstance
-      .getuser({ username: user.data.User.username })
+      .getchips({ id: "1234" })
       .then((res) => {
-        console.log(res.body);
         if (res.status === 200) {
-          localStorage.setItem("UserInfo", JSON.stringify(res));
+          res.data.result.forEach((chip, index) => {
+            list.push({
+              key: index,
+              id: "1234",
+              social_id: chip.social_id,
+              socialType: chip.MediaType,
+              label: chip.Label,
+              data: chip.Data,
+            });
+          });
+          setdefaultchips(list);
         } else {
-          alert("login not successful, try again!");
+          alert("Loading chips not successful. Try Again!");
         }
-        console.log(res);
       })
-      .catch((error) => alert("Error loading user"));
+      .catch((error) => alert("Error loading chips"));
 
-    user = JSON.parse(localStorage.getItem("UserInfo"));
-    setChipData(JSON.parse(user.data.User.chips));
+    // user = JSON.parse(localStorage.getItem("UserInfo"));
+  };
+  const updatechips = async () => {
+    var list = [];
+    // await axiosInstance
+    //   .getuser({ username: user.data.User.username })
+    //   .then((res) => {
+    //     console.log(res.body);
+    //     if (res.status === 200) {
+    //       localStorage.setItem("UserInfo", JSON.stringify(res));
+    //     } else {
+    //       alert("Loading chips not successful. Try Again!");
+    //     }
+    //     console.log(res);
+    //   })
+    //   .catch((error) => alert("Error loading chips"));
+
+    await axiosInstance
+      .getchips({ id: user._id })
+      .then((res) => {
+        if (res.status === 200) {
+          res.data.result.forEach((chip, index) => {
+            list.push({
+              key: index,
+              id: chip._id,
+              social_id: chip.social_id,
+              socialType: chip.MediaType,
+              label: chip.Label,
+              data: chip.Data,
+            });
+          });
+          setChipData(list);
+          setTimeout(() => {
+            setloadingChips(true);
+            setuserloadChips(true);
+          }, 2000);
+
+          console.log("Add chip after update: ", userloadChips);
+        } else {
+          alert("Loading chips not successful. Try Again!");
+        }
+      })
+      .catch((error) => alert("Error loading chips"));
+
+    // user = JSON.parse(localStorage.getItem("UserInfo"));
   };
   const loadComp = (chipToDisplay) => () => {
-    const data = chipData.filter((chip) => chip.key === chipToDisplay.key);
-    props.compload(data[0].socialType);
+    if (chipToDisplay.id == "1234") {
+      const data = defaultchips.filter(
+        (chip) => chip.key === chipToDisplay.key
+      );
+      props.compload(data);
+    } else {
+      const data = chipData.filter((chip) => chip.key === chipToDisplay.key);
+      props.compload(data);
+    }
   };
   const handleDelete = (chipToDelete) => async () => {
-    console.log(chipToDelete);
-    var list = chipData;
-
-    list.splice(chipToDelete.key, 1);
-    console.log("CHIPS: ", chipData);
-    //updatechips
-    updateCHIPS();
-    // updateCHIPS();
+    setuserloadChips(false);
+    await axiosInstance.delete_all(
+      chipToDelete.id,
+      chipToDelete.social_id,
+      chipToDelete.socialType
+    );
+    updatechips();
   };
 
-  const updateCHIPS = async () => {
+  const addchip = async (data) => {
+    console.log("Add chip before: ", userloadChips);
+    // await axiosInstance
+    //   .updatechips({
+    //     username: user.data.User.username,
+    //     chip: JSON.stringify(chipData),
+    //   })
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       localStorage.setItem("UserInfo", JSON.stringify(res));
+    //     } else {
+    //       alert("login not successful, try again!");
+    //     }
+    //     console.log(res);
+    //   })
+    //   .catch((error) => alert("Error loading user"));
+
     await axiosInstance
-      .updatechips({
-        username: user.data.User.username,
-        chip: JSON.stringify(chipData),
-      })
+      .addchips(data)
       .then((res) => {
         if (res.status === 200) {
-          localStorage.setItem("UserInfo", JSON.stringify(res));
+          console.log("Chip added.");
+
+          updatechips();
         } else {
           alert("login not successful, try again!");
         }
-        console.log(res);
       })
       .catch((error) => alert("Error loading user"));
-    updatechips();
   };
 
   const handleClickOpen = () => {
@@ -156,17 +246,25 @@ export default function ChipsArray(props) {
   const handleClose = () => {
     setOpen(false);
   };
-  const handleOk = () => {
+  const handleOk = async () => {
+    // setuserloadChips(false);
+    console.log("HANDLE OK: ", userloadChips);
+    var id = "";
+    if (socialMedia == "Twitter") {
+      var id = await axiosInstance.addtwitterinfo(name);
+    } else if (socialMedia == "Youtube") {
+      var id = await axiosInstance.addYoutubeinfo(name);
+    }
     const list = {
-      key: chipData.length,
-      socialType: socialMedia,
-      label: name,
-      data: data,
+      userid: user._id,
+      social_id: id,
+      MediaType: socialMedia,
+      Label: name,
+      Data: data,
     };
-    chipData.push(list);
-    console.log(chipData);
     setOpen(false);
-    updateCHIPS();
+    addchip(list);
+    setsocialMedia("");
   };
   return (
     <div style={{ width: "100%", margin: 20 }}>
@@ -181,37 +279,66 @@ export default function ChipsArray(props) {
         }}
         className={classes.root}
       >
-        {chipData.map((data) => {
-          let icon;
+        {loadingChips ? (
+          defaultchips.map((data) => {
+            let icon;
 
-          if (data.socialType === "Twitter") {
-            icon = <FaTwitter color="blue" />;
-          } else if (data.socialType === "Youtube") {
-            icon = <FaYoutube color="red" />;
-          } else if (data.socialType === "Facebook") {
-            icon = <FaFacebook color="blue" />;
-          } else if (data.socialType === "Instagram") {
-            icon = <FaInstagram color="#e1306c" />;
-          }
-          return (
-            <li key={data.key} style={{ marginTop: 8 }}>
-              <Chip
-                icon={icon}
-                label={data.label}
-                onDelete={
-                  (data.key === 0) |
-                  (data.key === 1) |
-                  (data.key === 2) |
-                  (data.key === 3)
-                    ? undefined
-                    : handleDelete(data)
-                }
-                onClick={loadComp(data)}
-                className={classes.chip}
-              />
-            </li>
-          );
-        })}
+            if (data.socialType === "Twitter") {
+              icon = <FaTwitter color="blue" />;
+            } else if (data.socialType === "Youtube") {
+              icon = <FaYoutube color="red" />;
+            } else if (data.socialType === "Facebook") {
+              icon = <FaFacebook color="blue" />;
+            } else if (data.socialType === "Instagram") {
+              icon = <FaInstagram color="#e1306c" />;
+            }
+            return (
+              <li key={data.key} style={{ marginTop: 8 }}>
+                <Chip
+                  icon={icon}
+                  label={data.label}
+                  onDelete={undefined}
+                  onClick={loadComp(data)}
+                  className={classes.chip}
+                />
+              </li>
+            );
+          })
+        ) : (
+          <div style={{ paddingTop: 13 }}>
+            <p style={{ fontSize: 16, color: "gray", fontWeight: "bold" }}>
+              loading chips
+            </p>
+          </div>
+        )}
+        {userloadChips ? (
+          chipData.map((data) => {
+            let icon;
+
+            if (data.socialType === "Twitter") {
+              icon = <FaTwitter color="blue" />;
+            } else if (data.socialType === "Youtube") {
+              icon = <FaYoutube color="red" />;
+            } else if (data.socialType === "Facebook") {
+              icon = <FaFacebook color="blue" />;
+            } else if (data.socialType === "Instagram") {
+              icon = <FaInstagram color="#e1306c" />;
+            }
+            return (
+              <li key={data.key} style={{ marginTop: 8 }}>
+                <Chip
+                  icon={icon}
+                  label={data.label}
+                  onDelete={handleDelete(data)}
+                  onClick={loadComp(data)}
+                  className={classes.chip}
+                />
+              </li>
+            );
+          })
+        ) : (
+          <Chiploader />
+        )}
         <div className={classes1.root}>
           <Fab
             onClick={handleClickOpen}
