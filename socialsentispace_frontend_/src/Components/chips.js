@@ -249,13 +249,13 @@ export default function ChipsArray(props) {
     console.log("HANDLE OK: ", userloadChips);
     var id = "";
     if (socialMedia == "Twitter") {
-      var id = await axiosInstance.addtwitterinfo(name);
+      var id = await axiosInstance.addtwitterinfo(data);
     } else if (socialMedia == "Youtube") {
-      var id = await axiosInstance.addYoutubeinfo(name);
+      var id = await axiosInstance.addYoutubeinfo(data);
     } else if (socialMedia == "Facebook") {
-      var id = await axiosInstance.addFacebookinfo(name);
+      var id = await axiosInstance.addFacebookinfo(data);
     } else if (socialMedia == "Instagram") {
-      var id = await axiosInstance.addInstagraminfo(name);
+      var id = await axiosInstance.addInstagraminfo(data);
     }
     const list = {
       userid: user._id,

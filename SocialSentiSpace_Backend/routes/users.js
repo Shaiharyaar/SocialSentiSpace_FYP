@@ -68,7 +68,6 @@ userRouter.post("/signup", upload.single("image"), (req, res, next) => {
         email: req.body.email,
         gender: req.body.gender,
         image: "http://localhost:8080/profilePictures/" + req.file.filename,
-        chips: req.body.chip,
       }),
       req.body.password,
       (err, user) => {

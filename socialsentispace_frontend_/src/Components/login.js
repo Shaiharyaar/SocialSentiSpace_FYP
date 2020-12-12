@@ -121,12 +121,6 @@ export const Signup = () => {
     var passregex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
     var letters = /^[A-Za-z]+$/;
     var emailregex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    const chip = [
-      { key: 0, socialType: "Twitter", label: "Twitter", data: "twitter" },
-      { key: 1, socialType: "Youtube", label: "Youtube", data: "youtube" },
-      { key: 2, socialType: "Facebook", label: "Facebook", data: "facebook" },
-      { key: 3, socialType: "Instagram", label: "Instagram", data: "insta" },
-    ];
     if (
       (firstname == "") |
       (lastname == "") |
@@ -151,10 +145,6 @@ export const Signup = () => {
       alert("Username should be of at least length 6");
     } else if (password == "") {
       alert("Password is required");
-    } else if (passregex.test(password)) {
-      alert(
-        "Password must at least contain one uppercase, one lowercase and a digit."
-      );
     } else if (password < 8) {
       alert("Password should be of at least length 8");
     } else if (password != Cpassword) {
@@ -168,7 +158,6 @@ export const Signup = () => {
       formData1.append("password", password);
       formData1.append("gender", gender);
       formData1.append("image", image);
-      formData1.append("chip", JSON.stringify(chip));
       await axiosInstance
         .signup(formData1)
         .then((res) => {
