@@ -28,11 +28,13 @@ export const Login = () => {
       alert("Username should be of at least length 6");
     } else if (password == "") {
       alert("Password is required");
-    } else if (passregex.test(password)) {
-      alert(
-        "Password must at least contain one uppercase, one lowercase and a digit."
-      );
-    } else if (password < 8) {
+    }
+    // else if (passregex.test(password)) {
+    //   alert(
+    //     "Password must at least contain one uppercase, one lowercase and a digit."
+    //   );
+    // }
+    else if (password < 8) {
       alert("Password should be of at least length 8");
     } else {
       const credentials = {
@@ -145,7 +147,13 @@ export const Signup = () => {
       alert("Username should be of at least length 6");
     } else if (password == "") {
       alert("Password is required");
-    } else if (password < 8) {
+    }
+    //  else if (passregex.test(password)) {
+    //   alert(
+    //     "Password must at least contain one uppercase, one lowercase and a digit."
+    //   );
+    // }
+    else if (password < 8) {
       alert("Password should be of at least length 8");
     } else if (password != Cpassword) {
       alert("Password do not match.");

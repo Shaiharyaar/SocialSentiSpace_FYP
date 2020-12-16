@@ -17,6 +17,10 @@ import {
 import { Maincard } from "../ParentCard";
 import { FaTwitter } from "react-icons/fa";
 import axiosInstance from "../../../jwt";
+import {
+  Cardloader,
+  SubCardloader,
+} from "../../loading_animations/cardloading";
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
@@ -37,10 +41,12 @@ export const Twittercomponent = (props) => {
   const [open, setOpen] = React.useState(false);
   const [location, setLocation] = React.useState("");
   const [trend, setTrend] = React.useState("");
+  const [loadingcomponent, setloadingcomponent] = useState(false);
 
   const [list, setlist] = useState([20, 50, 10]);
 
   const loadTwitterinfo = async () => {
+    setloadingcomponent(false);
     var newdata = "";
     var newinfo = {
       title1: "Information",
@@ -53,7 +59,7 @@ export const Twittercomponent = (props) => {
     };
 
     await axiosInstance
-      .getTwitterInfo()
+      .getTwitterInfo("5f9aa366a88a56128c3b17e9")
       .then((res) => {
         newdata = res.data.result;
         console.log("INFO: " + newdata.trend);
@@ -72,6 +78,9 @@ export const Twittercomponent = (props) => {
     ]);
     console.log("list: ", list);
     setinfo(newinfo);
+    setTimeout(() => {
+      setloadingcomponent(true);
+    }, 2000);
   };
   const [info, setinfo] = useState({
     title1: "Information",
@@ -82,6 +91,7 @@ export const Twittercomponent = (props) => {
     line1: "This was tweeted at",
     dt: "date and time",
   });
+
   const [chartdata, setchartdata] = useState({
     line: "Tweets per hr",
     data: [128, 229, 33, 436, 99, 132, 233],
@@ -120,8 +130,9 @@ export const Twittercomponent = (props) => {
   const closecomponent = () => {
     setStatenewdata(false);
   };
+
   return (
-    <div>
+    <div className={"subscreens"}>
       <div className="row screens">
         <h3>Twitter Analysis </h3>
         <FaTwitter color="blue" size="2.2em" style={{ marginLeft: 10 }} />
@@ -206,6 +217,7 @@ export const Twittercomponent = (props) => {
           </DialogActions>
         </Dialog>
       </div>
+
       <LoadComponent
         check={newdata}
         info={info}
@@ -214,7 +226,19 @@ export const Twittercomponent = (props) => {
         chartdata={chartdata}
         closecomponent={closecomponent}
       />
-      <Maincard info={info} countervalues={list} data={chartdata} />
+      {!loadingcomponent ? (
+        <div style={{ padding: 0 }}>
+          <SubCardloader />
+        </div>
+      ) : (
+        <div>
+          <div className="row screens">
+            <h3>Twitter Analysis </h3>
+            <FaTwitter color="blue" size="2.2em" style={{ marginLeft: 10 }} />
+          </div>
+          <Maincard info={info} countervalues={list} data={chartdata} />
+        </div>
+      )}
     </div>
   );
 };

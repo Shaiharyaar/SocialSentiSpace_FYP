@@ -157,10 +157,20 @@ export const Dashboard = () => {
   const LoadComponent = async (new_chip) => {
     await loadcomponentinfo(new_chip[0].socialType, new_chip[0].social_id);
     setchip(new_chip[0]);
+    setid(new_chip[0].social_id);
     setcomp(new_chip[0].socialType);
   };
-  const handleRefresh = () => {
-    alert(chip.label);
+  const [isRefreshing, setisRefreshing] = useState(false);
+  const handleRefresh = async () => {
+    setisRefreshing(true);
+    console.log("updating twiiter");
+    if (comp == "Twitter") {
+      await axiosInstance.updateTwitter(id);
+      await loadcomponentinfo(comp, id);
+      setTimeout(() => {
+        setisRefreshing(false);
+      }, 2000);
+    }
   };
   return (
     <div>

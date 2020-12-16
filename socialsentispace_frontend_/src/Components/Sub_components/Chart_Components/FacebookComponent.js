@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -11,7 +11,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { Maincard } from "../ParentCard";
-
+import { SubCardloader } from "../../loading_animations/cardloading";
+import axiosInstance from "../../../jwt";
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -20,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Facebookcomponent = () => {
+  useEffect(() => {
+    loadFacebookinfo();
+  }, []);
+
   const [info, setinfo] = useState({
     title1: "Facebook Information",
     title2: "Latest Facebook Post",
@@ -43,8 +48,56 @@ export const Facebookcomponent = () => {
       document.getElementById("free-solo-demo").style.borderColor = "#c13584";
   };
 
+  const [chartdata, setchartdata] = useState({
+    line: "Comments per day",
+    data: [128, 229, 33, 436, 99, 132, 233],
+  });
+  const [loadingcomponent, setloadingcomponent] = useState(false);
+  const [list, setlist] = useState([24, 65, 12]);
+  const loadFacebookinfo = async () => {
+    setloadingcomponent(false);
+    var newdata = "";
+    var newinfo = {
+      title1: "Fb Information",
+      title2: "Fb Details",
+      title3: "posted",
+      post: "",
+      name: "",
+      line1: "This was posted at",
+      dt: "",
+    };
+
+    await axiosInstance
+      .getFacebookInfo("5f9be68a3b6571272491517d")
+      .then((res) => {
+        console.log(res);
+        newdata = res.data.result;
+        console.log("INFO: " + newdata.trend);
+        setTimeout(() => {
+          setloadingcomponent(true);
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    newinfo.name = newdata.postDetail.username;
+    newinfo.post = newdata.postDetail.post;
+    newinfo.dt = newdata.postDetail.DateTime;
+
+    setlist([
+      newdata.Result.neutral,
+      newdata.Result.positive,
+      newdata.Result.negative,
+    ]);
+    console.log("list: ", list);
+    setinfo(newinfo);
+    setTimeout(() => {
+      setloadingcomponent(true);
+    }, 2000);
+  };
+
   return (
-    <div className="col">
+    <div className="col subscreens">
       <div className="row screens">
         <h3>Facebook Analysis </h3>
         <FaFacebook color="blue" size="2.2em" style={{ marginLeft: 10 }} />
@@ -110,11 +163,24 @@ export const Facebookcomponent = () => {
         </div>
       </div>
       <LoadComponent />
-      <Maincard
-        info={info}
-        countervalues={[20, 10, 70]}
-        data={[128, 229, 33, 436, 99, 132, 233]}
-      />
+      {!loadingcomponent ? (
+        <div>
+          <SubCardloader />
+        </div>
+      ) : (
+        <div>
+          <div className="row screens">
+            <h3>Facebook Analysis </h3>
+            <FaFacebook color="blue" size="2.2em" style={{ marginLeft: 10 }} />
+          </div>
+          <Maincard
+            info={info}
+            countervalues={list}
+            data={chartdata}
+            y_title={"comments"}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -193,6 +193,44 @@ class axiosInstance {
       .catch((error) => alert("Error loading chips"));
   }
 
+  async updateTwitter(id) {
+    var detail_id = "",
+      result_id = "";
+
+    await this.getTwitterInfo(id).then((res) => {
+      detail_id = res.data.result.LatestTweet._id;
+      result_id = res.data.result.Result._id;
+    });
+
+    //get new data
+    var data = "newTwitter";
+    var details = {
+      id: detail_id,
+      username: data,
+      tweet: data,
+      DateTime: data,
+    };
+    var result = { id: result_id, positive: 10, neutral: 50, negative: 40 };
+
+    await this.updatetwitterdetails(details).then((res) => {
+      console.log(res);
+    });
+
+    await this.updateresults(result).then((res) => {
+      console.log(res);
+    });
+  }
+
+  updatetwitterdetails(body) {
+    return Axios.post(
+      USER_API_BASE_URL + "dashboard/updatetwitterdetails",
+      body
+    );
+  }
+  updateresults(body) {
+    return Axios.post(USER_API_BASE_URL + "dashboard/updateresult", body);
+  }
+
   deletetwitter(id) {
     return Axios.post(USER_API_BASE_URL + "dashboard/deleteTwitter", {
       id: id,
@@ -443,4 +481,5 @@ class axiosInstance {
     return Axios.get(USER_API_BASE_URL + "users/authenticate", data);
   }
 }
+
 export default new axiosInstance();

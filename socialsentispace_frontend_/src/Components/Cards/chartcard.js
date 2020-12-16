@@ -6,7 +6,7 @@ export const Linechartcard = (props) => {
   return (
     <div>
       <h2>Line chart</h2>
-      <LineChart data={props.data} />
+      <LineChart data={props.data} y_title={props.y_title} />
     </div>
   );
 };

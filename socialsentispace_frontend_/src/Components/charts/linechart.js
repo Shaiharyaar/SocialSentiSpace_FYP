@@ -54,14 +54,22 @@ class LineChart extends React.Component {
           size: 1,
         },
         xaxis: {
-          categories: ["7", "6", "5", "4", "3", "2", "1"],
+          categories: [
+            "Saturday",
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+          ],
           title: {
-            text: "Hours",
+            text: "Days",
           },
         },
         yaxis: {
           title: {
-            text: "Tweets",
+            text: props.y_title,
           },
           min: 5,
           max: 500,

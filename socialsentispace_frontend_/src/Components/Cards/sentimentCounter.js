@@ -7,7 +7,7 @@ export const Counters = (props) => {
   const [list, setList] = useState(props.list);
   return (
     <div className={"minibox"}>
-      <h2>Semantic Analysis</h2>
+      <h2>Sentiment Analysis</h2>
       <div className="container">
         <div className="row counterboxes">
           <div className="col-lg-3 box">

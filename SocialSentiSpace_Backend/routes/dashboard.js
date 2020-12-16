@@ -346,4 +346,116 @@ dashboardrouter.post("/deleteChips", (req, res, next) => {
   });
 });
 
+//Updating data
+
+dashboardrouter.post("/updatetwitterdetails", function (req, res) {
+  Latest_tweet.findOneAndUpdate(
+    { _id: req.body.id },
+    {
+      $set: {
+        username: req.body.username,
+        tweet: req.body.tweet,
+        DateTime: req.body.DateTime,
+      },
+    },
+    function (err, result) {
+      if (err)
+        return res.json(400, { message: `id ${req.body.id} not found.` });
+
+      res.json({
+        success: true,
+        result: result,
+      });
+    }
+  );
+});
+
+dashboardrouter.post("/updateyoutubedetails", function (req, res) {
+  VideoDetail.findOneAndUpdate(
+    { _id: req.body.id },
+    {
+      $set: {
+        youtuber: req.body.youtuber,
+        videoName: req.body.videoName,
+        DateTime: req.body.DateTime,
+      },
+    },
+    function (err, result) {
+      if (err)
+        return res.json(400, { message: `id ${req.body.id} not found.` });
+
+      res.json({
+        success: true,
+        result: result,
+      });
+    }
+  );
+});
+
+dashboardrouter.post("/updateinstagramdetails", function (req, res) {
+  InstaDetails.findOneAndUpdate(
+    { _id: req.body.id },
+    {
+      $set: {
+        username: req.body.username,
+        postDetails: req.body.postDetails,
+        DateTime: req.body.DateTime,
+      },
+    },
+    function (err, result) {
+      if (err)
+        return res.json(400, { message: `id ${req.body.id} not found.` });
+
+      res.json({
+        success: true,
+        result: result,
+      });
+    }
+  );
+});
+
+dashboardrouter.post("/updatefacebookdetails", function (req, res) {
+  FbDetails.findOneAndUpdate(
+    { _id: req.body.id },
+    {
+      $set: {
+        username: req.body.username,
+        post: req.body.post,
+        DateTime: req.body.DateTime,
+      },
+    },
+    function (err, result) {
+      if (err)
+        return res.json(400, { message: `id ${req.body.id} not found.` });
+
+      res.json({
+        success: true,
+        result: result,
+      });
+    }
+  );
+});
+
+dashboardrouter.post("/updateresult", function (req, res) {
+  Result.findOneAndUpdate(
+    { _id: req.body.id },
+    {
+      $set: {
+        positive: req.body.positive,
+        negative: req.body.negative,
+        neutral: req.body.neutral,
+      },
+    },
+    function (err, result) {
+      if (err)
+        return res.json(400, { message: `id ${req.body.id} not found.` });
+
+      res.json({
+        success: true,
+        result: result,
+      });
+    }
+  );
+});
+
 module.exports = dashboardrouter;

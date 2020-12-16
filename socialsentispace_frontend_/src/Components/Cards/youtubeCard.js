@@ -1,7 +1,7 @@
 import React from "react";
 import { Linechartcard, Piechartcard } from "./chartcard";
 import { Informationcard } from "./information";
-import { Counters } from "./semanticCounter";
+import { Counters } from "./sentimentCounter";
 import { Video } from "./videocard";
 
 export const Youtubecard = (props) => {

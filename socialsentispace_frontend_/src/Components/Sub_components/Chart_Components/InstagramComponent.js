@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -12,6 +12,8 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { Maincard } from "../ParentCard";
+import axiosInstance from "../../../jwt";
+import { SubCardloader } from "../../loading_animations/cardloading";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -31,10 +33,63 @@ export const Instagramcomponent = () => {
     dt: "date and time",
   });
 
+  useEffect(() => {
+    loadInstagraminfo();
+  }, []);
+
   const [open, setOpen] = React.useState(false);
 
   const [location, setLocation] = React.useState("");
   const [trend, setTrend] = React.useState("");
+  const [loadingcomponent, setloadingcomponent] = useState(false);
+
+  const [list, setlist] = useState([20, 50, 10]);
+
+  const loadInstagraminfo = async () => {
+    setloadingcomponent(false);
+    var newdata = "";
+    var newinfo = {
+      title1: "Insta Information",
+      title2: "Instagram Details",
+      title3: "posted",
+      post: "",
+      name: "",
+      line1: "This was posted at",
+      dt: "",
+    };
+
+    await axiosInstance
+      .getInstagramInfo("5f9b07177ac7c71c74eba498")
+      .then((res) => {
+        newdata = res.data.result;
+        console.log("INFO: " + newdata.trend);
+        setTimeout(() => {
+          setloadingcomponent(true);
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    newinfo.name = newdata.latestPost.username;
+    newinfo.post = newdata.latestPost.postDetails;
+    newinfo.dt = newdata.latestPost.DateTime;
+
+    setlist([
+      newdata.Result.neutral,
+      newdata.Result.positive,
+      newdata.Result.negative,
+    ]);
+    console.log("list: ", list);
+    setinfo(newinfo);
+    setTimeout(() => {
+      setloadingcomponent(true);
+    }, 2000);
+  };
+  const [chartdata, setchartdata] = useState({
+    line: "Tweets per hr",
+    data: [128, 229, 33, 436, 99, 132, 233],
+  });
+
   const classes = useStyles();
   const videos = [];
   const checkhash = (val) => {
@@ -45,7 +100,7 @@ export const Instagramcomponent = () => {
   };
 
   return (
-    <div className="col">
+    <div className="col subscreens">
       <div className="row screens">
         <h3>Instagram Analysis </h3>
         <FaInstagram color="#e1306c" size="2.2em" style={{ marginLeft: 10 }} />
@@ -90,11 +145,23 @@ export const Instagramcomponent = () => {
         </div>
       </div>
       <LoadComponent />
-      <Maincard
-        info={info}
-        countervalues={[20, 10, 70]}
-        data={[128, 229, 33, 435, 99, 132, 233]}
-      />
+      {!loadingcomponent ? (
+        <div style={{ padding: 0 }}>
+          <SubCardloader />
+        </div>
+      ) : (
+        <div>
+          <div className="row screens">
+            <h3>Instagram Analysis </h3>
+            <FaInstagram
+              color="#e1306c"
+              size="2.2em"
+              style={{ marginLeft: 10 }}
+            />
+          </div>
+          <Maincard info={info} countervalues={list} data={chartdata} />
+        </div>
+      )}
     </div>
   );
 };

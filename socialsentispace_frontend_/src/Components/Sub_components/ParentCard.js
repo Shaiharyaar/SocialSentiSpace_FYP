@@ -1,7 +1,7 @@
 import React from "react";
 import { Linechartcard, Piechartcard } from "../Cards/chartcard";
 import { Informationcard } from "../Cards/information";
-import { Counters } from "../Cards/semanticCounter";
+import { Counters } from "../Cards/sentimentCounter";
 
 export const Maincard = (props) => {
   return (
@@ -16,7 +16,7 @@ export const Maincard = (props) => {
         <div className="col-xl-8  masterbox" style={{ marginTop: 10 }}>
           <div className={"minibox"}>
             {" "}
-            <Linechartcard data={props.data} />
+            <Linechartcard data={props.data} y_title={props.y_title} />
           </div>
         </div>
 
