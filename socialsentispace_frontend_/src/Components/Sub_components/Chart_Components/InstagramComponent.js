@@ -4,7 +4,13 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import { FaInstagram, FaHashtag } from "react-icons/fa";
-
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -92,13 +98,20 @@ export const Instagramcomponent = () => {
 
   const classes = useStyles();
   const videos = [];
-  const checkhash = (val) => {
-    if (val == "")
-      document.getElementById("free-solo-demo").style.borderColor = "#888";
-    else
-      document.getElementById("free-solo-demo").style.borderColor = "#c13584";
-  };
+  const [hashtag, setHashtag] = useState("");
+  const handleok = () => {};
+  const [newdata, setStatenewdata] = useState(false);
 
+  const [Check, setCheck] = useState(false);
+  const [Url, setUrl] = useState("");
+
+  const closecomponent = () => {
+    setStatenewdata(false);
+  };
+  const handleselect = (e) => {
+    setTrend(e.target.value);
+    setStatenewdata(true);
+  };
   return (
     <div className="col subscreens">
       <div className="row screens">
@@ -106,7 +119,7 @@ export const Instagramcomponent = () => {
         <FaInstagram color="#e1306c" size="2.2em" style={{ marginLeft: 10 }} />
       </div>
       <div className="row">
-        <div className="col-xl-9 boxes" style={{ marginTop: 10 }}>
+        <div className="col-xl-7 boxes" style={{ marginTop: 10 }}>
           <Autocomplete
             id="free-solo-demo"
             freeSolo
@@ -118,11 +131,16 @@ export const Instagramcomponent = () => {
                 margin="normal"
                 variant="outlined"
                 onChange={(e) => {
-                  checkhash(e.target.value);
+                  setHashtag(e.target.value);
                 }}
               />
             )}
           />
+        </div>
+        <div className="col-xl-2" style={{ marginTop: 35 }}>
+          <Button variant="contained" color="primary">
+            Search
+          </Button>
         </div>
         <div
           className="col-xl-3 boxes"
@@ -132,7 +150,12 @@ export const Instagramcomponent = () => {
             <InputLabel htmlFor="grouped-select">
               Latest Instagram Trends
             </InputLabel>
-            <Select defaultValue="" id="grouped-select">
+            <Select
+              defaultValue=""
+              id="grouped-select"
+              value={trend}
+              onChange={handleselect}
+            >
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
@@ -144,7 +167,13 @@ export const Instagramcomponent = () => {
           </FormControl>
         </div>
       </div>
-      <LoadComponent />
+      <LoadComponent
+        check={newdata}
+        info={info}
+        list={list}
+        data={chartdata}
+        closecomponent={closecomponent}
+      />
       {!loadingcomponent ? (
         <div style={{ padding: 0 }}>
           <SubCardloader />
@@ -167,19 +196,141 @@ export const Instagramcomponent = () => {
 };
 
 const LoadComponent = (props) => {
-  // if (props.check) {
-  //   return <YoutubeAnalysis url={props.url} />;
-  // } else {
-  return (
-    <div className="container">
-      <div className="col">
-        <div className="row">
-          <div className="emptyComp">
-            <h3>Your Search Result Will appear here</h3>
-          </div>{" "}
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  if (props.check) {
+    return (
+      <div>
+        <div className="row screens">
+          <h3>Instagram Analysis </h3>
+          <FaInstagram
+            color="#e1306c"
+            size="2.2em"
+            style={{ marginLeft: 10 }}
+          />{" "}
+        </div>
+
+        <div class="button-show-data">
+          <div style={{ marginLeft: 20 }}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={props.closecomponent}
+            >
+              Close
+            </Button>
+          </div>
+          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+            Open form dialog
+          </Button>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            maxWidth={"md"}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogTitle id="form-dialog-title">Data Obtained</DialogTitle>
+            <DialogContent>
+              <div className="showData-tablediv">
+                <table className="showData-table">
+                  <tr>
+                    <th>id</th>
+                    <th>comment</th>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+        <Maincard
+          info={props.info}
+          countervalues={props.list}
+          data={props.data}
+          y_title={"comments"}
+        />
+        <div className={"below-border"}></div>
+      </div>
+    );
+  } else {
+    return (
+      <div className="container">
+        <div className="col">
+          <div className="row">
+            <div className="emptyComp">
+              <h3>Your Search Result Will appear here</h3>
+            </div>{" "}
+          </div>
         </div>
       </div>
-    </div>
-  );
-  // }
+    );
+  }
 };

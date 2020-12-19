@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@material-ui/core";
+import { SubCardloader } from "../../loading_animations/cardloading";
 import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+
+import { Autocomplete } from "@material-ui/lab";
 
 import { FaFacebook, FaHashtag } from "react-icons/fa";
 
-import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
 import { Maincard } from "../ParentCard";
-import { SubCardloader } from "../../loading_animations/cardloading";
 import axiosInstance from "../../../jwt";
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -52,6 +56,14 @@ export const Facebookcomponent = () => {
     line: "Comments per day",
     data: [128, 229, 33, 436, 99, 132, 233],
   });
+  const [newdata, setStatenewdata] = useState(false);
+
+  const [Check, setCheck] = useState(false);
+  const [Url, setUrl] = useState("");
+
+  const closecomponent = () => {
+    setStatenewdata(false);
+  };
   const [loadingcomponent, setloadingcomponent] = useState(false);
   const [list, setlist] = useState([24, 65, 12]);
   const loadFacebookinfo = async () => {
@@ -95,6 +107,38 @@ export const Facebookcomponent = () => {
       setloadingcomponent(true);
     }, 2000);
   };
+  const handleok = (url) => {
+    console.log("hello");
+    if (url.includes("https://www.youtube.com/watch?v=")) {
+      setCheck(true);
+      setUrl(url);
+      document.getElementById("free-solo").style.border = "1px solid limegreen";
+
+      document.getElementById("free-solo").style.borderRadius = "10px";
+      setStatenewdata(true);
+      fetch(url).then(function (res) {
+        console.log(res);
+      });
+    } else if (url == "") {
+      setCheck(false);
+      setStatenewdata(false);
+
+      document.getElementById("free-solo").style.border = "0px solid limegreen";
+    } else {
+      setCheck(false);
+      setStatenewdata(false);
+
+      document.getElementById("free-solo").style.border =
+        "1px solid rgba(255,100,150,0.5)";
+
+      document.getElementById("free-solo").style.borderRadius = "10px";
+    }
+    //   }
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // });
+  };
 
   return (
     <div className="col subscreens">
@@ -102,7 +146,7 @@ export const Facebookcomponent = () => {
         <h3>Facebook Analysis </h3>
         <FaFacebook color="blue" size="2.2em" style={{ marginLeft: 10 }} />
       </div>
-      <div className="row">
+      {/* <div className="row">
         <div className="col-xl-9 boxes" style={{ marginTop: 10 }}>
           <Autocomplete
             id="free-solo-demo"
@@ -141,9 +185,9 @@ export const Facebookcomponent = () => {
       </div>
       <div className={"row"}>
         <h2 style={{ marginLeft: "45%" }}> OR</h2>
-      </div>
+      </div> */}
       <div className="row">
-        <div className="col boxes" style={{ marginTop: 10 }}>
+        <div className="col boxes " id={"free-solo"} style={{ marginTop: 10 }}>
           <Autocomplete
             id="free-solo-demo"
             freeSolo
@@ -155,14 +199,20 @@ export const Facebookcomponent = () => {
                 margin="normal"
                 variant="outlined"
                 onChange={(e) => {
-                  checkhash(e.target.value);
+                  handleok(e.target.value);
                 }}
               />
             )}
           />
         </div>
       </div>
-      <LoadComponent />
+      <LoadComponent
+        check={newdata}
+        info={info}
+        list={list}
+        data={chartdata}
+        closecomponent={closecomponent}
+      />
       {!loadingcomponent ? (
         <div>
           <SubCardloader />
@@ -186,19 +236,137 @@ export const Facebookcomponent = () => {
 };
 
 const LoadComponent = (props) => {
-  // if (props.check) {
-  //   return <YoutubeAnalysis url={props.url} />;
-  // } else {
-  return (
-    <div className="container">
-      <div className="col">
-        <div className="row">
-          <div className="emptyComp">
-            <h3>Your Search Result Will appear here</h3>
-          </div>{" "}
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  if (props.check) {
+    return (
+      <div>
+        <div className="row screens">
+          <h3>Facebook Analysis </h3>
+          <FaFacebook color="blue" size="2.2em" style={{ marginLeft: 10 }} />
+        </div>
+
+        <div class="button-show-data">
+          <div style={{ marginLeft: 20 }}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={props.closecomponent}
+            >
+              Close
+            </Button>
+          </div>
+          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+            Open form dialog
+          </Button>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            maxWidth={"md"}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogTitle id="form-dialog-title">Data Obtained</DialogTitle>
+            <DialogContent>
+              <div className="showData-tablediv">
+                <table className="showData-table">
+                  <tr>
+                    <th>id</th>
+                    <th>comment</th>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>01</td>
+                    <td>
+                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
+                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+        <Maincard
+          info={props.info}
+          countervalues={props.list}
+          data={props.data}
+          y_title={"comments"}
+        />
+        <div className={"below-border"}></div>
+      </div>
+    );
+  } else {
+    return (
+      <div className="container">
+        <div className="col">
+          <div className="row">
+            <div className="emptyComp">
+              <h3>Your Search Result Will appear here</h3>
+            </div>{" "}
+          </div>
         </div>
       </div>
-    </div>
-  );
-  // }
+    );
+  }
 };

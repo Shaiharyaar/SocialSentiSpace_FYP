@@ -6,7 +6,7 @@ export const Mainscreen = (props) => {
     checkuserlogin();
     chatbotWatson();
   }, []);
-  
+
   const [pagename, setpagename] = useState("Dashboard");
   const history = useHistory();
   const handlePageName = (name) => {

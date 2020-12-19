@@ -193,7 +193,14 @@ class axiosInstance {
       .catch((error) => alert("Error loading chips"));
   }
 
-  async updateTwitter(id) {
+  //--------------
+  //UPDATING DATAA
+  //--------------
+
+  //Updating twiiter
+
+  async updateTwitter(id, label) {
+    console.log(label);
     var detail_id = "",
       result_id = "";
 
@@ -202,8 +209,10 @@ class axiosInstance {
       result_id = res.data.result.Result._id;
     });
 
-    //get new data
+    //get new data (HARIS)
+
     var data = "newTwitter";
+
     var details = {
       id: detail_id,
       username: data,
@@ -221,9 +230,128 @@ class axiosInstance {
     });
   }
 
+  //Updating instagram
+
+  async updateInstagram(id, label) {
+    console.log(label);
+    var detail_id = "",
+      result_id = "";
+
+    await this.getInstagramInfo(id).then((res) => {
+      detail_id = res.data.result.latestPost._id;
+      result_id = res.data.result.Result._id;
+    });
+
+    //get new data (HARIS)
+
+    var _label = "newInstagram";
+
+    var details = {
+      id: detail_id,
+      username: _label,
+      postDetails: _label,
+      DateTime: _label,
+    };
+    var result = { id: result_id, positive: 10, neutral: 50, negative: 40 };
+
+    await this.updateinstagramdetails(details).then((res) => {
+      console.log(res);
+    });
+
+    await this.updateresults(result).then((res) => {
+      console.log(res);
+    });
+  }
+
+  //Updating facebook
+
+  async updateFacebook(id, label) {
+    console.log(label);
+    var detail_id = "",
+      result_id = "";
+
+    await this.getFacebookInfo(id).then((res) => {
+      detail_id = res.data.result.postDetail._id;
+      result_id = res.data.result.Result._id;
+    });
+
+    //get new data (HARIS)
+
+    var _label = "newFacebook";
+
+    var details = {
+      id: detail_id,
+      username: _label,
+      post: _label,
+      DateTime: _label,
+    };
+    var result = { id: result_id, positive: 10, neutral: 50, negative: 40 };
+
+    await this.updatefacebookdetails(details).then((res) => {
+      console.log(res);
+    });
+
+    await this.updateresults(result).then((res) => {
+      console.log(res);
+    });
+  }
+
+  //Updating youtube
+
+  async updateYoutube(id, url) {
+    console.log(url);
+    var detail_id = "",
+      result_id = "";
+
+    await this.getYoutubeInfo(id).then((res) => {
+      detail_id = res.data.result.VideoDetail._id;
+      result_id = res.data.result.Result._id;
+    });
+
+    //get new data (HARIS)
+
+    var label = "newYoutube";
+
+    var details = {
+      id: detail_id,
+      youtuber: label,
+      videoURL: url,
+      videoName: label,
+      VideoDescription: label,
+      DateTime: label,
+    };
+    var result = { id: result_id, positive: 10, neutral: 50, negative: 40 };
+
+    await this.updateyoutubedetails(details).then((res) => {
+      console.log(res);
+    });
+
+    await this.updateresults(result).then((res) => {
+      console.log(res);
+    });
+  }
+
+  updateinstagramdetails(body) {
+    return Axios.post(
+      USER_API_BASE_URL + "dashboard/updateinstagramdetails",
+      body
+    );
+  }
   updatetwitterdetails(body) {
     return Axios.post(
       USER_API_BASE_URL + "dashboard/updatetwitterdetails",
+      body
+    );
+  }
+  updateyoutubedetails(body) {
+    return Axios.post(
+      USER_API_BASE_URL + "dashboard/updateyoutubedetails",
+      body
+    );
+  }
+  updatefacebookdetails(body) {
+    return Axios.post(
+      USER_API_BASE_URL + "dashboard/updatefacebookdetails",
       body
     );
   }

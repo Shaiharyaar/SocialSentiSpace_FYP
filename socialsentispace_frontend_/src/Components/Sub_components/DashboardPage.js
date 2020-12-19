@@ -8,7 +8,7 @@ import { Instagramcomponent } from "./Chart_Components/InstagramComponent";
 import { Twittercomponent } from "./Chart_Components/TwitterComponent";
 import { Youtubecomponent } from "./Chart_Components/YoutubeComponent";
 import axiosInstance from "../../jwt";
-import { Cardloader } from "../loading_animations/cardloading";
+import { Cardloader, SubCardloader } from "../loading_animations/cardloading";
 import { Button } from "@material-ui/core";
 
 export const Dashboard = () => {
@@ -25,7 +25,7 @@ export const Dashboard = () => {
   });
   const [list, setlist] = useState([20, 50, 10]);
   const [loadingcomponent, setloadingcomponent] = useState(false);
-  const loadcomponentinfo = async (media, id) => {
+  const loadcomponentinfo = async (media, id, ref) => {
     setloadingcomponent(false);
 
     var newdata = "";
@@ -53,9 +53,20 @@ export const Dashboard = () => {
         .then((res) => {
           newdata = res.data.result;
           console.log("INFO: " + newdata.trend);
-          setTimeout(() => {
-            setloadingcomponent(true);
-          }, 2000);
+          if (ref) {
+            setTimeout(() => {
+              setisloading(true);
+              setTimeout(() => {
+                setisRefreshing(false);
+                setloadingcomponent(true);
+                setisloading(false);
+              }, 2000);
+            }, 2000);
+          } else {
+            setTimeout(() => {
+              setloadingcomponent(true);
+            }, 2000);
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -91,6 +102,7 @@ export const Dashboard = () => {
       newinfo.title2 = "Instagram Details";
       newinfo.title3 = "posted";
 
+      newinfo.line1 = "This was posted at";
       await axiosInstance
         .getInstagramInfo(id)
         .then((res) => {
@@ -103,6 +115,7 @@ export const Dashboard = () => {
         .catch((error) => {
           console.log(error);
         });
+
       newinfo.name = newdata.latestPost.username;
       newinfo.post = newdata.latestPost.postDetails;
       newinfo.dt = newdata.latestPost.DateTime;
@@ -111,6 +124,7 @@ export const Dashboard = () => {
       newinfo.title2 = "Fb Details";
       newinfo.title3 = "posted";
 
+      newinfo.line1 = "This was posted at";
       await axiosInstance
         .getFacebookInfo(id)
         .then((res) => {
@@ -129,6 +143,11 @@ export const Dashboard = () => {
       newinfo.dt = newdata.postDetail.DateTime;
     }
     if (media != "") {
+      console.log(
+        newdata.Result.neutral,
+        newdata.Result.positive,
+        newdata.Result.negative
+      );
       setlist([
         newdata.Result.neutral,
         newdata.Result.positive,
@@ -160,16 +179,23 @@ export const Dashboard = () => {
     setid(new_chip[0].social_id);
     setcomp(new_chip[0].socialType);
   };
+  const [isloading, setisloading] = useState(false);
   const [isRefreshing, setisRefreshing] = useState(false);
   const handleRefresh = async () => {
     setisRefreshing(true);
     console.log("updating twiiter");
     if (comp == "Twitter") {
-      await axiosInstance.updateTwitter(id);
-      await loadcomponentinfo(comp, id);
-      setTimeout(() => {
-        setisRefreshing(false);
-      }, 2000);
+      await axiosInstance.updateTwitter(chip.social_id, chip.label);
+      await loadcomponentinfo(comp, id, "ref");
+    } else if (comp == "Youtube") {
+      await axiosInstance.updateYoutube(chip.social_id, chip.label);
+      await loadcomponentinfo(comp, id, "ref");
+    } else if (comp == "Instagram") {
+      await axiosInstance.updateInstagram(chip.social_id, chip.label);
+      await loadcomponentinfo(comp, id, "ref");
+    } else if (comp == "Facebook") {
+      await axiosInstance.updateFacebook(chip.social_id, chip.label);
+      await loadcomponentinfo(comp, id, "ref");
     }
   };
   return (
@@ -190,6 +216,10 @@ export const Dashboard = () => {
             </Button>
           </div>
           <CompCheck c={comp} info={info} list={list} chart={chartdata} />
+        </div>
+      ) : isRefreshing ? (
+        <div style={{ padding: 40 }}>
+          <SubCardloader loading={isloading} />
         </div>
       ) : (
         <Cardloader />
@@ -249,7 +279,7 @@ const CompCheck = (props) => {
           />
           <Maincard
             info={props.info}
-            countervalues={[20, 10, 70]}
+            countervalues={props.list}
             data={props.chart}
           />
         </div>

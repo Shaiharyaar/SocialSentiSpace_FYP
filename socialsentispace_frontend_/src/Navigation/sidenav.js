@@ -77,7 +77,7 @@ export const Sidenavbar = (props) => {
               </NavLink>
             </li>
             <li className="has-subnav">
-              <NavLink to="/youtube">
+              <NavLink to="/youtube" onClick={() => handlename("Youtube")}>
                 <a>
                   <i className="fa fa-youtube fa-2x" />
                   <span className="nav-text"> Youtube Charts</span>
@@ -85,7 +85,7 @@ export const Sidenavbar = (props) => {
               </NavLink>
             </li>
             <li className="has-subnav">
-              <NavLink to="/instagram">
+              <NavLink to="/instagram" onClick={() => handlename("Instagram")}>
                 <a>
                   <i className="fa fa-instagram fa-2x" />
                   <span className="nav-text"> Instagram Charts</span>

@@ -137,7 +137,14 @@ h2 {
   padding-left: 15px;
   background-color: #d5d3dc;
 }
+.newbutton{
+  height: 150 !important;
+}
+.below-border{
+  margin: 40px 0 40px 0;
+  border: 2px solid black;
 
+}
 /* ------------------------------ */
 /* -------  SUB-SCREENS --------- */
 /* ------------------------------ */

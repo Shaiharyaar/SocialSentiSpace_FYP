@@ -7,19 +7,16 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  InputLabel,
-  Input,
-  MenuItem,
-  FormControl,
-  Select,
 } from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import { Maincard } from "../ParentCard";
 import { FaTwitter } from "react-icons/fa";
 import axiosInstance from "../../../jwt";
 import {
-  Cardloader,
   SubCardloader,
+  TwitterLoader,
 } from "../../loading_animations/cardloading";
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -96,6 +93,8 @@ export const Twittercomponent = (props) => {
     line: "Tweets per hr",
     data: [128, 229, 33, 436, 99, 132, 233],
   });
+  const videos = [];
+
   const [newdata, setStatenewdata] = useState(false);
   const handleLocation = (event) => {
     setLocation(event.target.value || "");
@@ -103,19 +102,20 @@ export const Twittercomponent = (props) => {
       document.getElementById("trendfield").style.visibility = "visible";
     else document.getElementById("trendfield").style.visibility = "hidden";
   };
-  const handleTrend = (event) => {
-    setTrend(event.target.value || "");
-    console.log(event.target.value);
+  // const handleTrend = (event) => {
+  //   setTrend(event.target.value || "");
+  //   console.log(event.target.value);
 
-    if (event.target.value != "") {
-      document.getElementById("okbtn").style.visibility = "visible";
-      document.getElementById("span").style.visibility = "hidden";
-    } else {
-      document.getElementById("okbtn").style.visibility = "hidden";
-      document.getElementById("span").style.visibility = "visible";
-    }
-  };
-
+  //   if (event.target.value != "") {
+  //     document.getElementById("okbtn").style.visibility = "visible";
+  //     document.getElementById("span").style.visibility = "hidden";
+  //   } else {
+  //     document.getElementById("okbtn").style.visibility = "hidden";
+  //     document.getElementById("span").style.visibility = "visible";
+  //   }
+  // };
+  const [isloading, setisloading] = useState(false);
+  const [iscardloading, setiscardloading] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -124,8 +124,16 @@ export const Twittercomponent = (props) => {
     setOpen(false);
   };
   const handleok = () => {
+    setiscardloading(true);
     setOpen(false);
     setStatenewdata(true);
+    setTimeout(() => {
+      setisloading(true);
+      setTimeout(() => {
+        setiscardloading(false);
+        setisloading(false);
+      }, 2000);
+    }, 2000);
   };
   const closecomponent = () => {
     setStatenewdata(false);
@@ -137,7 +145,7 @@ export const Twittercomponent = (props) => {
         <h3>Twitter Analysis </h3>
         <FaTwitter color="blue" size="2.2em" style={{ marginLeft: 10 }} />
       </div>
-      <div className="selectloc">
+      {/* <div className="selectloc">
         <Button className="trendbtn" onClick={handleClickOpen}>
           Select a Twitter Trend
         </Button>
@@ -216,8 +224,32 @@ export const Twittercomponent = (props) => {
             </span>
           </DialogActions>
         </Dialog>
+      </div> */}
+      <div className="row">
+        <div className="col-xl-10 boxes" style={{ marginTop: 10 }}>
+          <Autocomplete
+            id="free-solo-demo"
+            freeSolo
+            options={videos.map((option) => option.title)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Enter a keyword your choosing"
+                margin="normal"
+                variant="outlined"
+                onChange={(e) => {
+                  setTrend(e.target.value);
+                }}
+              />
+            )}
+          />
+        </div>
+        <div className="col-xl-2" style={{ marginTop: 35 }}>
+          <Button variant="contained" color="primary" onClick={handleok}>
+            Search
+          </Button>
+        </div>
       </div>
-
       <LoadComponent
         check={newdata}
         info={info}
@@ -225,6 +257,8 @@ export const Twittercomponent = (props) => {
         trend={trend}
         chartdata={chartdata}
         closecomponent={closecomponent}
+        cardloading={iscardloading}
+        isloading={isloading}
       />
       {!loadingcomponent ? (
         <div style={{ padding: 0 }}>
@@ -253,6 +287,7 @@ const LoadComponent = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+
   if (props.check) {
     return (
       <div>
@@ -270,9 +305,17 @@ const LoadComponent = (props) => {
               Close
             </Button>
           </div>
-          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-            Open form dialog
-          </Button>
+          {!props.cardloading ? (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleClickOpen}
+            >
+              Show Data
+            </Button>
+          ) : (
+            <div></div>
+          )}
           <Dialog
             open={open}
             onClose={handleClose}
@@ -353,15 +396,15 @@ const LoadComponent = (props) => {
             </DialogActions>
           </Dialog>
         </div>
-        <Maincard
-          info={props.info}
-          countervalues={props.list}
-          data={props.chartdata}
-        />
-        <div className="row screens">
-          <h3>Twitter Analysis </h3>
-          <FaTwitter color="blue" size="2.2em" style={{ marginLeft: 10 }} />
-        </div>
+        {!props.cardloading ? (
+          <Maincard
+            info={props.info}
+            countervalues={props.list}
+            data={props.chartdata}
+          />
+        ) : (
+          <TwitterLoader loading={props.isloading} />
+        )}
       </div>
     );
   } else {
