@@ -89,8 +89,20 @@ export const Twittercomponent = (props) => {
     dt: "date and time",
   });
 
+  const [newinfo, setnewinfo] = useState({
+    title1: "Information",
+    title2: "Latest Tweet",
+    title3: "tweeted",
+    post:
+      "Time to dodge the airlock (or desperately try to use it in time)... time for some Among Us with some amazing people for Charity. :)",
+    name: "Matthew Mercer",
+    line1: "This was tweeted at",
+    dt: "7:58 AM, Dec 20, 2020",
+  });
+  const [newRes, setNewRes] = useState([19, 71, 12]);
+
   const [chartdata, setchartdata] = useState({
-    line: "Tweets per hr",
+    line: "Tweets per day",
     data: [128, 229, 33, 436, 99, 132, 233],
   });
   const videos = [];
@@ -117,6 +129,7 @@ export const Twittercomponent = (props) => {
   // };
   const [isloading, setisloading] = useState(false);
   const [iscardloading, setiscardloading] = useState(false);
+  const [comments, setComments] = useState([]);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -124,17 +137,37 @@ export const Twittercomponent = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
-  const handleok = () => {
+  const handleok = async () => {
     setiscardloading(true);
     setOpen(false);
     setStatenewdata(true);
+    var newdata = [];
+    await axiosInstance.loadtwitterinfo(trend).then((res) => {
+      newdata = res.data.Tweets;
+    });
+    var comm = [];
+
+    newdata.forEach((tweet) => {
+      comm.push(tweet.text);
+    });
+
+    setnewinfo({
+      title1: "Information",
+      title2: "Latest Tweet",
+      title3: "tweeted",
+      post: comm[comm.length - 1],
+      name: "Matthew Mercer",
+      line1: "This was tweeted at",
+      dt: newdata[comm.length - 1].date,
+    });
+    setComments(comm);
     setTimeout(() => {
       setisloading(true);
       setTimeout(() => {
         setiscardloading(false);
         setisloading(false);
       }, 2000);
-    }, 2000);
+    }, 12000);
   };
   const closecomponent = () => {
     setStatenewdata(false);
@@ -253,13 +286,14 @@ export const Twittercomponent = (props) => {
       </div>
       <LoadComponent
         check={newdata}
-        info={info}
-        list={list}
+        info={newinfo}
+        list={newRes}
         trend={trend}
         chartdata={chartdata}
         closecomponent={closecomponent}
         cardloading={iscardloading}
         isloading={isloading}
+        comments={comments}
       />
       {!loadingcomponent ? (
         <div style={{ padding: 0 }}>
@@ -288,6 +322,7 @@ const LoadComponent = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+  // const showcommentdata =
 
   if (props.check) {
     return (
@@ -331,62 +366,14 @@ const LoadComponent = (props) => {
                     <th>id</th>
                     <th>comment</th>
                   </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
+                  {props.comments.map((element, index) => {
+                    return (
+                      <tr>
+                        <td>{index + 1}</td>
+                        <td>{element}</td>
+                      </tr>
+                    );
+                  })}
                 </table>
               </div>
             </DialogContent>
@@ -406,6 +393,8 @@ const LoadComponent = (props) => {
         ) : (
           <TwitterLoader loading={props.isloading} />
         )}
+
+        <div className={"below-border"}></div>
       </div>
     );
   } else {

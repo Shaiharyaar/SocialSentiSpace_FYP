@@ -162,6 +162,10 @@ h2 {
   background-color: #fff;
   padding: 20px;
 }
+.minibox1 {
+  background-color: #fff;
+  padding: 23.5px;
+}
 
 /* ------------------------------ */
 /* ------- Counters ------------ */
@@ -175,10 +179,17 @@ h2 {
 .counterboxes .box {
   margin: 25px;
   display: grid;
+  border-radius: 20px;
   margin-bottom: 85px;
   justify-content: center;
+  transition: all 0.7s;
 }
-
+.counterboxes .box:hover {
+  background-color: rgba(144, 255, 240, 0.137);
+  -webkit-box-shadow: 10px 10px 60px -21px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 10px 10px 60px -21px rgba(0, 0, 0, 0.75);
+  box-shadow: 10px 10px 60px -21px rgba(0, 0, 0, 0.75);
+}
 .box:last-child .MuiCircularProgress-root {
   color: orange !important;
 }

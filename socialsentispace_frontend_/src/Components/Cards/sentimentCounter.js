@@ -6,7 +6,7 @@ export const Counters = (props) => {
   }, [props.list]);
   const [list, setList] = useState(props.list);
   return (
-    <div className={"minibox"}>
+    <div className={"minibox1"}>
       <h2>Sentiment Analysis</h2>
       <div className="container">
         <div className="row counterboxes">
