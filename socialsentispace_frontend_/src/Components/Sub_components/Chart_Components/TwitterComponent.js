@@ -96,6 +96,7 @@ export const Twittercomponent = (props) => {
   const videos = [];
 
   const [newdata, setStatenewdata] = useState(false);
+
   const handleLocation = (event) => {
     setLocation(event.target.value || "");
     if (event.target.value != "")

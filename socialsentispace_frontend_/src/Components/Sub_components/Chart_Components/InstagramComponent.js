@@ -19,7 +19,10 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { Maincard } from "../ParentCard";
 import axiosInstance from "../../../jwt";
-import { SubCardloader } from "../../loading_animations/cardloading";
+import {
+  InstagramLoader,
+  SubCardloader,
+} from "../../loading_animations/cardloading";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -99,7 +102,23 @@ export const Instagramcomponent = () => {
   const classes = useStyles();
   const videos = [];
   const [hashtag, setHashtag] = useState("");
-  const handleok = () => {};
+  const [isloading, setisloading] = useState(false);
+
+  const [iscardloading, setiscardloading] = useState(false);
+  const handleok = () => {
+    setStatenewdata(true);
+
+    setiscardloading(true);
+    setOpen(false);
+    setStatenewdata(true);
+    setTimeout(() => {
+      setisloading(true);
+      setTimeout(() => {
+        setiscardloading(false);
+        setisloading(false);
+      }, 2000);
+    }, 2000);
+  };
   const [newdata, setStatenewdata] = useState(false);
 
   const [Check, setCheck] = useState(false);
@@ -111,6 +130,16 @@ export const Instagramcomponent = () => {
   const handleselect = (e) => {
     setTrend(e.target.value);
     setStatenewdata(true);
+    setiscardloading(true);
+    setOpen(false);
+    setStatenewdata(true);
+    setTimeout(() => {
+      setisloading(true);
+      setTimeout(() => {
+        setiscardloading(false);
+        setisloading(false);
+      }, 2000);
+    }, 2000);
   };
   return (
     <div className="col subscreens">
@@ -138,7 +167,7 @@ export const Instagramcomponent = () => {
           />
         </div>
         <div className="col-xl-2" style={{ marginTop: 35 }}>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={handleok}>
             Search
           </Button>
         </div>
@@ -173,6 +202,8 @@ export const Instagramcomponent = () => {
         list={list}
         data={chartdata}
         closecomponent={closecomponent}
+        cardloading={iscardloading}
+        isloading={isloading}
       />
       {!loadingcomponent ? (
         <div style={{ padding: 0 }}>
@@ -228,9 +259,17 @@ const LoadComponent = (props) => {
               Close
             </Button>
           </div>
-          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-            Open form dialog
-          </Button>
+          {!props.cardloading ? (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleClickOpen}
+            >
+              Show Data
+            </Button>
+          ) : (
+            <div></div>
+          )}
           <Dialog
             open={open}
             onClose={handleClose}
@@ -311,12 +350,16 @@ const LoadComponent = (props) => {
             </DialogActions>
           </Dialog>
         </div>
-        <Maincard
-          info={props.info}
-          countervalues={props.list}
-          data={props.data}
-          y_title={"comments"}
-        />
+        {!props.cardloading ? (
+          <Maincard
+            info={props.info}
+            countervalues={props.list}
+            data={props.data}
+            y_title={"comments"}
+          />
+        ) : (
+          <InstagramLoader loading={props.isloading} />
+        )}
         <div className={"below-border"}></div>
       </div>
     );

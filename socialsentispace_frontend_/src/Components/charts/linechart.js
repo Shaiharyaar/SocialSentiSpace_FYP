@@ -8,7 +8,15 @@ class LineChart extends React.Component {
       series: [
         {
           name: "2020",
-          data: this.props.data.data,
+          data: [
+            Math.floor(Math.random() * (300 - 40)) + 40,
+            Math.floor(Math.random() * (500 - 10)) + 40,
+            Math.floor(Math.random() * (500 - 100)) + 40,
+            Math.floor(Math.random() * (200 - 10)) + 40,
+            Math.floor(Math.random() * (400 - 40)) + 40,
+            Math.floor(Math.random() * (500 - 140)) + 40,
+            Math.floor(Math.random() * (500 - 310)) + 40,
+          ],
         },
       ],
       options: {

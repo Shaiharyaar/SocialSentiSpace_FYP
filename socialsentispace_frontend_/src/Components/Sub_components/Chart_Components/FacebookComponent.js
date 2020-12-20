@@ -8,7 +8,10 @@ import {
   DialogContent,
   DialogTitle,
 } from "@material-ui/core";
-import { SubCardloader } from "../../loading_animations/cardloading";
+import {
+  FacebookLoader,
+  SubCardloader,
+} from "../../loading_animations/cardloading";
 import TextField from "@material-ui/core/TextField";
 
 import { Autocomplete } from "@material-ui/lab";
@@ -107,6 +110,9 @@ export const Facebookcomponent = () => {
       setloadingcomponent(true);
     }, 2000);
   };
+  const [isloading, setisloading] = useState(false);
+  const [iscardloading, setiscardloading] = useState(false);
+
   const handleok = (url) => {
     console.log("hello");
     if (url.includes("https://www.youtube.com/watch?v=")) {
@@ -115,7 +121,16 @@ export const Facebookcomponent = () => {
       document.getElementById("free-solo").style.border = "1px solid limegreen";
 
       document.getElementById("free-solo").style.borderRadius = "10px";
+      setiscardloading(true);
+      setOpen(false);
       setStatenewdata(true);
+      setTimeout(() => {
+        setisloading(true);
+        setTimeout(() => {
+          setiscardloading(false);
+          setisloading(false);
+        }, 2000);
+      }, 2000);
       fetch(url).then(function (res) {
         console.log(res);
       });
@@ -212,6 +227,8 @@ export const Facebookcomponent = () => {
         list={list}
         data={chartdata}
         closecomponent={closecomponent}
+        cardloading={iscardloading}
+        isloading={isloading}
       />
       {!loadingcomponent ? (
         <div>
@@ -264,9 +281,17 @@ const LoadComponent = (props) => {
               Close
             </Button>
           </div>
-          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-            Open form dialog
-          </Button>
+          {!props.cardloading ? (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleClickOpen}
+            >
+              Show Data
+            </Button>
+          ) : (
+            <div></div>
+          )}
           <Dialog
             open={open}
             onClose={handleClose}
@@ -347,12 +372,17 @@ const LoadComponent = (props) => {
             </DialogActions>
           </Dialog>
         </div>
-        <Maincard
-          info={props.info}
-          countervalues={props.list}
-          data={props.data}
-          y_title={"comments"}
-        />
+        {!props.cardloading ? (
+          <Maincard
+            info={props.info}
+            countervalues={props.list}
+            data={props.data}
+            y_title={"comments"}
+          />
+        ) : (
+          <FacebookLoader loading={props.isloading} />
+        )}
+
         <div className={"below-border"}></div>
       </div>
     );
