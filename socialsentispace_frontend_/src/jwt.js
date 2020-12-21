@@ -212,14 +212,16 @@ class axiosInstance {
     });
 
     //get new data (HARIS)
-
-    var data = "newTwitter";
+    var newdata = [];
+    await this.loadtwitterinfo(label).then((res) => {
+      newdata = res.data.Tweets;
+    });
 
     var details = {
       id: detail_id,
-      username: data,
-      tweet: data,
-      DateTime: data,
+      username: "GarryBurrito",
+      tweet: newdata[0].text,
+      DateTime: newdata[0].date,
     };
     var result = { id: result_id, positive: 10, neutral: 50, negative: 40 };
 
@@ -234,8 +236,7 @@ class axiosInstance {
 
   //Updating instagram
 
-  async updateInstagram(id, label) {
-    console.log(label);
+  async updateInstagram(id, Url) {
     var detail_id = "",
       result_id = "";
 
@@ -246,14 +247,26 @@ class axiosInstance {
 
     //get new data (HARIS)
 
-    var _label = "newInstagram";
+    var newdata = [];
+    await this.loadinstagraminfo(Url).then((res) => {
+      newdata = res.data;
+    });
+    var comm = [];
 
-    var details = {
+    newdata.Comments.forEach((comments) => {
+      comm.push(comments);
+    });
+
+    const details = {
       id: detail_id,
-      username: _label,
-      postDetails: _label,
-      DateTime: _label,
+      username: newdata.Usernames[0],
+      postDetails:
+        newdata.Comments[0] == "verfied"
+          ? newdata.Comments[1]
+          : newdata.Comments[0],
+      DateTime: newdata.time[0],
     };
+
     var result = { id: result_id, positive: 10, neutral: 50, negative: 40 };
 
     await this.updateinstagramdetails(details).then((res) => {
@@ -311,17 +324,20 @@ class axiosInstance {
     });
 
     //get new data (HARIS)
+    var newdata = [];
+    await this.loadyoutubeinfo(url).then((res) => {
+      newdata = res.data;
+    });
 
-    var label = "newYoutube";
-
-    var details = {
+    const details = {
       id: detail_id,
-      youtuber: label,
+      youtuber: newdata.youtuber,
       videoURL: url,
-      videoName: label,
-      VideoDescription: label,
-      DateTime: label,
+      videoName: newdata.title,
+      VideoDescription: newdata.description,
+      DateTime: newdata.date,
     };
+
     var result = { id: result_id, positive: 10, neutral: 50, negative: 40 };
 
     await this.updateyoutubedetails(details).then((res) => {
@@ -425,10 +441,19 @@ class axiosInstance {
 
   async addtwitterinfo(label) {
     //get data on label
+    var newdata = [];
+    const index = Math.floor(Math.random() * 12);
+    console.log("hello: ", usernames[index]);
+    await this.loadtwitterinfo(label).then((res) => {
+      newdata = res.data.Tweets;
+    });
+    const detail = {
+      username: usernames[index],
+      tweet: newdata[0].text,
+      DateTime: newdata[0].date,
+    };
 
     const result = { positive: 50, negative: 20, neutral: 30 };
-
-    const detail = { username: label, tweet: label, DateTime: label };
 
     var resultid = "",
       detailid = "",
@@ -458,17 +483,21 @@ class axiosInstance {
 
   //adding youtube Information
 
-  async addYoutubeinfo(label) {
-    //get data on label
+  async addYoutubeinfo(url) {
+    //get data on url
+
+    var newdata = [];
+    await this.loadyoutubeinfo(url).then((res) => {
+      newdata = res.data;
+    });
 
     const result = { positive: 10, negative: 50, neutral: 40 };
-    const url = "https://www.youtube.com/watch?v=9TfbfS7dbKc";
     const detail = {
-      youtuber: label,
+      youtuber: newdata.youtuber,
       videoURL: url,
-      videoName: label,
-      VideoDescription: label,
-      DateTime: label,
+      videoName: newdata.title,
+      VideoDescription: newdata.description,
+      DateTime: newdata.date,
     };
 
     var resultid = "",
@@ -487,7 +516,8 @@ class axiosInstance {
       }
     });
 
-    const data = { topic: label, Result: resultid, VideoDetail: detailid };
+    const data = { topic: url, Result: resultid, VideoDetail: detailid };
+    console.log("DATA: ", data);
     await this.addyoutube(data).then((res) => {
       if (res.status == 200) {
         id = res.data.result._id;
@@ -538,15 +568,27 @@ class axiosInstance {
 
   //Adding Instagram information
 
-  async addInstagraminfo(label) {
+  async addInstagraminfo(Url) {
     //get data on label
+    var newdata = [];
+    await this.loadinstagraminfo(Url).then((res) => {
+      newdata = res.data;
+    });
+    var comm = [];
+
+    newdata.Comments.forEach((comments) => {
+      comm.push(comments);
+    });
 
     const result = { positive: 10, negative: 50, neutral: 40 };
 
     const detail = {
-      username: label,
-      postDetails: label,
-      DateTime: label,
+      username: newdata.Usernames[0],
+      postDetails:
+        newdata.Comments[0] == "verfied"
+          ? newdata.Comments[1]
+          : newdata.Comments[0],
+      DateTime: newdata.time[0],
     };
 
     var resultid = "",
@@ -565,7 +607,7 @@ class axiosInstance {
       }
     });
 
-    const data = { hashtag: label, Result: resultid, latestPost: detailid };
+    const data = { hashtag: Url, Result: resultid, latestPost: detailid };
     await this.addinstagram(data).then((res) => {
       if (res.status == 200) {
         id = res.data.result._id;
@@ -620,4 +662,18 @@ class axiosInstance {
   }
 }
 
+const usernames = [
+  "GarryBurrito",
+  "random Dude007",
+  "Tom Scherbatsky",
+  "David hellum",
+  "Froyoyo",
+  "Who Is it?",
+  "heyitssquawk",
+  "RobertlikestoSleep",
+  "Can of Trash",
+  "Lena Herrera",
+  "Bo Met",
+  "Markusmaybe? idfk",
+];
 export default new axiosInstance();

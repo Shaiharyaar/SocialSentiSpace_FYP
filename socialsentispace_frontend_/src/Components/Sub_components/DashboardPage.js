@@ -183,18 +183,19 @@ export const Dashboard = () => {
   const [isRefreshing, setisRefreshing] = useState(false);
   const handleRefresh = async () => {
     setisRefreshing(true);
-    console.log("updating twiiter");
+    setloadingcomponent(false);
+
     if (comp == "Twitter") {
-      await axiosInstance.updateTwitter(chip.social_id, chip.label);
+      await axiosInstance.updateTwitter(chip.social_id, chip.data);
       await loadcomponentinfo(comp, id, "ref");
     } else if (comp == "Youtube") {
-      await axiosInstance.updateYoutube(chip.social_id, chip.label);
+      await axiosInstance.updateYoutube(chip.social_id, chip.data);
       await loadcomponentinfo(comp, id, "ref");
     } else if (comp == "Instagram") {
-      await axiosInstance.updateInstagram(chip.social_id, chip.label);
+      await axiosInstance.updateInstagram(chip.social_id, chip.data);
       await loadcomponentinfo(comp, id, "ref");
     } else if (comp == "Facebook") {
-      await axiosInstance.updateFacebook(chip.social_id, chip.label);
+      await axiosInstance.updateFacebook(chip.social_id, chip.data);
       await loadcomponentinfo(comp, id, "ref");
     }
   };

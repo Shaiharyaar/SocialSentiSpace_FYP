@@ -246,6 +246,8 @@ export default function ChipsArray(props) {
   };
   const handleOk = async () => {
     setuserloadChips(false);
+
+    setOpen(false);
     console.log("HANDLE OK: ", userloadChips);
     var id = "";
     if (socialMedia == "Twitter") {
@@ -264,7 +266,6 @@ export default function ChipsArray(props) {
       Label: name,
       Data: data,
     };
-    setOpen(false);
     await addchip(list);
     updatechips();
     setsocialMedia("");
