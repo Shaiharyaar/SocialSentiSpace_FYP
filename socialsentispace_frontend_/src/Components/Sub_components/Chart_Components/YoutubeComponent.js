@@ -144,9 +144,19 @@ export const Youtubecomponent = () => {
     newinfo.title1 = "Video Information";
     newinfo.title2 = "Video Title";
     newinfo.title3 = "Video Description";
-
+    var youtubeid = "";
+    await axiosInstance.getchips({ id: "1234" }).then((res) => {
+      if (res.status === 200) {
+        res.data.result.forEach((chip, index) => {
+          console.log(chip);
+          if (chip.MediaType == "Youtube") {
+            youtubeid = chip.social_id;
+          }
+        });
+      }
+    });
     await axiosInstance
-      .getYoutubeInfo("5f9af9d25a99bd1940dfbbd4")
+      .getYoutubeInfo(youtubeid)
       .then((res) => {
         newdata = res.data.result;
         console.log("INFO: " + newdata.trend);

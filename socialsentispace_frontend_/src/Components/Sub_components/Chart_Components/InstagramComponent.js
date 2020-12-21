@@ -66,9 +66,19 @@ export const Instagramcomponent = () => {
       line1: "This was posted at",
       dt: "",
     };
-
+    var instagramid = "";
+    await axiosInstance.getchips({ id: "1234" }).then((res) => {
+      if (res.status === 200) {
+        res.data.result.forEach((chip, index) => {
+          console.log(chip);
+          if (chip.MediaType == "Instagram") {
+            instagramid = chip.social_id;
+          }
+        });
+      }
+    });
     await axiosInstance
-      .getInstagramInfo("5f9b07177ac7c71c74eba498")
+      .getInstagramInfo(instagramid)
       .then((res) => {
         newdata = res.data.result;
         console.log("INFO: " + newdata.trend);
@@ -135,6 +145,7 @@ export const Instagramcomponent = () => {
       line1: "This was posted at",
       dt: newdata.time[0],
     });
+
     setComments(comm);
 
     setTimeout(() => {

@@ -82,8 +82,19 @@ export const Facebookcomponent = () => {
       dt: "",
     };
 
+    var youtubeid = "";
+    await axiosInstance.getchips({ id: "1234" }).then((res) => {
+      if (res.status === 200) {
+        res.data.result.forEach((chip, index) => {
+          console.log(chip);
+          if (chip.MediaType == "Facebook") {
+            youtubeid = chip.social_id;
+          }
+        });
+      }
+    });
     await axiosInstance
-      .getFacebookInfo("5f9be68a3b6571272491517d")
+      .getFacebookInfo(youtubeid)
       .then((res) => {
         console.log(res);
         newdata = res.data.result;

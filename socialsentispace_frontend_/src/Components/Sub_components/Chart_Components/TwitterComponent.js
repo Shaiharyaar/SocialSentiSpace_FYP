@@ -54,9 +54,20 @@ export const Twittercomponent = (props) => {
       line1: "This was tweeted at",
       dt: "",
     };
-
+    var twitterid = "";
+    await axiosInstance.getchips({ id: "1234" }).then((res) => {
+      if (res.status === 200) {
+        res.data.result.forEach((chip, index) => {
+          console.log(chip);
+          if (chip.MediaType == "Twitter") {
+            twitterid = chip.social_id;
+            console.log(twitterid);
+          }
+        });
+      }
+    });
     await axiosInstance
-      .getTwitterInfo("5f9aa366a88a56128c3b17e9")
+      .getTwitterInfo(twitterid)
       .then((res) => {
         newdata = res.data.result;
         console.log("INFO: " + newdata.trend);
