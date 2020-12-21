@@ -105,12 +105,38 @@ export const Instagramcomponent = () => {
   const [isloading, setisloading] = useState(false);
 
   const [iscardloading, setiscardloading] = useState(false);
-  const handleok = () => {
-    setStatenewdata(true);
 
+  const [comments, setComments] = useState([]);
+
+  const handleok = async () => {
     setiscardloading(true);
     setOpen(false);
     setStatenewdata(true);
+
+    var newdata = [];
+    await axiosInstance.loadinstagraminfo(Url).then((res) => {
+      newdata = res.data;
+    });
+    var comm = [];
+
+    newdata.Comments.forEach((comments) => {
+      comm.push(comments);
+    });
+
+    setnewinfo({
+      title1: "Insta Information",
+      title2: "Instagram Details",
+      title3: "posted",
+      post:
+        newdata.Comments[0] == "verfied"
+          ? newdata.Comments[1]
+          : newdata.Comments[0],
+      name: newdata.Usernames[0],
+      line1: "This was posted at",
+      dt: newdata.time[0],
+    });
+    setComments(comm);
+
     setTimeout(() => {
       setisloading(true);
       setTimeout(() => {
@@ -122,11 +148,22 @@ export const Instagramcomponent = () => {
   const [newdata, setStatenewdata] = useState(false);
 
   const [Check, setCheck] = useState(false);
-  const [Url, setUrl] = useState("");
 
   const closecomponent = () => {
     setStatenewdata(false);
   };
+
+  const [newinfo, setnewinfo] = useState({
+    title1: "Insta Information",
+    title2: "Instagram Details",
+    title3: "posted",
+    post: "",
+    name: "",
+    line1: "This was posted at",
+    dt: "",
+  });
+  const [newRes, setNewRes] = useState([19, 71, 12]);
+
   const handleselect = (e) => {
     setTrend(e.target.value);
     setStatenewdata(true);
@@ -141,6 +178,24 @@ export const Instagramcomponent = () => {
       }, 2000);
     }, 2000);
   };
+  const [Url, setUrl] = useState("");
+  const updateUrl = (u) => {
+    setUrl(u);
+    if (u.includes("https://www.instagram.com/p/")) {
+      setCheck(true);
+      document.getElementById("free-solo").style.border = "1px solid limegreen";
+
+      document.getElementById("free-solo").style.borderRadius = "10px";
+    } else if (u == "") {
+      document.getElementById("free-solo").style.border = "0px solid limegreen";
+    } else {
+      document.getElementById("free-solo").style.border =
+        "1px solid rgba(255,100,150,0.5)";
+
+      document.getElementById("free-solo").style.borderRadius = "10px";
+    }
+  };
+
   return (
     <div className="col subscreens">
       <div className="row screens">
@@ -148,7 +203,11 @@ export const Instagramcomponent = () => {
         <FaInstagram color="#e1306c" size="2.2em" style={{ marginLeft: 10 }} />
       </div>
       <div className="row">
-        <div className="col-xl-7 boxes" style={{ marginTop: 10 }}>
+        <div
+          className="col-xl-10 boxes"
+          style={{ marginTop: 10 }}
+          id={"free-solo"}
+        >
           <Autocomplete
             id="free-solo-demo"
             freeSolo
@@ -156,22 +215,23 @@ export const Instagramcomponent = () => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Enter an Instagram #hashtag of your choosing"
+                label="Enter a Youtube video link"
                 margin="normal"
                 variant="outlined"
                 onChange={(e) => {
-                  setHashtag(e.target.value);
+                  updateUrl(e.target.value);
                 }}
               />
             )}
           />
         </div>
+
         <div className="col-xl-2" style={{ marginTop: 35 }}>
           <Button variant="contained" color="primary" onClick={handleok}>
             Search
           </Button>
         </div>
-        <div
+        {/* <div
           className="col-xl-3 boxes"
           style={{ paddingTop: 10, borderRadius: 50 }}
         >
@@ -194,16 +254,17 @@ export const Instagramcomponent = () => {
               <MenuItem value={"#fashion"}>#fashion</MenuItem>
             </Select>
           </FormControl>
-        </div>
+        </div>*/}
       </div>
       <LoadComponent
         check={newdata}
-        info={info}
-        list={list}
+        info={newinfo}
+        list={newRes}
         data={chartdata}
         closecomponent={closecomponent}
         cardloading={iscardloading}
         isloading={isloading}
+        comments={comments}
       />
       {!loadingcomponent ? (
         <div style={{ padding: 0 }}>
@@ -284,62 +345,14 @@ const LoadComponent = (props) => {
                     <th>id</th>
                     <th>comment</th>
                   </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
+                  {props.comments.map((element, index) => {
+                    return (
+                      <tr>
+                        <td>{index + 1}</td>
+                        <td>{element}</td>
+                      </tr>
+                    );
+                  })}
                 </table>
               </div>
             </DialogContent>

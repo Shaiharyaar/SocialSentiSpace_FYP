@@ -47,20 +47,43 @@ export const Youtubecomponent = () => {
   const classes = useStyles();
   const videos = [];
   const [Check, setCheck] = useState(false);
-  const [Url, setUrl] = useState("");
+  const [url, setUrl] = useState("");
   const [open, setOpen] = useState(false);
-  const checkhash = (url) => {
-    console.log("hello");
-
+  const [comments, setComments] = useState([]);
+  const [newinfo, setnewinfo] = useState([]);
+  const checkhash = async () => {
     if (url.includes("https://www.youtube.com/watch?v=")) {
       setCheck(true);
-      setUrl(url);
       document.getElementById("free-solo").style.border = "1px solid limegreen";
 
       document.getElementById("free-solo").style.borderRadius = "10px";
       setiscardloading(true);
       setOpen(false);
       setStatenewdata(true);
+
+      var newdata = [];
+      await axiosInstance.loadyoutubeinfo(url).then((res) => {
+        newdata = res.data;
+      });
+      var comm = [];
+
+      newdata.Comments.forEach((comments) => {
+        comm.push(comments);
+      });
+
+      setnewinfo({
+        title1: "Youtube Information",
+        title2: "Youtube Details",
+        title3: "posted",
+        post: newdata.description,
+        name: newdata.youtuber,
+        line1: newdata.title,
+        dt: newdata.date,
+
+        url: url,
+      });
+      setComments(comm);
+
       setTimeout(() => {
         setisloading(true);
         setTimeout(() => {
@@ -152,7 +175,23 @@ export const Youtubecomponent = () => {
       setloadingcomponent(true);
     }, 2000);
   };
+  const updateUrl = (u) => {
+    setUrl(u);
+    if (u.includes("https://www.youtube.com/watch?v=")) {
+      setCheck(true);
+      document.getElementById("free-solo").style.border = "1px solid limegreen";
 
+      document.getElementById("free-solo").style.borderRadius = "10px";
+    } else if (u == "") {
+      document.getElementById("free-solo").style.border = "0px solid limegreen";
+    } else {
+      document.getElementById("free-solo").style.border =
+        "1px solid rgba(255,100,150,0.5)";
+
+      document.getElementById("free-solo").style.borderRadius = "10px";
+    }
+  };
+  const [newRes, setnewRes] = useState([20, 50, 30]);
   return (
     <div className="col subscreens">
       <div className="row screens">
@@ -160,7 +199,11 @@ export const Youtubecomponent = () => {
         <FaYoutube color="red" size="2.2em" style={{ marginLeft: 10 }} />
       </div>
       <div className="row">
-        <div className="col boxes" id={"free-solo"} style={{ marginTop: 10 }}>
+        <div
+          className="col-xl-10 boxes"
+          style={{ marginTop: 10 }}
+          id={"free-solo"}
+        >
           <Autocomplete
             id="free-solo-demo"
             freeSolo
@@ -172,20 +215,27 @@ export const Youtubecomponent = () => {
                 margin="normal"
                 variant="outlined"
                 onChange={(e) => {
-                  checkhash(e.target.value);
+                  updateUrl(e.target.value);
                 }}
               />
             )}
           />
         </div>
+
+        <div className="col-xl-2" style={{ marginTop: 35 }}>
+          <Button variant="contained" color="primary" onClick={checkhash}>
+            Search
+          </Button>
+        </div>
       </div>
       <LoadComponent
         check={newdata}
-        info={info}
-        list={list}
+        info={newinfo}
+        list={newRes}
         closecomponent={closecomponent}
         cardloading={iscardloading}
         isloading={isloading}
+        comments={comments}
       />
       {!loadingcomponent ? (
         <div>
@@ -257,62 +307,14 @@ const LoadComponent = (props) => {
                     <th>id</th>
                     <th>comment</th>
                   </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
+                  {props.comments.map((element, index) => {
+                    return (
+                      <tr>
+                        <td>{index + 1}</td>
+                        <td>{element}</td>
+                      </tr>
+                    );
+                  })}
                 </table>
               </div>
             </DialogContent>
