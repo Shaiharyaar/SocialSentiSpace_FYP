@@ -14,6 +14,7 @@ import {
 } from "../../loading_animations/cardloading";
 import TextField from "@material-ui/core/TextField";
 
+import { ImNeutral2, ImSad2, ImHappy2 } from "react-icons/im";
 import { FaYoutube } from "react-icons/fa";
 
 import { Youtubecard } from "../../Cards/youtubeCard";
@@ -62,13 +63,15 @@ export const Youtubecomponent = () => {
       setStatenewdata(true);
 
       var newdata = [];
+      var Res = [];
       await axiosInstance.loadyoutubeinfo(url).then((res) => {
         newdata = res.data;
+        Res = res.data.Results;
       });
       var comm = [];
 
-      newdata.Comments.forEach((comments) => {
-        comm.push(comments);
+      newdata.Comments.forEach((comment, index) => {
+        comm.push({ comment: comment, polarity: newdata.Polarity[index] });
       });
 
       setnewinfo({
@@ -83,6 +86,8 @@ export const Youtubecomponent = () => {
         url: url,
       });
       setComments(comm);
+
+      setNewRes([Res["Neutral"], Res["Positive"], Res["Negative"]]);
 
       setTimeout(() => {
         setisloading(true);
@@ -201,7 +206,7 @@ export const Youtubecomponent = () => {
       document.getElementById("free-solo").style.borderRadius = "10px";
     }
   };
-  const [newRes, setnewRes] = useState([20, 50, 30]);
+  const [NewRes, setNewRes] = useState([20, 50, 30]);
   return (
     <div className="col subscreens">
       <div className="row screens">
@@ -241,7 +246,7 @@ export const Youtubecomponent = () => {
       <LoadComponent
         check={newdata}
         info={newinfo}
-        list={newRes}
+        list={NewRes}
         closecomponent={closecomponent}
         cardloading={iscardloading}
         isloading={isloading}
@@ -314,14 +319,38 @@ const LoadComponent = (props) => {
               <div className="showData-tablediv">
                 <table className="showData-table">
                   <tr>
-                    <th>id</th>
-                    <th>comment</th>
+                    <th>Id</th>
+                    <th>Comment</th>
+                    <th>Result</th>
                   </tr>
                   {props.comments.map((element, index) => {
                     return (
                       <tr>
                         <td>{index + 1}</td>
-                        <td>{element}</td>
+                        <td>{element.comment}</td>
+                        <td>
+                          <div>
+                            {element.polarity == "Negative" ? (
+                              <ImSad2
+                                color="RGBA(211,0,0,0.8)"
+                                size="2.2em"
+                                className="redicon"
+                              />
+                            ) : element.polarity == "Neutral" ? (
+                              <ImNeutral2
+                                color="RGBA(0,146,255,0.8)"
+                                size="2.2em"
+                                className="blueicon"
+                              />
+                            ) : (
+                              <ImHappy2
+                                color="RGBA(0,194,52,0.8)"
+                                size="2.2em"
+                                className="greenicon"
+                              />
+                            )}
+                          </div>
+                        </td>
                       </tr>
                     );
                   })}

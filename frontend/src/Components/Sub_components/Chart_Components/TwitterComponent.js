@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-
+import { ImNeutral2, ImSad2, ImHappy2 } from "react-icons/im";
 import { Maincard } from "../ParentCard";
 import { FaTwitter } from "react-icons/fa";
 import axiosInstance from "../../../jwt";
@@ -153,24 +153,28 @@ export const Twittercomponent = (props) => {
     setOpen(false);
     setStatenewdata(true);
     var newdata = [];
+    var Result = [];
     await axiosInstance.loadtwitterinfo(trend).then((res) => {
       newdata = res.data.Tweets;
+      Result = res.data.Results;
     });
     var comm = [];
 
     newdata.forEach((tweet) => {
-      comm.push(tweet.text);
+      comm.push({ tweet: tweet.text, polarity: tweet.polarity });
     });
 
     setnewinfo({
       title1: "Information",
       title2: "Latest Tweet",
       title3: "tweeted",
-      post: comm[comm.length - 1],
+      post: comm[comm.length - 1].tweet,
       name: "Matthew Mercer",
       line1: "This was tweeted at",
       dt: newdata[comm.length - 1].date,
     });
+    setNewRes([Result["Neutral"], Result["Positive"], Result["Negative"]]);
+
     setComments(comm);
     setTimeout(() => {
       setisloading(true);
@@ -376,12 +380,36 @@ const LoadComponent = (props) => {
                   <tr>
                     <th>id</th>
                     <th>comment</th>
+                    <th>Result</th>
                   </tr>
                   {props.comments.map((element, index) => {
                     return (
                       <tr>
                         <td>{index + 1}</td>
-                        <td>{element}</td>
+                        <td>{element.tweet}</td>
+                        <td>
+                          <div>
+                            {element.polarity == "Negative" ? (
+                              <ImSad2
+                                color="RGBA(211,0,0,0.8)"
+                                size="2.2em"
+                                className="redicon"
+                              />
+                            ) : element.polarity == "Neutral" ? (
+                              <ImNeutral2
+                                color="RGBA(0,146,255,0.8)"
+                                size="2.2em"
+                                className="blueicon"
+                              />
+                            ) : (
+                              <ImHappy2
+                                color="RGBA(0,194,52,0.8)"
+                                size="2.2em"
+                                className="greenicon"
+                              />
+                            )}
+                          </div>
+                        </td>
                       </tr>
                     );
                   })}

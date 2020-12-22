@@ -213,18 +213,27 @@ class axiosInstance {
 
     //get new data (HARIS)
     var newdata = [];
+    var Res = [];
     await this.loadtwitterinfo(label).then((res) => {
       newdata = res.data.Tweets;
+      Res = res.data.Results;
     });
+
+    const index = Math.floor(Math.random() * 12);
 
     var details = {
       id: detail_id,
-      username: "GarryBurrito",
+      username: "@" + usernames[index],
       tweet: newdata[0].text,
       DateTime: newdata[0].date,
     };
-    var result = { id: result_id, positive: 10, neutral: 50, negative: 40 };
-
+    var result = {
+      id: result_id,
+      positive: Res["Positive"],
+      neutral: Res["Neutral"],
+      negative: Res["Negative"],
+    };
+    console.log(result);
     await this.updatetwitterdetails(details).then((res) => {
       console.log(res);
     });
@@ -246,10 +255,11 @@ class axiosInstance {
     });
 
     //get new data (HARIS)
-
+    var Res = [];
     var newdata = [];
     await this.loadinstagraminfo(Url).then((res) => {
       newdata = res.data;
+      Res = res.data.Results;
     });
     var comm = [];
 
@@ -260,14 +270,16 @@ class axiosInstance {
     const details = {
       id: detail_id,
       username: newdata.Usernames[0],
-      postDetails:
-        newdata.Comments[0] == "verfied"
-          ? newdata.Comments[1]
-          : newdata.Comments[0],
+      postDetails: newdata.Post,
       DateTime: newdata.time[0],
     };
-
-    var result = { id: result_id, positive: 10, neutral: 50, negative: 40 };
+    var result = {
+      id: result_id,
+      positive: Res["Positive"],
+      neutral: Res["Neutral"],
+      negative: Res["Negative"],
+    };
+    console.log(result);
 
     await this.updateinstagramdetails(details).then((res) => {
       console.log(res);
@@ -280,8 +292,7 @@ class axiosInstance {
 
   //Updating facebook
 
-  async updateFacebook(id, label) {
-    console.log(label);
+  async updateFacebook(id, Url) {
     var detail_id = "",
       result_id = "";
 
@@ -290,18 +301,28 @@ class axiosInstance {
       result_id = res.data.result.Result._id;
     });
 
-    //get new data (HARIS)
-
-    var _label = "newFacebook";
+    console.log(Url);
+    //get new data
+    var Res = [];
+    var newdata = [];
+    await this.loadfacebookinfo(Url).then((res) => {
+      newdata = res.data;
+      Res = res.data.Results;
+    });
 
     var details = {
       id: detail_id,
-      username: _label,
-      post: _label,
-      DateTime: _label,
+      username: newdata.PageName,
+      post: newdata.Posts[0],
+      DateTime: newdata.Times[0],
     };
-    var result = { id: result_id, positive: 10, neutral: 50, negative: 40 };
 
+    var result = {
+      id: result_id,
+      positive: Res["Positive"],
+      neutral: Res["Neutral"],
+      negative: Res["Negative"],
+    };
     await this.updatefacebookdetails(details).then((res) => {
       console.log(res);
     });
@@ -325,8 +346,10 @@ class axiosInstance {
 
     //get new data (HARIS)
     var newdata = [];
+    var Res = [];
     await this.loadyoutubeinfo(url).then((res) => {
       newdata = res.data;
+      Res = res.data.Results;
     });
 
     const details = {
@@ -337,9 +360,13 @@ class axiosInstance {
       VideoDescription: newdata.description,
       DateTime: newdata.date,
     };
-
-    var result = { id: result_id, positive: 10, neutral: 50, negative: 40 };
-
+    console.log(details);
+    var result = {
+      id: result_id,
+      positive: Res["Positive"],
+      neutral: Res["Neutral"],
+      negative: Res["Negative"],
+    };
     await this.updateyoutubedetails(details).then((res) => {
       console.log(res);
     });
@@ -442,18 +469,24 @@ class axiosInstance {
   async addtwitterinfo(label) {
     //get data on label
     var newdata = [];
-    const index = Math.floor(Math.random() * 12);
-    console.log("hello: ", usernames[index]);
+    var Res = [];
     await this.loadtwitterinfo(label).then((res) => {
       newdata = res.data.Tweets;
+      Res = res.data.Results;
     });
-    const detail = {
-      username: usernames[index],
+
+    const index = Math.floor(Math.random() * 12);
+
+    var detail = {
+      username: "@" + usernames[index],
       tweet: newdata[0].text,
       DateTime: newdata[0].date,
     };
-
-    const result = { positive: 50, negative: 20, neutral: 30 };
+    var result = {
+      positive: Res["Positive"],
+      neutral: Res["Neutral"],
+      negative: Res["Negative"],
+    };
 
     var resultid = "",
       detailid = "",
@@ -570,25 +603,22 @@ class axiosInstance {
 
   async addInstagraminfo(Url) {
     //get data on label
+    var Res = [];
     var newdata = [];
     await this.loadinstagraminfo(Url).then((res) => {
       newdata = res.data;
+      Res = res.data.Results;
     });
-    var comm = [];
-
-    newdata.Comments.forEach((comments) => {
-      comm.push(comments);
-    });
-
-    const result = { positive: 10, negative: 50, neutral: 40 };
 
     const detail = {
       username: newdata.Usernames[0],
-      postDetails:
-        newdata.Comments[0] == "verfied"
-          ? newdata.Comments[1]
-          : newdata.Comments[0],
+      postDetails: newdata.Post,
       DateTime: newdata.time[0],
+    };
+    var result = {
+      positive: Res["Positive"],
+      neutral: Res["Neutral"],
+      negative: Res["Negative"],
     };
 
     var resultid = "",
@@ -656,6 +686,9 @@ class axiosInstance {
   loadinstagraminfo(url) {
     return Axios.post(MEDIA_API_BASE_URL + "api/instagram/", { url: url });
   }
+  loadfacebookinfo(url) {
+    return Axios.post(MEDIA_API_BASE_URL + "api/facebook/", { url: url });
+  }
   authenticate() {
     const data = JSON.parse(localStorage.getItem("UserInfo"));
     return Axios.get(USER_API_BASE_URL + "users/authenticate", data);
@@ -664,16 +697,16 @@ class axiosInstance {
 
 const usernames = [
   "GarryBurrito",
-  "random Dude007",
-  "Tom Scherbatsky",
-  "David hellum",
+  "randomDude007",
+  "TomScherbatsky",
+  "Davidhellum",
   "Froyoyo",
-  "Who Is it?",
+  "WhoIsit?",
   "heyitssquawk",
   "RobertlikestoSleep",
-  "Can of Trash",
-  "Lena Herrera",
-  "Bo Met",
-  "Markusmaybe? idfk",
+  "CanofTrash",
+  "LenaHerrera",
+  "BoMet",
+  "Markusmaybe?idfk",
 ];
 export default new axiosInstance();

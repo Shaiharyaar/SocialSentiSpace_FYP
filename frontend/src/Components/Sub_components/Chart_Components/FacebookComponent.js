@@ -14,6 +14,8 @@ import {
 } from "../../loading_animations/cardloading";
 import TextField from "@material-ui/core/TextField";
 
+import { ImNeutral2, ImSad2, ImHappy2 } from "react-icons/im";
+
 import { Autocomplete } from "@material-ui/lab";
 
 import { FaFacebook, FaHashtag } from "react-icons/fa";
@@ -60,8 +62,8 @@ export const Facebookcomponent = () => {
     data: [128, 229, 33, 436, 99, 132, 233],
   });
   const [newdata, setStatenewdata] = useState(false);
-
-  const [Check, setCheck] = useState(false);
+  const [newinfo, setNewinfo] = useState([]);
+  const [newRes, setNewRes] = useState([]);
   const [Url, setUrl] = useState("");
 
   const closecomponent = () => {
@@ -123,47 +125,59 @@ export const Facebookcomponent = () => {
   };
   const [isloading, setisloading] = useState(false);
   const [iscardloading, setiscardloading] = useState(false);
+  const [PostList, setPostList] = useState([]);
+  const handleok = async () => {
+    setiscardloading(true);
+    setOpen(false);
+    setStatenewdata(true);
 
-  const handleok = (url) => {
-    console.log("hello");
-    if (url.includes("https://www.youtube.com/watch?v=")) {
-      setCheck(true);
-      setUrl(url);
+    var Res = [];
+    var newdata = [];
+    await axiosInstance.loadfacebookinfo(Url).then((res) => {
+      newdata = res.data;
+      Res = res.data.Results;
+    });
+    var comm = [];
+    var newinfo1 = {
+      title1: "Fb Information",
+      title2: "Fb Details",
+      title3: "posted",
+      post: newdata.Posts[0],
+      name: newdata.PageName,
+      line1: "This was posted at",
+      dt: newdata.Times[0],
+    };
+
+    setNewinfo(newinfo1);
+    setNewRes([Res["Neutral"], Res["Positive"], Res["Negative"]]);
+
+    newdata.Posts.forEach((post, index) => {
+      comm.push({ post: post, polarity: newdata.Polarity[index] });
+    });
+
+    setPostList(comm);
+    setTimeout(() => {
+      setisloading(true);
+      setTimeout(() => {
+        setiscardloading(false);
+        setisloading(false);
+      }, 2000);
+    }, 2000);
+  };
+  const updateUrl = (u) => {
+    setUrl(u);
+    if (u.includes("https://www.facebook.com/")) {
       document.getElementById("free-solo").style.border = "1px solid limegreen";
 
       document.getElementById("free-solo").style.borderRadius = "10px";
-      setiscardloading(true);
-      setOpen(false);
-      setStatenewdata(true);
-      setTimeout(() => {
-        setisloading(true);
-        setTimeout(() => {
-          setiscardloading(false);
-          setisloading(false);
-        }, 2000);
-      }, 2000);
-      fetch(url).then(function (res) {
-        console.log(res);
-      });
-    } else if (url == "") {
-      setCheck(false);
-      setStatenewdata(false);
-
+    } else if (u == "") {
       document.getElementById("free-solo").style.border = "0px solid limegreen";
     } else {
-      setCheck(false);
-      setStatenewdata(false);
-
       document.getElementById("free-solo").style.border =
         "1px solid rgba(255,100,150,0.5)";
 
       document.getElementById("free-solo").style.borderRadius = "10px";
     }
-    //   }
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // });
   };
 
   return (
@@ -213,7 +227,11 @@ export const Facebookcomponent = () => {
         <h2 style={{ marginLeft: "45%" }}> OR</h2>
       </div> */}
       <div className="row">
-        <div className="col boxes " id={"free-solo"} style={{ marginTop: 10 }}>
+        <div
+          className="col-xl-10 boxes"
+          style={{ marginTop: 10 }}
+          id={"free-solo"}
+        >
           <Autocomplete
             id="free-solo-demo"
             freeSolo
@@ -221,22 +239,28 @@ export const Facebookcomponent = () => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Enter a Facebook post link"
+                label="Enter a Facebook page link"
                 margin="normal"
                 variant="outlined"
                 onChange={(e) => {
-                  handleok(e.target.value);
+                  updateUrl(e.target.value);
                 }}
               />
             )}
           />
         </div>
+        <div className="col-xl-2" style={{ marginTop: 35 }}>
+          <Button variant="contained" color="primary" onClick={handleok}>
+            Search
+          </Button>
+        </div>
       </div>
       <LoadComponent
         check={newdata}
-        info={info}
-        list={list}
+        info={newinfo}
+        list={newRes}
         data={chartdata}
+        Posts={PostList}
         closecomponent={closecomponent}
         cardloading={iscardloading}
         isloading={isloading}
@@ -314,65 +338,41 @@ const LoadComponent = (props) => {
               <div className="showData-tablediv">
                 <table className="showData-table">
                   <tr>
-                    <th>id</th>
-                    <th>comment</th>
+                    <th>Id</th>
+                    <th>Post Description</th>
+                    <th>Result</th>
                   </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>01</td>
-                    <td>
-                      ilfgbwekf bhweliur hlweiufkwefikweufgsdjhvbnmsd,ue
-                      jhfwejfg sjhfgwek jdhgw kdjhwg hf qf jhdg qjdqg
-                    </td>
-                  </tr>
+                  {props.Posts.map((element, index) => {
+                    return (
+                      <tr>
+                        <td>{index + 1}</td>
+                        <td>{element.post}</td>
+                        <td>
+                          <div>
+                            {element.polarity == "Negative" ? (
+                              <ImSad2
+                                color="RGBA(211,0,0,0.8)"
+                                size="2.2em"
+                                className="redicon"
+                              />
+                            ) : element.polarity == "Neutral" ? (
+                              <ImNeutral2
+                                color="RGBA(0,146,255,0.8)"
+                                size="2.2em"
+                                className="blueicon"
+                              />
+                            ) : (
+                              <ImHappy2
+                                color="RGBA(0,194,52,0.8)"
+                                size="2.2em"
+                                className="greenicon"
+                              />
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </table>
               </div>
             </DialogContent>

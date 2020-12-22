@@ -196,6 +196,7 @@ export const Dashboard = () => {
       await loadcomponentinfo(comp, id, "ref");
     } else if (comp == "Facebook") {
       await axiosInstance.updateFacebook(chip.social_id, chip.data);
+      console.log("hello");
       await loadcomponentinfo(comp, id, "ref");
     }
   };

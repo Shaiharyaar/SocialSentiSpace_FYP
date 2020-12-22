@@ -7,6 +7,7 @@ import * as twitter from "./json files/twittierloading.json";
 import * as youtube from "./json files/youtube.json";
 import * as facebook from "./json files/facebook.json";
 import * as instagram from "./json files/instagram.json";
+import * as dashdone from "./json files/dashdone.json";
 
 const defaultOptions = {
   loop: true,
@@ -24,6 +25,16 @@ const defaultOptions1 = {
     preserveAspectRatio: "xMidYMid slice",
   },
 };
+
+const dashboardload = {
+  loop: true,
+  autoplay: true,
+  animationData: dashdone.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
 const twitteroptions = {
   loop: true,
   autoplay: true,
@@ -91,7 +102,7 @@ export const SubCardloader = (props) => {
       style={{ paddingTop: "5vh", paddingBottom: "10vh" }}
     >
       <Lottie
-        options={props.loading ? confirmation : defaultOptions}
+        options={props.loading ? dashboardload : defaultOptions}
         height={400}
         width={400}
       />

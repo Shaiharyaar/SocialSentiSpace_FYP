@@ -11,7 +11,7 @@ export const Informationcard = (props) => {
           <h4>{props.info.title2}</h4>
           <div className="form-group">
             <label htmlFor="exampleFormControlTextarea1">
-              {props.info.line1 + " " + props.info.dt}
+              {props.info.line1 + " - " + props.info.dt}
             </label>
             <hr />
             <strong>{props.info.name + " " + props.info.title3}</strong>
