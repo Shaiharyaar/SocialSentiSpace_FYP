@@ -11,6 +11,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@material-ui/core";
+import { ImNeutral2, ImSad2, ImHappy2 } from "react-icons/im";
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -129,19 +130,16 @@ export const Instagramcomponent = () => {
     });
     var comm = [];
 
-    newdata.Comments.forEach((comments) => {
-      comm.push(comments);
+    newdata.Comments.forEach((comment, index) => {
+      comm.push({ comment: comment, polarity: newdata.Polarity[index] });
     });
 
     setnewinfo({
       title1: "Insta Information",
       title2: "Instagram Details",
       title3: "posted",
-      post:
-        newdata.Comments[0] == "verfied"
-          ? newdata.Comments[1]
-          : newdata.Comments[0],
       name: newdata.Usernames[0],
+      post: newdata.Post,
       line1: "This was posted at",
       dt: newdata.time[0],
     });
@@ -226,7 +224,7 @@ export const Instagramcomponent = () => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Enter a Youtube video link"
+                label="Enter a Instagram Public post link"
                 margin="normal"
                 variant="outlined"
                 onChange={(e) => {
@@ -353,14 +351,38 @@ const LoadComponent = (props) => {
               <div className="showData-tablediv">
                 <table className="showData-table">
                   <tr>
-                    <th>id</th>
-                    <th>comment</th>
+                    <th>Id</th>
+                    <th>Comment</th>
+                    <th>Result</th>
                   </tr>
                   {props.comments.map((element, index) => {
                     return (
                       <tr>
                         <td>{index + 1}</td>
-                        <td>{element}</td>
+                        <td>{element.comment}</td>
+                        <td>
+                          <div>
+                            {element.polarity == "Negative" ? (
+                              <ImSad2
+                                color="RGBA(211,0,0,0.8)"
+                                size="2.2em"
+                                className="redicon"
+                              />
+                            ) : element.polarity == "Neutral" ? (
+                              <ImNeutral2
+                                color="RGBA(0,146,255,0.8)"
+                                size="2.2em"
+                                className="blueicon"
+                              />
+                            ) : (
+                              <ImHappy2
+                                color="RGBA(0,194,52,0.8)"
+                                size="2.2em"
+                                className="greenicon"
+                              />
+                            )}
+                          </div>
+                        </td>
                       </tr>
                     );
                   })}
