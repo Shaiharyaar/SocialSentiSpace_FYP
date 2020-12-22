@@ -377,6 +377,7 @@ dashboardrouter.post("/updateyoutubedetails", function (req, res) {
       $set: {
         youtuber: req.body.youtuber,
         videoName: req.body.videoName,
+        VideoDescription: req.body.VideoDescription,
         DateTime: req.body.DateTime,
       },
     },
