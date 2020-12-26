@@ -41,6 +41,9 @@ export const Twittercomponent = (props) => {
   const [loadingcomponent, setloadingcomponent] = useState(false);
   const [wordcloudData, setWordcloudData] = useState([]);
   const [chartdata, setchartdata] = useState({});
+  const [wordcloudData1, setWordcloudData1] = useState([]);
+  const [chartdata1, setchartdata1] = useState({});
+
   const [list, setlist] = useState([20, 50, 10]);
 
   const loadTwitterinfo = async () => {
@@ -55,14 +58,15 @@ export const Twittercomponent = (props) => {
       line1: "This was tweeted at",
       dt: "",
     };
-    var twitterid = "";
+    var twitterid = "",
+      chartid = "";
     await axiosInstance.getchips({ id: "1234" }).then((res) => {
       if (res.status === 200) {
         res.data.result.forEach((chip, index) => {
           console.log(chip);
           if (chip.MediaType == "Twitter") {
             twitterid = chip.social_id;
-            console.log(twitterid);
+            chartid = chip.chartid;
           }
         });
       }
@@ -76,6 +80,28 @@ export const Twittercomponent = (props) => {
       .catch((error) => {
         console.log(error);
       });
+    var chartdata = [];
+    await axiosInstance
+      .getchartdata({ id: chartid })
+      .then((res) => {
+        chartdata = res.data.result.Chartdata;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log(chartdata);
+    var wordlist = [],
+      countlist = [];
+
+    chartdata.slice(0, 10).forEach((data, index) => {
+      if (index < 10) {
+        wordlist.push(data.text);
+        countlist.push(data.value);
+      }
+    });
+    setchartdata1({ words: wordlist, counts: countlist });
+    setWordcloudData1(chartdata);
+
     newinfo.name = newdata.LatestTweet.username;
     newinfo.post = newdata.LatestTweet.tweet;
     newinfo.dt = newdata.LatestTweet.DateTime;
@@ -191,10 +217,10 @@ export const Twittercomponent = (props) => {
         title1: "Information",
         title2: "Latest Tweet",
         title3: "tweeted",
-        post: comm[comm.length - 1].tweet,
-        name: "Matthew Mercer",
+        post: comm[0].tweet,
+        name: newdata[0].username,
         line1: "This was tweeted at",
-        dt: newdata[comm.length - 1].date,
+        dt: newdata[0].date,
       });
       setNewRes([Result["Neutral"], Result["Positive"], Result["Negative"]]);
       setWordcloudData(data);
@@ -346,7 +372,12 @@ export const Twittercomponent = (props) => {
             <h3>Twitter Analysis </h3>
             <FaTwitter color="blue" size="2.2em" style={{ marginLeft: 10 }} />
           </div>
-          {/* <Maincard info={info} countervalues={list} data={chartdata} /> */}
+          <Maincard
+            info={info}
+            countervalues={list}
+            data={wordcloudData1}
+            chartdata={chartdata1}
+          />
         </div>
       )}
     </div>

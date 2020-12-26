@@ -41,47 +41,54 @@ export const Mainscreen = (props) => {
     <div>
       <Sidenavbar setname={handlePageName} />
       <div className={"Mainscreen"}>
-        <div
-          className={"row headbar"}
-          style={{
-            textAlign: "center",
-            fontSize: 35,
-            paddingLeft: "40%",
-            paddingTop: 30,
-          }}
-        >
-          {pagename == "Twitter" ? (
-            <FaTwitter
-              color="blue"
-              size="0.8em"
-              style={{ marginRight: 15, marginTop: 5 }}
-            />
-          ) : pagename == "Youtube" ? (
-            <FaYoutube
-              color="red"
-              size="0.8em"
-              style={{ marginRight: 15, marginTop: 5 }}
-            />
-          ) : pagename == "Instagram" ? (
-            <FaInstagram
-              color="#e1306c"
-              size="0.8em"
-              style={{ marginRight: 15, marginTop: 5 }}
-            />
-          ) : pagename == "Facebook" ? (
-            <FaFacebook
-              color="blue"
-              size="0.8em"
-              style={{ marginRight: 15, marginTop: 5 }}
-            />
-          ) : (
-            <FaSquarespace
-              color="white"
-              size="0.8em"
-              style={{ marginRight: 15, marginTop: 5 }}
-            />
-          )}
-          <h3 style={{ color: "white" }}>{pagename}</h3>
+        <div className="row sticky-header">
+          <div className={"col-xl-2"}></div>
+          <div
+            className={"col-xl-8 headbar"}
+            style={{
+              fontSize: 35,
+            }}
+          >
+            {pagename == "Twitter" ? (
+              <FaTwitter
+                color="blue"
+                size="0.8em"
+                style={{ marginRight: 15, marginTop: 5 }}
+              />
+            ) : pagename == "Youtube" ? (
+              <FaYoutube
+                color="red"
+                size="0.8em"
+                style={{ marginRight: 15, marginTop: 5 }}
+              />
+            ) : pagename == "Instagram" ? (
+              <FaInstagram
+                color="#e1306c"
+                size="0.8em"
+                style={{ marginRight: 15, marginTop: 5 }}
+              />
+            ) : pagename == "Facebook" ? (
+              <FaFacebook
+                color="blue"
+                size="0.8em"
+                style={{ marginRight: 15, marginTop: 5 }}
+              />
+            ) : (
+              <FaSquarespace
+                color="white"
+                size="0.8em"
+                style={{ marginRight: 15, marginTop: 5 }}
+              />
+            )}
+            <h3 style={{ color: "white" }}>{pagename}</h3>
+          </div>
+        </div>
+        <div className={"logo"}>
+          <img
+            src={require("../resources/img/logo.png")}
+            height={100}
+            style={{ paddingRight: 30, paddingTop: 10 }}
+          />
         </div>
         <div className={"screens"}>{props.children}</div>
       </div>

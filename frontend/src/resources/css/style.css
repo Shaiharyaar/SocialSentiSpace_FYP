@@ -38,17 +38,7 @@ h1,h2,h3,p,a{
   "Segoe UI Symbol",
   "Noto Color Emoji" !important;
 }
-.header {
-  background-image: -webkit-linear-gradient(
-      rgba(0, 0, 0, 0.7),
-      rgba(0, 0, 0, 0.7)
-    ),
-    url("https://ipullrank.com/wp-content/uploads/2017/04/sentiment-analysis-tools-1400.jpg");
-  background-size: cover;
-  background-position: center;
-  height: 100vh;
-  background-attachment: fixed;
-}
+
 .body {
   background-color: #fff;
   color: #555;
@@ -59,23 +49,6 @@ h1,h2,h3,p,a{
   overflow-x: hidden;
 }
 
-.header {
-  display: flex;
-  flex-direction: column;
-}
-
-.header h1 {
-  margin-left: 10%;
-  margin-top: 190px;
-  text-align: left !important;
-}
-.header a:first-child {
-  margin-left: 10%;
-}
-.header a {
-  margin: 1em 0em 1em;
-  width: 150px;
-}
 
 /* ----- BUTTONS ----- */
 .btn:link,
@@ -127,37 +100,32 @@ h1,h2,h3,p,a{
 
 .Mainscreen {
   background-color: #F9F9f9;
-  margin-left: 60px;
+  margin-left: 80px;
   overflow: hidden;
   padding: 0;
   transition: all 0.5s;
 }
 
 .headbar {
-  position: fixed;
-  width: 100%;
-  top: 0;
   background-color: #212121;
-  padding: 5px;
-  height: 95px;
+  height: 103px;
   z-index: 1499;
 }
-
 /* ------------------------------ */
 /* -------  SCREENS  ------------ */
 /* ------------------------------ */
 
 .chips_div{
-  margin-top: 110px;
+  margin-top: 60px;
 }
 .subscreens{
-  margin-top: 60px;
+  margin-top: 50px;
 }
 .screens {
   margin-top: 10px;
   justify-content: center;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: 40px;
+  padding-left: 5px;
   background-color: #F9F9F9;
 }
 .newbutton{
@@ -179,7 +147,25 @@ h1,h2,h3,p,a{
 /* ------------------------------ */
 
 .masterbox {
-  padding: 4px;
+  padding: 4px 4px 40px 13px;
+}
+/* .sticky-header{
+  position:fixed;
+  width: 97.5%;
+  z-index:1499;
+} */
+.headbar{
+  /* border-top-left-radius: 80px;
+  border-top-right-radius: 80px; */
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+}
+.logo{
+  position:absolute !important;
+  top:0;
+  right:0;
+
+ 
 }
 .minibox {
   background-color: #fff;
