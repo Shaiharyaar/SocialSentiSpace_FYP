@@ -1,5 +1,5 @@
 import React from "react";
-import ReactApexChart from "react-apexcharts";
+import Chart from "react-apexcharts";
 class LineChart extends React.Component {
   constructor(props) {
     super(props);
@@ -8,34 +8,21 @@ class LineChart extends React.Component {
       series: [
         {
           name: "2020",
-          data: [
-            Math.floor(Math.random() * (300 - 40)) + 40,
-            Math.floor(Math.random() * (500 - 10)) + 40,
-            Math.floor(Math.random() * (500 - 100)) + 40,
-            Math.floor(Math.random() * (200 - 10)) + 40,
-            Math.floor(Math.random() * (400 - 40)) + 40,
-            Math.floor(Math.random() * (500 - 140)) + 40,
-            Math.floor(Math.random() * (500 - 310)) + 40,
-          ],
+          data: props.data.counts,
         },
       ],
       options: {
         chart: {
-          type: "line",
-          dropShadow: {
-            enabled: true,
-            color: "#555",
-            top: 18,
-            left: 7,
-            blur: 10,
-            opacity: 0.2,
-          },
+          id: "basic-bar",
           toolbar: {
             show: true,
           },
         },
-
-        colors: ["#545454"],
+        plotOptions: {
+          bar: {
+            horizontal: true,
+          },
+        },
         dataLabels: {
           enabled: true,
         },
@@ -43,16 +30,10 @@ class LineChart extends React.Component {
           curve: "smooth",
         },
 
-        fill: {
-          type: "gradient",
-          gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.5,
-            opacityTo: 1,
-          },
-        },
+        colors: ["#45B39D"],
+
         grid: {
-          borderColor: "#e7e7e7",
+          borderColor: "#fff",
           row: {
             colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
             opacity: 0.5,
@@ -62,28 +43,20 @@ class LineChart extends React.Component {
           size: 1,
         },
         xaxis: {
-          categories: [
-            "Saturday",
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-          ],
+          categories: props.data.words,
           title: {
-            text: "Days",
+            text: "Counts",
           },
         },
         yaxis: {
           title: {
-            text: props.y_title,
+            text: "Most Repetitive Words",
           },
-          min: 5,
-          max: 500,
+          min: 0,
+          max: props.data.counts[0],
         },
         title: {
-          text: this.props.data.line,
+          text: "Repetitive Words/Count",
           align: "left",
         },
         legend: {
@@ -98,12 +71,14 @@ class LineChart extends React.Component {
   }
   render() {
     return (
-      <ReactApexChart
-        options={this.state.options}
-        series={this.state.series}
-        height="480px"
-        type="line"
-      />
+      <div style={{ paddingTop: "50px" }}>
+        <Chart
+          options={this.state.options}
+          series={this.state.series}
+          type="bar"
+          height={"400"}
+        />
+      </div>
     );
   }
 }

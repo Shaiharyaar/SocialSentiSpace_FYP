@@ -35,7 +35,7 @@ export const Mainscreen = (props) => {
       <Sidenavbar setname={handlePageName} />
       <div className={"Mainscreen"}>
         <div className={"headbar"}>
-          <h1 style={{ fontSize: 52 }}>{pagename}</h1>
+          <h1 style={{ fontSize: 42 }}>{pagename}</h1>
         </div>
         <div className={"screens"}>{props.children}</div>
       </div>

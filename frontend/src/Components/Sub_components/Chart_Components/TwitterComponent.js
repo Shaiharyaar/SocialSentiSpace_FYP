@@ -39,7 +39,8 @@ export const Twittercomponent = (props) => {
   const [location, setLocation] = React.useState("");
   const [trend, setTrend] = React.useState("");
   const [loadingcomponent, setloadingcomponent] = useState(false);
-
+  const [wordcloudData, setWordcloudData] = useState([]);
+  const [chartdata, setchartdata] = useState({});
   const [list, setlist] = useState([20, 50, 10]);
 
   const loadTwitterinfo = async () => {
@@ -112,10 +113,6 @@ export const Twittercomponent = (props) => {
   });
   const [newRes, setNewRes] = useState([19, 71, 12]);
 
-  const [chartdata, setchartdata] = useState({
-    line: "Tweets per day",
-    data: [128, 229, 33, 436, 99, 132, 233],
-  });
   const videos = [];
 
   const [newdata, setStatenewdata] = useState(false);
@@ -154,42 +151,69 @@ export const Twittercomponent = (props) => {
     setStatenewdata(true);
     var newdata = [];
     var Result = [];
-    await axiosInstance.loadtwitterinfo(trend).then((res) => {
-      newdata = res.data.Tweets;
-      Result = res.data.Results;
-    });
+    var data = [];
+    var isDone = false;
+    await axiosInstance
+      .loadtwitterinfo(trend)
+      .then((res) => {
+        isDone = true;
+        newdata = res.data.Tweets;
+        Result = res.data.Results;
+        data = res.data.wordCloudWords;
+      })
+
+      .catch((error) => {
+        isDone = false;
+        setiscardloading(false);
+        setStatenewdata(false);
+        alert(
+          "Error occured while loading twitter data. Check your internet connection."
+        );
+      });
+    console.log("showing data:", data);
     var comm = [];
 
-    newdata.forEach((tweet) => {
-      comm.push({ tweet: tweet.text, polarity: tweet.polarity });
-    });
+    if (isDone) {
+      var wordlist = [];
+      var countlist = [];
+      data.slice(0, 10).forEach((data, index) => {
+        if (index < 10) {
+          wordlist.push(data.text);
+          countlist.push(data.value);
+        }
+      });
+      setchartdata({ words: wordlist, counts: countlist });
+      newdata.forEach((tweet) => {
+        comm.push({ tweet: tweet.text, polarity: tweet.polarity });
+      });
 
-    setnewinfo({
-      title1: "Information",
-      title2: "Latest Tweet",
-      title3: "tweeted",
-      post: comm[comm.length - 1].tweet,
-      name: "Matthew Mercer",
-      line1: "This was tweeted at",
-      dt: newdata[comm.length - 1].date,
-    });
-    setNewRes([Result["Neutral"], Result["Positive"], Result["Negative"]]);
-
-    setComments(comm);
-    setTimeout(() => {
-      setisloading(true);
+      setnewinfo({
+        title1: "Information",
+        title2: "Latest Tweet",
+        title3: "tweeted",
+        post: comm[comm.length - 1].tweet,
+        name: "Matthew Mercer",
+        line1: "This was tweeted at",
+        dt: newdata[comm.length - 1].date,
+      });
+      setNewRes([Result["Neutral"], Result["Positive"], Result["Negative"]]);
+      setWordcloudData(data);
+      setComments(comm);
       setTimeout(() => {
-        setiscardloading(false);
-        setisloading(false);
-      }, 2000);
-    }, 12000);
+        setisloading(true);
+        setTimeout(() => {
+          setiscardloading(false);
+          setisloading(false);
+        }, 2000);
+      }, 500);
+    }
   };
   const closecomponent = () => {
     setStatenewdata(false);
   };
 
   return (
-    <div className={"subscreens"}>
+    <div className={"container subscreens"}>
       <div className="row screens">
         <h3>Twitter Analysis </h3>
         <FaTwitter color="blue" size="2.2em" style={{ marginLeft: 10 }} />
@@ -274,6 +298,7 @@ export const Twittercomponent = (props) => {
           </DialogActions>
         </Dialog>
       </div> */}
+
       <div className="row">
         <div className="col-xl-10 boxes" style={{ marginTop: 10 }}>
           <Autocomplete
@@ -305,6 +330,7 @@ export const Twittercomponent = (props) => {
         list={newRes}
         trend={trend}
         chartdata={chartdata}
+        clouddata={wordcloudData}
         closecomponent={closecomponent}
         cardloading={iscardloading}
         isloading={isloading}
@@ -320,7 +346,7 @@ export const Twittercomponent = (props) => {
             <h3>Twitter Analysis </h3>
             <FaTwitter color="blue" size="2.2em" style={{ marginLeft: 10 }} />
           </div>
-          <Maincard info={info} countervalues={list} data={chartdata} />
+          {/* <Maincard info={info} countervalues={list} data={chartdata} /> */}
         </div>
       )}
     </div>
@@ -373,19 +399,25 @@ const LoadComponent = (props) => {
             maxWidth={"md"}
             aria-labelledby="form-dialog-title"
           >
-            <DialogTitle id="form-dialog-title">Data Obtained</DialogTitle>
+            <div
+              className="data-head"
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <DialogTitle id="form-dialog-title">Data Obtained</DialogTitle>
+              <p className={"totalcomments"}>
+                Total Obtained: {props.comments.length}
+              </p>
+            </div>
             <DialogContent>
               <div className="showData-tablediv">
                 <table className="showData-table">
                   <tr>
-                    <th>id</th>
                     <th>comment</th>
                     <th>Result</th>
                   </tr>
                   {props.comments.map((element, index) => {
                     return (
                       <tr>
-                        <td>{index + 1}</td>
                         <td>{element.tweet}</td>
                         <td>
                           <div>
@@ -427,7 +459,8 @@ const LoadComponent = (props) => {
           <Maincard
             info={props.info}
             countervalues={props.list}
-            data={props.chartdata}
+            data={props.clouddata}
+            chartdata={props.chartdata}
           />
         ) : (
           <TwitterLoader loading={props.isloading} />

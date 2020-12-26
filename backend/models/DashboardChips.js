@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 
 var chipsSchema = new Schema({
   userid: { type: String, required: true },
+  chartid: { type: String, required: true },
   Label: {
     type: String,
     required: true,

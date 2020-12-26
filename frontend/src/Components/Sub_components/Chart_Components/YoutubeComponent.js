@@ -47,6 +47,12 @@ export const Youtubecomponent = () => {
 
   const classes = useStyles();
   const videos = [];
+  const [wordcloudData, setWordcloudData] = useState([]);
+  const [chartdata, setchartdata] = useState({});
+
+  const [wordcloudData1, setWordcloudData1] = useState([]);
+  const [chartdata1, setchartdata1] = useState({});
+
   const [Check, setCheck] = useState(false);
   const [url, setUrl] = useState("");
   const [open, setOpen] = useState(false);
@@ -61,44 +67,68 @@ export const Youtubecomponent = () => {
       setiscardloading(true);
       setOpen(false);
       setStatenewdata(true);
-
+      var isDone = false;
       var newdata = [];
       var Res = [];
-      await axiosInstance.loadyoutubeinfo(url).then((res) => {
-        newdata = res.data;
-        Res = res.data.Results;
-      });
-      var comm = [];
+      var data = [];
 
-      newdata.Comments.forEach((comment, index) => {
-        comm.push({ comment: comment, polarity: newdata.Polarity[index] });
-      });
-
-      setnewinfo({
-        title1: "Youtube Information",
-        title2: "Youtube Details",
-        title3: "posted",
-        post: newdata.description,
-        name: newdata.youtuber,
-        line1: newdata.title,
-        dt: newdata.date,
-
-        url: url,
-      });
-      setComments(comm);
-
-      setNewRes([Res["Neutral"], Res["Positive"], Res["Negative"]]);
-
-      setTimeout(() => {
-        setisloading(true);
-        setTimeout(() => {
+      await axiosInstance
+        .loadyoutubeinfo(url)
+        .then((res) => {
+          isDone = true;
+          newdata = res.data;
+          Res = res.data.Results;
+          data = res.data.wordCloudWords;
+        })
+        .catch((error) => {
+          isDone = false;
           setiscardloading(false);
-          setisloading(false);
+          setStatenewdata(false);
+          alert("Enter a correct Youtube Video link.");
+        });
+      if (isDone) {
+        var comm = [],
+          wordlist = [],
+          countlist = [];
+
+        data.slice(0, 10).forEach((data, index) => {
+          if (index < 10) {
+            wordlist.push(data.text);
+            countlist.push(data.value);
+          }
+        });
+        setchartdata({ words: wordlist, counts: countlist });
+        setWordcloudData(data);
+        newdata.Comments.forEach((comment, index) => {
+          comm.push({ comment: comment, polarity: newdata.Polarity[index] });
+        });
+
+        setnewinfo({
+          title1: "Youtube Information",
+          title2: "Youtube Details",
+          title3: "posted",
+          post: newdata.description,
+          name: newdata.youtuber,
+          line1: newdata.title,
+          dt: newdata.date,
+
+          url: url,
+        });
+        setComments(comm);
+
+        setNewRes([Res["Neutral"], Res["Positive"], Res["Negative"]]);
+
+        setTimeout(() => {
+          setisloading(true);
+          setTimeout(() => {
+            setiscardloading(false);
+            setisloading(false);
+          }, 2000);
         }, 2000);
-      }, 2000);
-      fetch(url).then(function (res) {
-        console.log(res);
-      });
+        fetch(url).then(function (res) {
+          console.log(res);
+        });
+      }
     } else if (url == "") {
       setCheck(false);
       setStatenewdata(false);
@@ -149,17 +179,20 @@ export const Youtubecomponent = () => {
     newinfo.title1 = "Video Information";
     newinfo.title2 = "Video Title";
     newinfo.title3 = "Video Description";
-    var youtubeid = "";
+    var youtubeid = "",
+      chartid = "";
     await axiosInstance.getchips({ id: "1234" }).then((res) => {
       if (res.status === 200) {
         res.data.result.forEach((chip, index) => {
           console.log(chip);
           if (chip.MediaType == "Youtube") {
             youtubeid = chip.social_id;
+            chartid = chip.chartid;
           }
         });
       }
     });
+    console.log(chartid);
     await axiosInstance
       .getYoutubeInfo(youtubeid)
       .then((res) => {
@@ -172,6 +205,28 @@ export const Youtubecomponent = () => {
       .catch((error) => {
         console.log(error);
       });
+
+    var chartdata = [];
+    await axiosInstance
+      .getchartdata({ id: chartid })
+      .then((res) => {
+        chartdata = res.data.result.Chartdata;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log(chartdata);
+    var wordlist = [],
+      countlist = [];
+
+    chartdata.slice(0, 10).forEach((data, index) => {
+      if (index < 10) {
+        wordlist.push(data.text);
+        countlist.push(data.value);
+      }
+    });
+    setchartdata1({ words: wordlist, counts: countlist });
+    setWordcloudData1(chartdata);
 
     newinfo.youtuber = newdata.VideoDetail.youtuber;
     newinfo.line1 = newdata.VideoDetail.videoName;
@@ -188,7 +243,7 @@ export const Youtubecomponent = () => {
     setinfo(newinfo);
     setTimeout(() => {
       setloadingcomponent(true);
-    }, 2000);
+    }, 1000);
   };
   const updateUrl = (u) => {
     setUrl(u);
@@ -208,7 +263,7 @@ export const Youtubecomponent = () => {
   };
   const [NewRes, setNewRes] = useState([20, 50, 30]);
   return (
-    <div className="col subscreens">
+    <div className="container subscreens">
       <div className="row screens">
         <h3>Youtube Analysis </h3>
         <FaYoutube color="red" size="2.2em" style={{ marginLeft: 10 }} />
@@ -247,6 +302,8 @@ export const Youtubecomponent = () => {
         check={newdata}
         info={newinfo}
         list={NewRes}
+        chartdata={chartdata}
+        clouddata={wordcloudData}
         closecomponent={closecomponent}
         cardloading={iscardloading}
         isloading={isloading}
@@ -261,7 +318,12 @@ export const Youtubecomponent = () => {
           <div className="row screens">
             <h3>Youtube Analysis </h3>
             <FaYoutube color="red" size="2.2em" style={{ marginLeft: 10 }} />
-            <Youtubecard info={info} countervalues={list} />
+            <Youtubecard
+              info={info}
+              countervalues={list}
+              data={wordcloudData1}
+              chartdata={chartdata1}
+            />
           </div>
         </div>
       )}
@@ -365,7 +427,12 @@ const LoadComponent = (props) => {
           </Dialog>
         </div>
         {!props.cardloading ? (
-          <Youtubecard info={props.info} countervalues={props.list} />
+          <Youtubecard
+            info={props.info}
+            countervalues={props.list}
+            data={props.clouddata}
+            chartdata={props.chartdata}
+          />
         ) : (
           <YoutubeLoader loading={props.isloading} />
         )}

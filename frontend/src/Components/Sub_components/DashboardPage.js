@@ -13,7 +13,7 @@ import { Button } from "@material-ui/core";
 
 export const Dashboard = () => {
   useEffect(() => {
-    loadcomponentinfo(comp, id);
+    loadcomponentinfo(comp, id, "");
   }, []);
 
   const [comp, setcomp] = useState("");
@@ -25,9 +25,8 @@ export const Dashboard = () => {
   });
   const [list, setlist] = useState([20, 50, 10]);
   const [loadingcomponent, setloadingcomponent] = useState(false);
-  const loadcomponentinfo = async (media, id, ref) => {
+  const loadcomponentinfo = async (media, id, chartid, ref) => {
     setloadingcomponent(false);
-
     var newdata = "";
     var newinfo = {
       title1: "Information",
@@ -42,6 +41,23 @@ export const Dashboard = () => {
       youtuber: "",
       videoname: "",
     };
+    if (chartid != "") {
+      var chartdata = [];
+      await axiosInstance.getchartdata({ id: chartid }).then((res) => {
+        chartdata = res.data.result.Chartdata;
+      });
+
+      setClouddata(chartdata);
+      var wordlist = [];
+      var countlist = [];
+      chartdata.slice(0, 10).forEach((data, index) => {
+        if (index < 10) {
+          wordlist.push(data.text);
+          countlist.push(data.value);
+        }
+      });
+      setBarchartdata({ words: wordlist, counts: countlist });
+    }
     if (media == "") {
     } else if (media == "Twitter") {
       newinfo.title1 = "Information";
@@ -169,12 +185,14 @@ export const Dashboard = () => {
     youtuber: "Pewdiepie",
     videoname: "",
   });
-  const [chartdata, setchartdata] = useState({
-    line: "Tweets per hr",
-    data: [128, 229, 33, 436, 99, 132, 233],
-  });
+  const [Barchartdata, setBarchartdata] = useState({});
+  const [clouddata, setClouddata] = useState([]);
   const LoadComponent = async (new_chip) => {
-    await loadcomponentinfo(new_chip[0].socialType, new_chip[0].social_id);
+    await loadcomponentinfo(
+      new_chip[0].socialType,
+      new_chip[0].social_id,
+      new_chip[0].chartid
+    );
     setchip(new_chip[0]);
     setid(new_chip[0].social_id);
     setcomp(new_chip[0].socialType);
@@ -186,18 +204,34 @@ export const Dashboard = () => {
     setloadingcomponent(false);
 
     if (comp == "Twitter") {
-      await axiosInstance.updateTwitter(chip.social_id, chip.data);
-      await loadcomponentinfo(comp, id, "ref");
+      await axiosInstance.updateTwitter(
+        chip.social_id,
+        chip.data,
+        chip.chartid
+      );
+      await loadcomponentinfo(comp, id, chip.chartid, "ref");
     } else if (comp == "Youtube") {
-      await axiosInstance.updateYoutube(chip.social_id, chip.data);
-      await loadcomponentinfo(comp, id, "ref");
+      await axiosInstance.updateYoutube(
+        chip.social_id,
+        chip.data,
+        chip.chartid
+      );
+      await loadcomponentinfo(comp, id, chip.chartid, "ref");
     } else if (comp == "Instagram") {
-      await axiosInstance.updateInstagram(chip.social_id, chip.data);
-      await loadcomponentinfo(comp, id, "ref");
+      await axiosInstance.updateInstagram(
+        chip.social_id,
+        chip.data,
+        chip.chartid
+      );
+      await loadcomponentinfo(comp, id, chip.chartid, "ref");
     } else if (comp == "Facebook") {
-      await axiosInstance.updateFacebook(chip.social_id, chip.data);
+      await axiosInstance.updateFacebook(
+        chip.social_id,
+        chip.data,
+        chip.chartid
+      );
       console.log("hello");
-      await loadcomponentinfo(comp, id, "ref");
+      await loadcomponentinfo(comp, id, chip.chartid, "ref");
     }
   };
   return (
@@ -211,13 +245,19 @@ export const Dashboard = () => {
         <div></div>
       )}
       {loadingcomponent ? (
-        <div>
+        <div className={"container"}>
           <div class="button-show-data">
             <Button variant="outlined" color="default" onClick={handleRefresh}>
               Refresh
             </Button>
           </div>
-          <CompCheck c={comp} info={info} list={list} chart={chartdata} />
+          <CompCheck
+            c={comp}
+            info={info}
+            list={list}
+            clouddata={clouddata}
+            bardata={Barchartdata}
+          />
         </div>
       ) : isRefreshing ? (
         <div style={{ padding: 40 }}>
@@ -241,7 +281,8 @@ const CompCheck = (props) => {
         <Maincard
           info={props.info}
           countervalues={props.list}
-          data={props.chart}
+          data={props.clouddata}
+          chartdata={props.bardata}
         />
       </div>
     );
@@ -251,7 +292,12 @@ const CompCheck = (props) => {
         <div className="row screens">
           <h3>Youtube Analysis </h3>
           <FaYoutube color="red" size="2.2em" style={{ marginLeft: 10 }} />
-          <Youtubecard info={props.info} countervalues={props.list} />
+          <Youtubecard
+            info={props.info}
+            countervalues={props.list}
+            data={props.clouddata}
+            chartdata={props.bardata}
+          />
         </div>
       </div>
     );
@@ -264,7 +310,8 @@ const CompCheck = (props) => {
           <Maincard
             info={props.info}
             countervalues={props.list}
-            data={props.chart}
+            data={props.clouddata}
+            chartdata={props.bardata}
           />
         </div>
       </div>
@@ -282,7 +329,8 @@ const CompCheck = (props) => {
           <Maincard
             info={props.info}
             countervalues={props.list}
-            data={props.chart}
+            data={props.clouddata}
+            chartdata={props.bardata}
           />
         </div>
       </div>

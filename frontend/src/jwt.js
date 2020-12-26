@@ -47,6 +47,10 @@ class axiosInstance {
   getchips(data) {
     return Axios.post(USER_API_BASE_URL + "dashboard/getChips", data);
   }
+
+  getchartdata(data) {
+    return Axios.post(USER_API_BASE_URL + "dashboard/getchartdata", data);
+  }
   addchips(data) {
     return Axios.post(USER_API_BASE_URL + "dashboard/setChips", data);
   }
@@ -201,7 +205,7 @@ class axiosInstance {
 
   //Updating twiiter
 
-  async updateTwitter(id, label) {
+  async updateTwitter(id, label, chartid) {
     console.log(label);
     var detail_id = "",
       result_id = "";
@@ -214,9 +218,11 @@ class axiosInstance {
     //get new data (HARIS)
     var newdata = [];
     var Res = [];
+    var chartdata = [];
     await this.loadtwitterinfo(label).then((res) => {
       newdata = res.data.Tweets;
       Res = res.data.Results;
+      chartdata = res.data.wordCloudWords;
     });
 
     const index = Math.floor(Math.random() * 12);
@@ -238,6 +244,13 @@ class axiosInstance {
       console.log(res);
     });
 
+    var chartdetails = {
+      id: chartid,
+      Chartdata: chartdata,
+    };
+    await this.updatechartdata(chartdetails).then((res) => {
+      console.log(res);
+    });
     await this.updateresults(result).then((res) => {
       console.log(res);
     });
@@ -245,7 +258,7 @@ class axiosInstance {
 
   //Updating instagram
 
-  async updateInstagram(id, Url) {
+  async updateInstagram(id, Url, chartid) {
     var detail_id = "",
       result_id = "";
 
@@ -255,11 +268,13 @@ class axiosInstance {
     });
 
     //get new data (HARIS)
-    var Res = [];
     var newdata = [];
+    var Res = [];
+    var chartdata = [];
     await this.loadinstagraminfo(Url).then((res) => {
       newdata = res.data;
       Res = res.data.Results;
+      chartdata = res.data.wordCloudWords;
     });
     var comm = [];
 
@@ -288,11 +303,18 @@ class axiosInstance {
     await this.updateresults(result).then((res) => {
       console.log(res);
     });
+    var chartdetails = {
+      id: chartid,
+      Chartdata: chartdata,
+    };
+    await this.updatechartdata(chartdetails).then((res) => {
+      console.log(res);
+    });
   }
 
   //Updating facebook
 
-  async updateFacebook(id, Url) {
+  async updateFacebook(id, Url, chartid) {
     var detail_id = "",
       result_id = "";
 
@@ -305,9 +327,11 @@ class axiosInstance {
     //get new data
     var Res = [];
     var newdata = [];
+    var chartdata = [];
     await this.loadfacebookinfo(Url).then((res) => {
       newdata = res.data;
       Res = res.data.Results;
+      chartdata = res.data.wordCloudWords;
     });
 
     var details = {
@@ -323,6 +347,14 @@ class axiosInstance {
       neutral: Res["Neutral"],
       negative: Res["Negative"],
     };
+    var chartdetails = {
+      id: chartid,
+      Chartdata: chartdata,
+    };
+    await this.updatechartdata(chartdetails).then((res) => {
+      console.log(res);
+    });
+
     await this.updatefacebookdetails(details).then((res) => {
       console.log(res);
     });
@@ -334,7 +366,7 @@ class axiosInstance {
 
   //Updating youtube
 
-  async updateYoutube(id, url) {
+  async updateYoutube(id, url, chartid) {
     console.log(url);
     var detail_id = "",
       result_id = "";
@@ -347,9 +379,11 @@ class axiosInstance {
     //get new data (HARIS)
     var newdata = [];
     var Res = [];
+    var chartdata = [];
     await this.loadyoutubeinfo(url).then((res) => {
       newdata = res.data;
       Res = res.data.Results;
+      chartdata = res.data.wordCloudWords;
     });
 
     const details = {
@@ -367,6 +401,14 @@ class axiosInstance {
       neutral: Res["Neutral"],
       negative: Res["Negative"],
     };
+    var chartdetails = {
+      id: chartid,
+      Chartdata: chartdata,
+    };
+    await this.updatechartdata(chartdetails).then((res) => {
+      console.log(res);
+    });
+
     await this.updateyoutubedetails(details).then((res) => {
       console.log(res);
     });
@@ -387,6 +429,9 @@ class axiosInstance {
       USER_API_BASE_URL + "dashboard/updatetwitterdetails",
       body
     );
+  }
+  updatechartdata(body) {
+    return Axios.post(USER_API_BASE_URL + "dashboard/updatechartdata", body);
   }
   updateyoutubedetails(body) {
     return Axios.post(
@@ -463,17 +508,22 @@ class axiosInstance {
 
     return true;
   }
-
   //adding Twiiter Information
 
   async addtwitterinfo(label) {
     //get data on label
     var newdata = [];
     var Res = [];
-    await this.loadtwitterinfo(label).then((res) => {
-      newdata = res.data.Tweets;
-      Res = res.data.Results;
-    });
+    var chartdata = [];
+    await this.loadtwitterinfo(label)
+      .then((res) => {
+        newdata = res.data.Tweets;
+        Res = res.data.Results;
+        chartdata = res.data.wordCloudWords;
+      })
+      .catch((error) => {
+        return false;
+      });
 
     const index = Math.floor(Math.random() * 12);
 
@@ -490,14 +540,19 @@ class axiosInstance {
 
     var resultid = "",
       detailid = "",
-      twitterid = "";
+      twitterid = "",
+      chartid = "";
 
     await this.addresult(result).then((res) => {
       if (res.status == 200) {
         resultid = res.data.result._id;
       }
     });
-
+    await this.addchartdata({ Chartdata: chartdata }).then((res) => {
+      if (res.status == 200) {
+        chartid = res.data.result._id;
+      }
+    });
     await this.addtwitterdetail(detail).then((res) => {
       if (res.status == 200) {
         detailid = res.data.result._id;
@@ -511,143 +566,220 @@ class axiosInstance {
       }
     });
 
-    return twitterid;
+    return { social: twitterid, chart: chartid };
   }
 
   //adding youtube Information
 
   async addYoutubeinfo(url) {
     //get data on url
-
+    var isDone = false;
     var newdata = [];
-    await this.loadyoutubeinfo(url).then((res) => {
-      newdata = res.data;
-    });
+    var Res = [];
+    var chartdata = [];
+    await this.loadyoutubeinfo(url)
+      .then((res) => {
+        isDone = true;
+        newdata = res.data;
+        Res = res.data.Results;
+        chartdata = res.data.wordCloudWords;
+      })
+      .catch((err) => {
+        isDone = false;
+      });
+    if (isDone) {
+      console.log("GOT DATA");
+      const result = {
+        positive: Res["Positive"],
+        neutral: Res["Neutral"],
+        negative: Res["Negative"],
+      };
+      const detail = {
+        youtuber: newdata.youtuber,
+        videoURL: url,
+        videoName: newdata.title,
+        VideoDescription: newdata.description,
+        DateTime: newdata.date,
+      };
 
-    const result = { positive: 10, negative: 50, neutral: 40 };
-    const detail = {
-      youtuber: newdata.youtuber,
-      videoURL: url,
-      videoName: newdata.title,
-      VideoDescription: newdata.description,
-      DateTime: newdata.date,
-    };
+      var resultid = "",
+        detailid = "",
+        id = "",
+        chartid = "";
 
-    var resultid = "",
-      detailid = "",
-      id = "";
+      await this.addresult(result).then((res) => {
+        if (res.status == 200) {
+          resultid = res.data.result._id;
+        }
+      });
 
-    await this.addresult(result).then((res) => {
-      if (res.status == 200) {
-        resultid = res.data.result._id;
-      }
-    });
+      await this.addyoutubedetail(detail).then((res) => {
+        if (res.status == 200) {
+          detailid = res.data.result._id;
+        }
+      });
 
-    await this.addyoutubedetail(detail).then((res) => {
-      if (res.status == 200) {
-        detailid = res.data.result._id;
-      }
-    });
+      const data = { topic: url, Result: resultid, VideoDetail: detailid };
+      console.log("DATA: ", data);
+      await this.addyoutube(data).then((res) => {
+        if (res.status == 200) {
+          id = res.data.result._id;
+        }
+      });
+      await this.addchartdata({ Chartdata: chartdata }).then((res) => {
+        if (res.status == 200) {
+          chartid = res.data.result._id;
+        }
+      });
 
-    const data = { topic: url, Result: resultid, VideoDetail: detailid };
-    console.log("DATA: ", data);
-    await this.addyoutube(data).then((res) => {
-      if (res.status == 200) {
-        id = res.data.result._id;
-      }
-    });
-
-    return id;
+      return { social: id, chart: chartid };
+    } else {
+      alert("Enter a correct Youtube video link.");
+      return false;
+    }
   }
 
   //Adding facebook information
 
-  async addFacebookinfo(label) {
+  async addFacebookinfo(url) {
     //get data on label
+    var isDone = false;
+    var newdata = [];
+    var Res = [];
+    var chartdata = [];
+    await this.loadfacebookinfo(url)
+      .then((res) => {
+        isDone = true;
+        newdata = res.data;
+        Res = res.data.Results;
+        chartdata = res.data.wordCloudWords;
+      })
+      .catch((error) => {
+        isDone = false;
+      });
+    if (isDone) {
+      const result = {
+        positive: Res["Positive"],
+        neutral: Res["Neutral"],
+        negative: Res["Negative"],
+      };
 
-    const result = { positive: 10, negative: 50, neutral: 40 };
+      const detail = {
+        username: newdata.PageName,
+        post: newdata.Posts[0],
+        DateTime: newdata.Times[0],
+      };
 
-    const detail = {
-      username: label,
-      post: label,
-      DateTime: label,
-    };
+      var resultid = "",
+        detailid = "",
+        id = "",
+        chartid = "";
 
-    var resultid = "",
-      detailid = "",
-      id = "";
+      await this.addresult(result).then((res) => {
+        if (res.status == 200) {
+          resultid = res.data.result._id;
+        }
+      });
 
-    await this.addresult(result).then((res) => {
-      if (res.status == 200) {
-        resultid = res.data.result._id;
-      }
-    });
+      await this.addfacebookdetail(detail).then((res) => {
+        if (res.status == 200) {
+          detailid = res.data.result._id;
+        }
+      });
 
-    await this.addfacebookdetail(detail).then((res) => {
-      if (res.status == 200) {
-        detailid = res.data.result._id;
-      }
-    });
+      const data = { postURL: url, Result: resultid, postDetail: detailid };
+      await this.addfacebook(data).then((res) => {
+        if (res.status == 200) {
+          id = res.data.result._id;
+        }
+      });
 
-    const data = { postURL: label, Result: resultid, postDetail: detailid };
-    await this.addfacebook(data).then((res) => {
-      if (res.status == 200) {
-        id = res.data.result._id;
-      }
-    });
+      await this.addchartdata({ Chartdata: chartdata }).then((res) => {
+        if (res.status == 200) {
+          chartid = res.data.result._id;
+        }
+      });
 
-    return id;
+      return { social: id, chart: chartid };
+    } else {
+      alert("Enter a correct Youtube video link.");
+      return false;
+    }
   }
 
   //Adding Instagram information
 
   async addInstagraminfo(Url) {
     //get data on label
+
     var Res = [];
     var newdata = [];
-    await this.loadinstagraminfo(Url).then((res) => {
-      newdata = res.data;
-      Res = res.data.Results;
-    });
+    var chartdata = [];
+    var isDone = false;
+    await this.loadinstagraminfo(Url)
+      .then((res) => {
+        console.log("NEW DATA: ", res.data);
+        isDone = true;
+        newdata = res.data;
+        Res = res.data.Results;
+        chartdata = res.data.wordCloudWords;
+      })
+      .catch((err) => {
+        isDone = false;
+      });
+    if (isDone) {
+      const detail = {
+        username: newdata.Usernames[0],
+        postDetails: newdata.Post,
+        DateTime: newdata.time[0],
+      };
+      var result = {
+        positive: Res["Positive"],
+        neutral: Res["Neutral"],
+        negative: Res["Negative"],
+      };
 
-    const detail = {
-      username: newdata.Usernames[0],
-      postDetails: newdata.Post,
-      DateTime: newdata.time[0],
-    };
-    var result = {
-      positive: Res["Positive"],
-      neutral: Res["Neutral"],
-      negative: Res["Negative"],
-    };
+      var resultid = "",
+        detailid = "",
+        id = "",
+        chartid = "";
 
-    var resultid = "",
-      detailid = "",
-      id = "";
+      await this.addresult(result).then((res) => {
+        if (res.status == 200) {
+          resultid = res.data.result._id;
+        }
+      });
 
-    await this.addresult(result).then((res) => {
-      if (res.status == 200) {
-        resultid = res.data.result._id;
-      }
-    });
+      await this.addinstagramdetail(detail).then((res) => {
+        if (res.status == 200) {
+          detailid = res.data.result._id;
+        }
+      });
 
-    await this.addinstagramdetail(detail).then((res) => {
-      if (res.status == 200) {
-        detailid = res.data.result._id;
-      }
-    });
+      const data = { hashtag: Url, Result: resultid, latestPost: detailid };
+      await this.addinstagram(data).then((res) => {
+        if (res.status == 200) {
+          id = res.data.result._id;
+        }
+      });
 
-    const data = { hashtag: Url, Result: resultid, latestPost: detailid };
-    await this.addinstagram(data).then((res) => {
-      if (res.status == 200) {
-        id = res.data.result._id;
-      }
-    });
+      await this.addchartdata({ Chartdata: chartdata }).then((res) => {
+        if (res.status == 200) {
+          chartid = res.data.result._id;
+        }
+      });
 
-    return id;
+      return { social: id, chart: chartid };
+    } else {
+      alert("Enter a correct public Instgram post link.");
+      return false;
+    }
   }
   addresult(result) {
     return Axios.post(USER_API_BASE_URL + "dashboard/setResult", result);
+  }
+  addchartdata(result) {
+    return Axios.post(USER_API_BASE_URL + "dashboard/setchartdata", result);
   }
   addtwitterdetail(detail) {
     return Axios.post(USER_API_BASE_URL + "dashboard/setLatestTweet", detail);

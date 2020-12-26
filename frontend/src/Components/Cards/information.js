@@ -14,7 +14,8 @@ export const Informationcard = (props) => {
               {props.info.line1 + " - " + props.info.dt}
             </label>
             <hr />
-            <strong>{props.info.name + " " + props.info.title3}</strong>
+            <strong>{props.info.name} </strong>
+            {" " + props.info.title3}
             <p></p>
             <textarea
               disabled={true}

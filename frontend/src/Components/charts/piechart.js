@@ -1,5 +1,5 @@
 import React from "react";
-import ReactApexChart from "react-apexcharts";
+import Chart from "react-apexcharts";
 // Resolves charts dependancy
 class PieChart extends React.Component {
   constructor(props) {
@@ -9,7 +9,11 @@ class PieChart extends React.Component {
         labels: ["Neutral", "Positive", "Negative"],
         chart: {
           type: "donut",
+          toolbar: {
+            show: true,
+          },
         },
+
         responsive: [
           {
             breakpoint: 480,
@@ -17,6 +21,7 @@ class PieChart extends React.Component {
               chart: {
                 width: "100%",
               },
+
               legend: {
                 position: "bottom",
               },
@@ -28,13 +33,19 @@ class PieChart extends React.Component {
   }
   render() {
     return (
-      <div style={{ paddingTop: "70px", paddingBottom: "80px" }}>
-        <ReactApexChart
-          options={this.state.option}
-          series={this.props.ser}
-          type="donut"
-          height="340px"
-        />
+      <div style={{ padding: "50px 30px" }}>
+        <div className="app">
+          <div className="row">
+            <div className="mixed-chart">
+              <Chart
+                options={this.state.option}
+                series={this.props.ser}
+                type="donut"
+                width="450px"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

@@ -2,6 +2,8 @@ var express = require("express");
 const { create } = require("../models/Twitter");
 var dashboardrouter = express.Router();
 
+const ChartData = require("../models/chart");
+
 const DashboardChips = require("../models/DashboardChips");
 
 const Result = require("../models/Result");
@@ -45,6 +47,24 @@ dashboardrouter.post("/getChips", (req, res, next) => {
     });
   });
 });
+
+dashboardrouter.post("/getchartdata", (req, res, next) => {
+  console.log(req.body);
+  ChartData.findById(req.body.id).exec(function (error, results) {
+    if (error) {
+      return next(eparams);
+    }
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json({
+      success: true,
+      status: "Loading chart data Successful!",
+      result: results,
+    });
+    console.log(results);
+  });
+});
+
 dashboardrouter.post("/setResult", (req, res, next) => {
   Result.create(req.body).then((result) => {
     res.statusCode = 200;
@@ -52,6 +72,17 @@ dashboardrouter.post("/setResult", (req, res, next) => {
     res.json({
       success: true,
       status: "Adding Results Successful!",
+      result: result,
+    });
+  });
+});
+dashboardrouter.post("/setchartdata", (req, res, next) => {
+  ChartData.create(req.body).then((result) => {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json({
+      success: true,
+      status: "Adding Chart data Successful!",
       result: result,
     });
   });
@@ -143,9 +174,10 @@ dashboardrouter.post("/setInstaDetails", (req, res, next) => {
   InstaDetails.create(req.body).then((detail) => {
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
+    console.log(req);
     res.json({
       success: true,
-      status: "Adding Twitter detail Successful!",
+      status: "Adding Instagram detail Successful!",
       result: detail,
     });
   });
@@ -346,6 +378,18 @@ dashboardrouter.post("/deleteChips", (req, res, next) => {
   });
 });
 
+dashboardrouter.post("/deletechartdata", (req, res, next) => {
+  console.log(req.body);
+  ChartData.findByIdAndDelete(req.body.id).then((result) => {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json({
+      success: true,
+      status: "Deleting chip Successful!",
+    });
+  });
+});
+
 //Updating data
 
 dashboardrouter.post("/updatetwitterdetails", function (req, res) {
@@ -356,6 +400,26 @@ dashboardrouter.post("/updatetwitterdetails", function (req, res) {
         username: req.body.username,
         tweet: req.body.tweet,
         DateTime: req.body.DateTime,
+      },
+    },
+    function (err, result) {
+      if (err)
+        return res.json(400, { message: `id ${req.body.id} not found.` });
+
+      res.json({
+        success: true,
+        result: result,
+      });
+    }
+  );
+});
+
+dashboardrouter.post("/updatechartdata", function (req, res) {
+  ChartData.findOneAndUpdate(
+    { _id: req.body.id },
+    {
+      $set: {
+        Chartdata: req.body.Chartdata,
       },
     },
     function (err, result) {

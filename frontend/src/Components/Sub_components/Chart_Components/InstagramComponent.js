@@ -52,6 +52,11 @@ export const Instagramcomponent = () => {
   const [location, setLocation] = React.useState("");
   const [trend, setTrend] = React.useState("");
   const [loadingcomponent, setloadingcomponent] = useState(false);
+  const [wordcloudData, setWordcloudData] = useState([]);
+  const [chartdata, setchartdata] = useState({});
+
+  const [wordcloudData1, setWordcloudData1] = useState([]);
+  const [chartdata1, setchartdata1] = useState({});
 
   const [list, setlist] = useState([20, 50, 10]);
 
@@ -67,13 +72,16 @@ export const Instagramcomponent = () => {
       line1: "This was posted at",
       dt: "",
     };
-    var instagramid = "";
+    var instagramid = "",
+      chartid = "";
+
     await axiosInstance.getchips({ id: "1234" }).then((res) => {
       if (res.status === 200) {
         res.data.result.forEach((chip, index) => {
           console.log(chip);
           if (chip.MediaType == "Instagram") {
             instagramid = chip.social_id;
+            chartid = chip.chartid;
           }
         });
       }
@@ -90,6 +98,28 @@ export const Instagramcomponent = () => {
       .catch((error) => {
         console.log(error);
       });
+    var chartdata = [];
+    await axiosInstance
+      .getchartdata({ id: chartid })
+      .then((res) => {
+        chartdata = res.data.result.Chartdata;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log(chartdata);
+    var wordlist = [],
+      countlist = [];
+
+    chartdata.slice(0, 10).forEach((data, index) => {
+      if (index < 10) {
+        wordlist.push(data.text);
+        countlist.push(data.value);
+      }
+    });
+    setchartdata1({ words: wordlist, counts: countlist });
+    setWordcloudData1(chartdata);
+
     newinfo.name = newdata.latestPost.username;
     newinfo.post = newdata.latestPost.postDetails;
     newinfo.dt = newdata.latestPost.DateTime;
@@ -105,10 +135,6 @@ export const Instagramcomponent = () => {
       setloadingcomponent(true);
     }, 2000);
   };
-  const [chartdata, setchartdata] = useState({
-    line: "Tweets per hr",
-    data: [128, 229, 33, 436, 99, 132, 233],
-  });
 
   const classes = useStyles();
   const videos = [];
@@ -125,34 +151,63 @@ export const Instagramcomponent = () => {
     setStatenewdata(true);
 
     var newdata = [];
-    await axiosInstance.loadinstagraminfo(Url).then((res) => {
-      newdata = res.data;
-    });
-    var comm = [];
+    var Res = [];
+    var data = [];
 
-    newdata.Comments.forEach((comment, index) => {
-      comm.push({ comment: comment, polarity: newdata.Polarity[index] });
-    });
-
-    setnewinfo({
-      title1: "Insta Information",
-      title2: "Instagram Details",
-      title3: "posted",
-      name: newdata.Usernames[0],
-      post: newdata.Post,
-      line1: "This was posted at",
-      dt: newdata.time[0],
-    });
-
-    setComments(comm);
-
-    setTimeout(() => {
-      setisloading(true);
-      setTimeout(() => {
+    var isDone = false;
+    await axiosInstance
+      .loadinstagraminfo(Url)
+      .then((res) => {
+        isDone = true;
+        newdata = res.data;
+        Res = res.data.Results;
+        data = res.data.wordCloudWords;
+      })
+      .catch((error) => {
+        isDone = false;
         setiscardloading(false);
-        setisloading(false);
+        setStatenewdata(false);
+        alert("Enter a public instagram post link.");
+      });
+    if (isDone) {
+      var comm = [],
+        wordlist = [],
+        countlist = [];
+
+      data.slice(0, 10).forEach((data, index) => {
+        if (index < 10) {
+          wordlist.push(data.text);
+          countlist.push(data.value);
+        }
+      });
+      setchartdata({ words: wordlist, counts: countlist });
+      setWordcloudData(data);
+
+      newdata.Comments.forEach((comment, index) => {
+        comm.push({ comment: comment, polarity: newdata.Polarity[index] });
+      });
+
+      setnewinfo({
+        title1: "Insta Information",
+        title2: "Instagram Details",
+        title3: "posted",
+        name: newdata.Usernames[0],
+        post: newdata.Post,
+        line1: "This was posted at",
+        dt: newdata.time[0],
+      });
+
+      setComments(comm);
+      setNewRes([Res["Neutral"], Res["Positive"], Res["Negative"]]);
+
+      setTimeout(() => {
+        setisloading(true);
+        setTimeout(() => {
+          setiscardloading(false);
+          setisloading(false);
+        }, 2000);
       }, 2000);
-    }, 2000);
+    }
   };
   const [newdata, setStatenewdata] = useState(false);
 
@@ -206,7 +261,7 @@ export const Instagramcomponent = () => {
   };
 
   return (
-    <div className="col subscreens">
+    <div className="container subscreens">
       <div className="row screens">
         <h3>Instagram Analysis </h3>
         <FaInstagram color="#e1306c" size="2.2em" style={{ marginLeft: 10 }} />
@@ -269,7 +324,8 @@ export const Instagramcomponent = () => {
         check={newdata}
         info={newinfo}
         list={newRes}
-        data={chartdata}
+        chartdata={chartdata}
+        clouddata={wordcloudData}
         closecomponent={closecomponent}
         cardloading={iscardloading}
         isloading={isloading}
@@ -289,7 +345,12 @@ export const Instagramcomponent = () => {
               style={{ marginLeft: 10 }}
             />
           </div>
-          <Maincard info={info} countervalues={list} data={chartdata} />
+          <Maincard
+            info={info}
+            countervalues={list}
+            data={wordcloudData1}
+            chartdata={chartdata1}
+          />
         </div>
       )}
     </div>
@@ -400,8 +461,8 @@ const LoadComponent = (props) => {
           <Maincard
             info={props.info}
             countervalues={props.list}
-            data={props.data}
-            y_title={"comments"}
+            data={props.clouddata}
+            chartdata={props.chartdata}
           />
         ) : (
           <InstagramLoader loading={props.isloading} />

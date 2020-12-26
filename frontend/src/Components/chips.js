@@ -128,6 +128,7 @@ export default function ChipsArray(props) {
             list.push({
               key: index,
               id: "1234",
+              chartid: chip.chartid,
               social_id: chip.social_id,
               socialType: chip.MediaType,
               label: chip.Label,
@@ -166,6 +167,7 @@ export default function ChipsArray(props) {
             list.push({
               key: index,
               id: chip._id,
+              chartid: chip.chartid,
               social_id: chip.social_id,
               socialType: chip.MediaType,
               label: chip.Label,
@@ -188,6 +190,7 @@ export default function ChipsArray(props) {
     // user = JSON.parse(localStorage.getItem("UserInfo"));
   };
   const loadComp = (chipToDisplay) => () => {
+    console.log(chipToDisplay);
     if (chipToDisplay.id == "1234") {
       const data = defaultchips.filter(
         (chip) => chip.key === chipToDisplay.key
@@ -249,24 +252,33 @@ export default function ChipsArray(props) {
 
     setOpen(false);
     console.log("HANDLE OK: ", userloadChips);
-    var id = "";
+    var id,
+      chartid = "";
     if (socialMedia == "Twitter") {
-      var id = await axiosInstance.addtwitterinfo(data);
+      var ids = await axiosInstance.addtwitterinfo(data);
     } else if (socialMedia == "Youtube") {
-      var id = await axiosInstance.addYoutubeinfo(data);
+      var ids = await axiosInstance.addYoutubeinfo(data);
     } else if (socialMedia == "Facebook") {
-      var id = await axiosInstance.addFacebookinfo(data);
+      var ids = await axiosInstance.addFacebookinfo(data);
     } else if (socialMedia == "Instagram") {
-      var id = await axiosInstance.addInstagraminfo(data);
+      var ids = await axiosInstance.addInstagraminfo(data);
     }
-    const list = {
-      userid: user._id,
-      social_id: id,
-      MediaType: socialMedia,
-      Label: name,
-      Data: data,
-    };
-    await addchip(list);
+    id = ids.social;
+    chartid = ids.chart;
+
+    if (id) {
+      const list = {
+        userid: user._id,
+        chartid: chartid,
+        social_id: id,
+        MediaType: socialMedia,
+        Label: name,
+        Data: data,
+      };
+      await addchip(list);
+    } else {
+      setuserloadChips(false);
+    }
     updatechips();
     setsocialMedia("");
   };

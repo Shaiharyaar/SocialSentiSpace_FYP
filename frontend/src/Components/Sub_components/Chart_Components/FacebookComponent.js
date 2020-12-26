@@ -133,36 +133,48 @@ export const Facebookcomponent = () => {
 
     var Res = [];
     var newdata = [];
-    await axiosInstance.loadfacebookinfo(Url).then((res) => {
-      newdata = res.data;
-      Res = res.data.Results;
-    });
-    var comm = [];
-    var newinfo1 = {
-      title1: "Fb Information",
-      title2: "Fb Details",
-      title3: "posted",
-      post: newdata.Posts[0],
-      name: newdata.PageName,
-      line1: "This was posted at",
-      dt: newdata.Times[0],
-    };
-
-    setNewinfo(newinfo1);
-    setNewRes([Res["Neutral"], Res["Positive"], Res["Negative"]]);
-
-    newdata.Posts.forEach((post, index) => {
-      comm.push({ post: post, polarity: newdata.Polarity[index] });
-    });
-
-    setPostList(comm);
-    setTimeout(() => {
-      setisloading(true);
-      setTimeout(() => {
+    var isDone = false;
+    await axiosInstance
+      .loadfacebookinfo(Url)
+      .then((res) => {
+        isDone = true;
+        newdata = res.data;
+        Res = res.data.Results;
+      })
+      .catch((error) => {
+        isDone = false;
         setiscardloading(false);
-        setisloading(false);
+        setStatenewdata(false);
+        alert("Enter a public Facebook page link.");
+      });
+    if (isDone) {
+      var comm = [];
+      var newinfo1 = {
+        title1: "Fb Information",
+        title2: "Fb Details",
+        title3: "posted",
+        post: newdata.Posts[0],
+        name: newdata.PageName,
+        line1: "This was posted at",
+        dt: newdata.Times[0],
+      };
+
+      setNewinfo(newinfo1);
+      setNewRes([Res["Neutral"], Res["Positive"], Res["Negative"]]);
+
+      newdata.Posts.forEach((post, index) => {
+        comm.push({ post: post, polarity: newdata.Polarity[index] });
+      });
+
+      setPostList(comm);
+      setTimeout(() => {
+        setisloading(true);
+        setTimeout(() => {
+          setiscardloading(false);
+          setisloading(false);
+        }, 2000);
       }, 2000);
-    }, 2000);
+    }
   };
   const updateUrl = (u) => {
     setUrl(u);
@@ -181,7 +193,7 @@ export const Facebookcomponent = () => {
   };
 
   return (
-    <div className="col subscreens">
+    <div className="container subscreens">
       <div className="row screens">
         <h3>Facebook Analysis </h3>
         <FaFacebook color="blue" size="2.2em" style={{ marginLeft: 10 }} />
