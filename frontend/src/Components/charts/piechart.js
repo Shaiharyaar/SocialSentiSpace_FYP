@@ -33,7 +33,7 @@ class PieChart extends React.Component {
   }
   render() {
     return (
-      <div style={{ padding: "50px 30px" }}>
+      <div style={{ padding: "30px 50px" }}>
         <div className="app">
           <div className="row">
             <div className="mixed-chart">

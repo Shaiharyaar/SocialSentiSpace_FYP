@@ -55,10 +55,6 @@ class LineChart extends React.Component {
           min: 0,
           max: props.data.counts[0],
         },
-        title: {
-          text: "Repetitive Words/Count",
-          align: "left",
-        },
         legend: {
           position: "top",
           horizontalAlign: "right",
@@ -71,7 +67,7 @@ class LineChart extends React.Component {
   }
   render() {
     return (
-      <div style={{ paddingTop: "50px" }}>
+      <div style={{ paddingTop: "10px" }}>
         <Chart
           options={this.state.options}
           series={this.state.series}

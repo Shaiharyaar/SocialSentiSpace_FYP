@@ -268,11 +268,11 @@ export const Youtubecomponent = () => {
         <h3>Youtube Analysis </h3>
         <FaYoutube color="red" size="2.2em" style={{ marginLeft: 10 }} />
       </div>
-      <div className="row">
+      <div className="row search-box">
         <div
-          className="col-xl-10 boxes"
-          style={{ marginTop: 10 }}
+          className="col-xl-11 boxes "
           id={"free-solo"}
+          style={{ marginTop: 10 }}
         >
           <Autocomplete
             id="free-solo-demo"
@@ -292,7 +292,10 @@ export const Youtubecomponent = () => {
           />
         </div>
 
-        <div className="col-xl-2" style={{ marginTop: 35 }}>
+        <div
+          className="col-xl-1 p-0 justify-content-end d-flex"
+          style={{ marginTop: 30, marginBottom: 20 }}
+        >
           <Button variant="contained" color="primary" onClick={checkhash}>
             Search
           </Button>

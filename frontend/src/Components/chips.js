@@ -285,7 +285,7 @@ export default function ChipsArray(props) {
     setsocialMedia("");
   };
   return (
-    <div style={{ width: "100%", margin: 20 }}>
+    <div style={{ width: "100%" }}>
       <Paper
         component="ul"
         style={{

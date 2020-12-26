@@ -240,7 +240,7 @@ export const Dashboard = () => {
         <ChipsArray compload={LoadComponent} />
       </div>
       {comp == "" ? (
-        <h1>Click on the chips above to show data</h1>
+        <h1 className={"show-data"}>Click on the chips above to show data</h1>
       ) : (
         <div></div>
       )}

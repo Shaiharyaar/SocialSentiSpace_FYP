@@ -325,8 +325,8 @@ export const Twittercomponent = (props) => {
         </Dialog>
       </div> */}
 
-      <div className="row">
-        <div className="col-xl-10 boxes" style={{ marginTop: 10 }}>
+      <div className="row search-box">
+        <div className="col-xl-11 boxes " style={{ marginTop: 10 }}>
           <Autocomplete
             id="free-solo-demo"
             freeSolo
@@ -344,7 +344,10 @@ export const Twittercomponent = (props) => {
             )}
           />
         </div>
-        <div className="col-xl-2" style={{ marginTop: 35 }}>
+        <div
+          className="col-xl-1 p-0 justify-content-end d-flex"
+          style={{ marginTop: 30, marginBottom: 20 }}
+        >
           <Button variant="contained" color="primary" onClick={handleok}>
             Search
           </Button>
