@@ -206,6 +206,8 @@ export default function ChipsArray(props) {
     await axiosInstance.delete_all(
       chipToDelete.id,
       chipToDelete.social_id,
+      chipToDelete.chartid,
+
       chipToDelete.socialType
     );
     updatechips();

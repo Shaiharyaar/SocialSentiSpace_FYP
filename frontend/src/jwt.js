@@ -55,7 +55,7 @@ class axiosInstance {
     return Axios.post(USER_API_BASE_URL + "dashboard/setChips", data);
   }
 
-  async delete_all(chipid, social_id, media) {
+  async delete_all(chipid, social_id, chartid, media) {
     var detail_id = "",
       result_id = "";
 
@@ -180,6 +180,17 @@ class axiosInstance {
         console.log(res.body);
         if (res.status === 200) {
           console.log("result data deleted.");
+        } else {
+          alert("Loading result was not successful. Try Again!");
+        }
+      })
+      .catch((error) => alert("Error loading chips"));
+    // deleting Chart data
+    await this.deletechartdata(chartid)
+      .then((res) => {
+        console.log(res.body);
+        if (res.status === 200) {
+          console.log("chart data deleted.");
         } else {
           alert("Loading result was not successful. Try Again!");
         }
@@ -501,7 +512,11 @@ class axiosInstance {
       id: id,
     });
   }
-
+  deletechartdata(id) {
+    return Axios.post(USER_API_BASE_URL + "dashboard/deletechartdata", {
+      id: id,
+    });
+  }
   logOut() {
     localStorage.removeItem("UserInfo");
     console.log("UserInfo: ", localStorage.getItem("UserInfo"));
