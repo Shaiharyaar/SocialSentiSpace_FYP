@@ -57,10 +57,6 @@ export const Facebookcomponent = () => {
       document.getElementById("free-solo-demo").style.borderColor = "#c13584";
   };
 
-  const [chartdata, setchartdata] = useState({
-    line: "Comments per day",
-    data: [128, 229, 33, 436, 99, 132, 233],
-  });
   const [newdata, setStatenewdata] = useState(false);
   const [newinfo, setNewinfo] = useState([]);
   const [newRes, setNewRes] = useState([]);
@@ -84,13 +80,16 @@ export const Facebookcomponent = () => {
       dt: "",
     };
 
-    var youtubeid = "";
+    var youtubeid = "",
+      chartid = "";
+
     await axiosInstance.getchips({ id: "1234" }).then((res) => {
       if (res.status === 200) {
         res.data.result.forEach((chip, index) => {
           console.log(chip);
           if (chip.MediaType == "Facebook") {
             youtubeid = chip.social_id;
+            chartid = chip.chartid;
           }
         });
       }
@@ -108,6 +107,29 @@ export const Facebookcomponent = () => {
       .catch((error) => {
         console.log(error);
       });
+
+    var chartdata = [];
+    await axiosInstance
+      .getchartdata({ id: chartid })
+      .then((res) => {
+        chartdata = res.data.result.Chartdata;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log(chartdata);
+    var wordlist = [],
+      countlist = [];
+
+    chartdata.slice(0, 10).forEach((data, index) => {
+      if (index < 10) {
+        wordlist.push(data.text);
+        countlist.push(data.value);
+      }
+    });
+    setchartdata1({ words: wordlist, counts: countlist });
+    setWordcloudData1(chartdata);
+
     newinfo.name = newdata.postDetail.username;
     newinfo.post = newdata.postDetail.post;
     newinfo.dt = newdata.postDetail.DateTime;
@@ -123,6 +145,12 @@ export const Facebookcomponent = () => {
       setloadingcomponent(true);
     }, 2000);
   };
+  const [wordcloudData, setWordcloudData] = useState([]);
+  const [chartdata, setchartdata] = useState({});
+
+  const [wordcloudData1, setWordcloudData1] = useState([]);
+  const [chartdata1, setchartdata1] = useState({});
+
   const [isloading, setisloading] = useState(false);
   const [iscardloading, setiscardloading] = useState(false);
   const [PostList, setPostList] = useState([]);
@@ -134,12 +162,14 @@ export const Facebookcomponent = () => {
     var Res = [];
     var newdata = [];
     var isDone = false;
+    var data = [];
     await axiosInstance
       .loadfacebookinfo(Url)
       .then((res) => {
         isDone = true;
         newdata = res.data;
         Res = res.data.Results;
+        data = res.data.wordCloudWords;
       })
       .catch((error) => {
         isDone = false;
@@ -148,7 +178,18 @@ export const Facebookcomponent = () => {
         alert("Enter a public Facebook page link.");
       });
     if (isDone) {
-      var comm = [];
+      var comm = [],
+        wordlist = [],
+        countlist = [];
+      data.slice(0, 10).forEach((data, index) => {
+        if (index < 10) {
+          wordlist.push(data.text);
+          countlist.push(data.value);
+        }
+      });
+      setchartdata({ words: wordlist, counts: countlist });
+      setWordcloudData(data);
+
       var newinfo1 = {
         title1: "Fb Information",
         title2: "Fb Details",
@@ -271,7 +312,8 @@ export const Facebookcomponent = () => {
         check={newdata}
         info={newinfo}
         list={newRes}
-        data={chartdata}
+        chartdata={chartdata}
+        clouddata={wordcloudData}
         Posts={PostList}
         closecomponent={closecomponent}
         cardloading={iscardloading}
@@ -290,8 +332,8 @@ export const Facebookcomponent = () => {
           <Maincard
             info={info}
             countervalues={list}
-            data={chartdata}
-            y_title={"comments"}
+            data={wordcloudData1}
+            chartdata={chartdata1}
           />
         </div>
       )}
@@ -399,8 +441,8 @@ const LoadComponent = (props) => {
           <Maincard
             info={props.info}
             countervalues={props.list}
-            data={props.data}
-            y_title={"comments"}
+            data={props.clouddata}
+            chartdata={props.chartdata}
           />
         ) : (
           <FacebookLoader loading={props.isloading} />

@@ -1,4 +1,11 @@
 import React, { useEffect, useState } from "react";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaSquarespace,
+  FaTwitter,
+  FaYoutube,
+} from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import { Sidenavbar } from "../Navigation/sidenav";
 export const Mainscreen = (props) => {
@@ -34,8 +41,47 @@ export const Mainscreen = (props) => {
     <div>
       <Sidenavbar setname={handlePageName} />
       <div className={"Mainscreen"}>
-        <div className={"headbar"}>
-          <h1 style={{ fontSize: 42 }}>{pagename}</h1>
+        <div
+          className={"row headbar"}
+          style={{
+            textAlign: "center",
+            fontSize: 35,
+            paddingLeft: "40%",
+            paddingTop: 30,
+          }}
+        >
+          {pagename == "Twitter" ? (
+            <FaTwitter
+              color="blue"
+              size="0.8em"
+              style={{ marginRight: 15, marginTop: 5 }}
+            />
+          ) : pagename == "Youtube" ? (
+            <FaYoutube
+              color="red"
+              size="0.8em"
+              style={{ marginRight: 15, marginTop: 5 }}
+            />
+          ) : pagename == "Instagram" ? (
+            <FaInstagram
+              color="#e1306c"
+              size="0.8em"
+              style={{ marginRight: 15, marginTop: 5 }}
+            />
+          ) : pagename == "Facebook" ? (
+            <FaFacebook
+              color="blue"
+              size="0.8em"
+              style={{ marginRight: 15, marginTop: 5 }}
+            />
+          ) : (
+            <FaSquarespace
+              color="white"
+              size="0.8em"
+              style={{ marginRight: 15, marginTop: 5 }}
+            />
+          )}
+          <h3 style={{ color: "white" }}>{pagename}</h3>
         </div>
         <div className={"screens"}>{props.children}</div>
       </div>

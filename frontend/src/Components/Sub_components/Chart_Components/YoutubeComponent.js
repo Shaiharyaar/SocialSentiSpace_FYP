@@ -124,7 +124,7 @@ export const Youtubecomponent = () => {
             setiscardloading(false);
             setisloading(false);
           }, 2000);
-        }, 2000);
+        }, 500);
         fetch(url).then(function (res) {
           console.log(res);
         });
