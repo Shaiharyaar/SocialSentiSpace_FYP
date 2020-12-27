@@ -236,7 +236,7 @@ export default function ChipsArray(props) {
         if (res.status === 200) {
           console.log("Chip added.");
         } else {
-          alert("login not successful, try again!");
+          alert("Chips addition successful, try again!");
         }
       })
       .catch((error) => alert("Error loading user"));

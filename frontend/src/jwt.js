@@ -3,6 +3,7 @@ import Axios from "axios";
 const USER_API_BASE_URL = "http://localhost:8080/";
 
 const MEDIA_API_BASE_URL = "http://localhost:8000/";
+const user = JSON.parse(localStorage.getItem("UserInfo")).data.User;
 
 class axiosInstance {
   login(credentials) {
@@ -236,11 +237,9 @@ class axiosInstance {
       chartdata = res.data.wordCloudWords;
     });
 
-    const index = Math.floor(Math.random() * 12);
-
     var details = {
       id: detail_id,
-      username: "@" + usernames[index],
+      username: newdata[0].username,
       tweet: newdata[0].text,
       DateTime: newdata[0].date,
     };
@@ -517,11 +516,78 @@ class axiosInstance {
       id: id,
     });
   }
+
   logOut() {
     localStorage.removeItem("UserInfo");
     console.log("UserInfo: ", localStorage.getItem("UserInfo"));
 
     return true;
+  }
+
+  //adding Chips Information
+
+  async addchipData(details, chartdata, resultdata, label, media, DATA) {
+    var result = {
+      positive: resultdata[1],
+      neutral: resultdata[0],
+      negative: resultdata[2],
+    };
+
+    var resultid = "",
+      detailid = "",
+      id = "",
+      chartid = "";
+
+    await this.addresult(result).then((res) => {
+      if (res.status == 200) {
+        resultid = res.data.result._id;
+      }
+    });
+    await this.addchartdata({ Chartdata: chartdata }).then((res) => {
+      if (res.status == 200) {
+        chartid = res.data.result._id;
+      }
+    });
+
+    if (media == "Twitter") {
+      var detail = {
+        username: details.name,
+        tweet: details.post,
+        DateTime: details.dt,
+      };
+      console.log(detail);
+      await this.addtwitterdetail(detail).then((res) => {
+        if (res.status == 200) {
+          detailid = res.data.result._id;
+        }
+      });
+
+      const data = { trend: label, Result: resultid, LatestTweet: detailid };
+      console.log(data);
+      await this.addtwitter(data).then((res) => {
+        if (res.status == 200) {
+          id = res.data.result._id;
+        }
+      });
+    }
+
+    var data = {
+      userid: user._id,
+      chartid: chartid,
+      social_id: id,
+      MediaType: media,
+      Label: label,
+      Data: DATA,
+    };
+    await this.addchips(data)
+      .then((res) => {
+        if (res.status === 200) {
+          alert("User Favorites added successfuly.");
+        } else {
+          alert("Chips addition was not successful, try again!");
+        }
+      })
+      .catch((error) => alert("Error loading user"));
   }
   //adding Twiiter Information
 
@@ -540,10 +606,8 @@ class axiosInstance {
         return false;
       });
 
-    const index = Math.floor(Math.random() * 12);
-
     var detail = {
-      username: "@" + usernames[index],
+      username: newdata[0].username,
       tweet: newdata[0].text,
       DateTime: newdata[0].date,
     };
