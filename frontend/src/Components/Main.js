@@ -4,6 +4,7 @@ import {
   FaInstagram,
   FaSquarespace,
   FaTwitter,
+  FaUserAstronaut,
   FaYoutube,
 } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
@@ -72,6 +73,12 @@ export const Mainscreen = (props) => {
                 color="blue"
                 size="0.8em"
                 style={{ marginRight: 15, marginTop: 5 }}
+              />
+            ) : pagename == "Profile" ? (
+              <FaUserAstronaut
+                color="#e67a22"
+                size="0.8em"
+                style={{ marginRight: 15, marginTop: 2 }}
               />
             ) : (
               <FaSquarespace
