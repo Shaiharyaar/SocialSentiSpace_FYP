@@ -32,7 +32,6 @@ export const Sidenavbar = (props) => {
   return (
     <nav className="main-menu">
       <Avatar className="image" src={image} />
-
       <ul>
         <li>
           <NavLink to="/dashboard" onClick={() => handlename("Dashboard")}>
