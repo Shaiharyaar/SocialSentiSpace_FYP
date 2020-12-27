@@ -286,10 +286,15 @@ export default function ChipsArray(props) {
   };
   return (
     <div style={{ width: "100%" }}>
+      <div className={"fav-box"}>
+        <h2>User Favorites</h2>
+      </div>
       <Paper
         component="ul"
         style={{
-          backgroundColor: "rgba(255,255,255,0.5",
+          borderTop: "4px solid #000",
+
+          backgroundColor: "rgba(255,255,255,1",
           borderRadius: 30,
           paddingTop: 0,
           paddingLeft: 20,

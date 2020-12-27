@@ -232,6 +232,17 @@ export const Facebookcomponent = () => {
       document.getElementById("free-solo").style.borderRadius = "10px";
     }
   };
+  const createuserfavorite = async (lb) => {
+    var isDone = true;
+    await axiosInstance
+      .addchipData(newinfo, wordcloudData, newRes, lb, "Facebook", Url)
+      .catch((err) => {
+        isDone = false;
+      });
+    if (isDone) {
+      alert("User Favorite Added successfuly ");
+    }
+  };
 
   return (
     <div className="container subscreens">
@@ -322,6 +333,7 @@ export const Facebookcomponent = () => {
         closecomponent={closecomponent}
         cardloading={iscardloading}
         isloading={isloading}
+        createchip={createuserfavorite}
       />
       {!loadingcomponent ? (
         <div>
@@ -347,15 +359,24 @@ export const Facebookcomponent = () => {
 
 const LoadComponent = (props) => {
   const [open, setOpen] = React.useState(false);
-
+  const [openbox, setOpenbox] = useState(false);
+  const [label, setlabel] = useState("");
   const handleClickOpen = () => {
     setOpen(true);
+  };
+  const handleopenbox = () => {
+    setOpenbox(true);
+  };
+  const handleOk = () => {
+    console.log(label);
+    setOpenbox(false);
+    props.createchip(label);
   };
 
   const handleClose = () => {
     setOpen(false);
+    setOpenbox(false);
   };
-
   if (props.check) {
     return (
       <div>
@@ -375,16 +396,59 @@ const LoadComponent = (props) => {
             </Button>
           </div>
           {!props.cardloading ? (
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={handleClickOpen}
-            >
-              Show Data
-            </Button>
+            <div>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleClickOpen}
+              >
+                Show Data
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleopenbox}
+              >
+                Add Chip
+              </Button>{" "}
+            </div>
           ) : (
             <div></div>
           )}
+          <Dialog
+            disableBackdropClick
+            disableEscapeKeyDown
+            open={openbox}
+            onClose={handleClose}
+          >
+            <DialogTitle>Enter Label for your favorite</DialogTitle>
+            <DialogContent>
+              <Autocomplete
+                id="free-solo-demo"
+                freeSolo
+                style={{ width: 350 }}
+                options={[].map((option) => option.title)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    margin="normal"
+                    variant="outlined"
+                    onChange={(e) => {
+                      setlabel(e.target.value);
+                    }}
+                  />
+                )}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Cancel
+              </Button>
+              <Button id="okbtn" onClick={handleOk} color="primary">
+                Ok
+              </Button>
+            </DialogActions>
+          </Dialog>
           <Dialog
             open={open}
             onClose={handleClose}

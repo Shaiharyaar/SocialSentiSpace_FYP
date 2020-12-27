@@ -442,15 +442,13 @@ const LoadComponent = (props) => {
 
           {!props.cardloading ? (
             <div>
-              <div style={{ marginRight: 10 }}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleClickOpen}
-                >
-                  Show Data
-                </Button>
-              </div>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleClickOpen}
+              >
+                Show Data
+              </Button>
               <Button
                 variant="outlined"
                 color="primary"

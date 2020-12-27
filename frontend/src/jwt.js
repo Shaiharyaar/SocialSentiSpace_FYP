@@ -1,10 +1,12 @@
 import Axios from "axios";
 
 const USER_API_BASE_URL = "http://localhost:8080/";
-
 const MEDIA_API_BASE_URL = "http://localhost:8000/";
-const user = JSON.parse(localStorage.getItem("UserInfo")).data.User;
 
+var user = "";
+if (localStorage.getItem("UserInfo")) {
+  user = JSON.parse(localStorage.getItem("UserInfo")).data.User;
+}
 class axiosInstance {
   login(credentials) {
     return Axios.post(USER_API_BASE_URL + "users/login", credentials);
@@ -569,8 +571,69 @@ class axiosInstance {
           id = res.data.result._id;
         }
       });
-    }
+    } else if (media == "Youtube") {
+      const detail = {
+        youtuber: details.name,
+        videoURL: DATA,
+        videoName: details.line1,
+        VideoDescription: details.post,
+        DateTime: details.dt,
+      };
 
+      await this.addyoutubedetail(detail).then((res) => {
+        if (res.status == 200) {
+          detailid = res.data.result._id;
+        }
+      });
+
+      const data = { topic: label, Result: resultid, VideoDetail: detailid };
+      console.log("DATA: ", data);
+      await this.addyoutube(data).then((res) => {
+        if (res.status == 200) {
+          id = res.data.result._id;
+        }
+      });
+    } else if (media == "Instagram") {
+      const detail = {
+        username: details.name,
+        postDetails: details.post,
+        DateTime: details.dt,
+      };
+
+      await this.addinstagramdetail(detail).then((res) => {
+        if (res.status == 200) {
+          detailid = res.data.result._id;
+        }
+      });
+
+      const data = { hashtag: label, Result: resultid, latestPost: detailid };
+      console.log("DATA: ", data);
+      await this.addinstagram(data).then((res) => {
+        if (res.status == 200) {
+          id = res.data.result._id;
+        }
+      });
+    } else if (media == "Facebook") {
+      const detail = {
+        username: details.name,
+        post: details.post,
+        DateTime: details.dt,
+      };
+
+      await this.addfacebookdetail(detail).then((res) => {
+        if (res.status == 200) {
+          detailid = res.data.result._id;
+        }
+      });
+
+      const data = { postURL: DATA, Result: resultid, postDetail: detailid };
+      console.log("DATA: ", data);
+      await this.addfacebook(data).then((res) => {
+        if (res.status == 200) {
+          id = res.data.result._id;
+        }
+      });
+    }
     var data = {
       userid: user._id,
       chartid: chartid,
