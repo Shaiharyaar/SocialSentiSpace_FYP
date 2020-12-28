@@ -59,95 +59,82 @@ export const Youtubecomponent = () => {
   const [comments, setComments] = useState([]);
   const [newinfo, setnewinfo] = useState([]);
   const checkhash = async () => {
-    if (url.includes("https://www.youtube.com/watch?v=")) {
-      setCheck(true);
-      document.getElementById("free-solo").style.border = "1px solid limegreen";
+    setiscardloading(true);
 
-      document.getElementById("free-solo").style.borderRadius = "10px";
-      setiscardloading(true);
-      setOpen(false);
-      setStatenewdata(true);
-      var isDone = false;
-      var newdata = [];
-      var Res = [];
-      var data = [];
+    setStatenewdata(true);
+    setOpen(false);
+    var isDone = false;
+    var newdata = [];
+    var Res = [];
+    var data = [];
+    console.log("YOUTUBE: ", isDone);
 
-      await axiosInstance
-        .loadyoutubeinfo(url)
-        .then((res) => {
-          isDone = true;
-          newdata = res.data;
-          Res = res.data.Results;
-          data = res.data.wordCloudWords;
-        })
-        .catch((error) => {
-          isDone = false;
-          setiscardloading(false);
-          setStatenewdata(false);
-          alert("Enter a correct Youtube Video link.");
-        });
-      if (isDone) {
-        var comm = [],
-          wordlist = [],
-          countlist = [];
+    await axiosInstance
+      .loadyoutubeinfo(url)
+      .then((res) => {
+        console.log("YOUTUBE: ", isDone);
+        console.log("YOUTUBE: ", res);
+        isDone = true;
+        newdata = res.data;
+        Res = res.data.Results;
+        data = res.data.wordCloudWords;
+      })
+      .catch((error) => {
+        console.log("YOUTUBE: ", isDone);
 
-        data.slice(0, 10).forEach((data, index) => {
-          if (index < 10) {
-            wordlist.push(data.text);
-            countlist.push(data.value);
-          }
-        });
-        setchartdata({ words: wordlist, counts: countlist });
-        setWordcloudData(data);
-        newdata.Comments.forEach((comment, index) => {
-          comm.push({ comment: comment, polarity: newdata.Polarity[index] });
-        });
+        isDone = false;
+      });
+    console.log("YOUTUBE: ", isDone);
 
-        setnewinfo({
-          title1: "Youtube Information",
-          title2: "Youtube Details",
-          title3: "posted",
-          post: newdata.description,
-          name: newdata.youtuber,
-          line1: newdata.title,
-          dt: newdata.date,
+    if (isDone) {
+      console.log("YOUTUBE: ", isDone);
+      var comm = [],
+        wordlist = [],
+        countlist = [];
 
-          url: url,
-        });
-        setComments(comm);
+      data.slice(0, 10).forEach((data, index) => {
+        if (index < 10) {
+          wordlist.push(data.text);
+          countlist.push(data.value);
+        }
+      });
+      setchartdata({ words: wordlist, counts: countlist });
+      setWordcloudData(data);
+      newdata.Comments.forEach((comment, index) => {
+        comm.push({ comment: comment, polarity: newdata.Polarity[index] });
+      });
 
-        setNewRes([Res["Neutral"], Res["Positive"], Res["Negative"]]);
+      setnewinfo({
+        title1: "Youtube Information",
+        title2: "Youtube Details",
+        title3: "posted",
+        post: newdata.description,
+        name: newdata.youtuber,
+        line1: newdata.title,
+        dt: newdata.date,
 
+        url: url,
+      });
+
+      setComments(comm);
+
+      setNewRes([Res["Neutral"], Res["Positive"], Res["Negative"]]);
+
+      setTimeout(() => {
+        setisloading(true);
         setTimeout(() => {
-          setisloading(true);
-          setTimeout(() => {
-            setiscardloading(false);
-            setisloading(false);
-          }, 2000);
-        }, 500);
-        fetch(url).then(function (res) {
-          console.log(res);
-        });
-      }
-    } else if (url == "") {
-      setCheck(false);
-      setStatenewdata(false);
-
-      document.getElementById("free-solo").style.border = "0px solid limegreen";
+          setiscardloading(false);
+          setisloading(false);
+        }, 2000);
+      }, 500);
+      fetch(url).then(function (res) {
+        console.log(res);
+      });
     } else {
-      setCheck(false);
+      setiscardloading(false);
       setStatenewdata(false);
-
-      document.getElementById("free-solo").style.border =
-        "1px solid rgba(255,100,150,0.5)";
-
-      document.getElementById("free-solo").style.borderRadius = "10px";
+      alert("Enter a correct Youtube Video link.");
     }
-    //   }
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // });
   };
 
   const closecomponent = () => {
@@ -276,10 +263,6 @@ export const Youtubecomponent = () => {
   const [NewRes, setNewRes] = useState([20, 50, 30]);
   return (
     <div className="container subscreens">
-      <div className="row screens">
-        <h3>Youtube Analysis </h3>
-        <FaYoutube color="red" size="2.2em" style={{ marginLeft: 10 }} />
-      </div>
       <div className="row search-box">
         <div
           className="col-xl-11 boxes "
@@ -445,19 +428,25 @@ const LoadComponent = (props) => {
             maxWidth={"md"}
             aria-labelledby="form-dialog-title"
           >
-            <DialogTitle id="form-dialog-title">Data Obtained</DialogTitle>
+            <div
+              className="data-head"
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <DialogTitle id="form-dialog-title">Data Obtained</DialogTitle>
+              <p className={"totalcomments"}>
+                Total Obtained: {props.comments.length}
+              </p>
+            </div>
             <DialogContent>
               <div className="showData-tablediv">
                 <table className="showData-table">
                   <tr>
-                    <th>Id</th>
-                    <th>Comment</th>
-                    <th>Result</th>
+                    <th>COMMENTS</th>
+                    <th>RESULT</th>
                   </tr>
                   {props.comments.map((element, index) => {
                     return (
                       <tr>
-                        <td>{index + 1}</td>
                         <td>{element.comment}</td>
                         <td>
                           <div>

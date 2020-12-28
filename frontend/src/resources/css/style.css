@@ -406,7 +406,9 @@ font-weight: bold;
   box-shadow: 7px 3px 38px 0px rgba(61, 255, 184, 1);
 }
 .totalcomments{
-  margin-top: 20px;
+  margin: 20px;
+  letter-spacing: 5;
+
 }
 
 .wordcloudchart{

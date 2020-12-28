@@ -76,11 +76,11 @@ export default function ChipsArray(props) {
       if (event.target.value == "Twitter")
         setfieldLabel("Enter a twitter hashtag");
       else if (event.target.value == "Youtube")
-        setfieldLabel("Enter a Youtube URL Link");
+        setfieldLabel("Enter a Youtube video URL");
       else if (event.target.value == "Facebook")
-        setfieldLabel("Enter a Fb post URL Link");
+        setfieldLabel("Enter a Fb public page URL");
       else if (event.target.value == "Instagram")
-        setfieldLabel("Enter an Instagram Hashtag");
+        setfieldLabel("Enter a Instagram Public post link");
 
       document.getElementById("Datafield").style.visibility = "visible";
     } else document.getElementById("Datafield").style.visibility = "hidden";

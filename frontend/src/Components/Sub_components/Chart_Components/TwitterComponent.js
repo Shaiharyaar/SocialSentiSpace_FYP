@@ -252,10 +252,6 @@ export const Twittercomponent = (props) => {
 
   return (
     <div className={"container subscreens"}>
-      <div className="row screens">
-        <h3>Twitter Analysis </h3>
-        <FaTwitter color="blue" size="2.2em" style={{ marginLeft: 10 }} />
-      </div>
       {/* <div className="selectloc">
         <Button className="trendbtn" onClick={handleClickOpen}>
           Select a Twitter Trend

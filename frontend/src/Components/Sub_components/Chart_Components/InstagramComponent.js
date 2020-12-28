@@ -274,10 +274,6 @@ export const Instagramcomponent = () => {
 
   return (
     <div className="container subscreens">
-      <div className="row screens">
-        <h3>Instagram Analysis </h3>
-        <FaInstagram color="#e1306c" size="2.2em" style={{ marginLeft: 10 }} />
-      </div>
       <div className="row search-box">
         <div
           className="col-xl-11 boxes "
@@ -477,19 +473,25 @@ const LoadComponent = (props) => {
             maxWidth={"md"}
             aria-labelledby="form-dialog-title"
           >
-            <DialogTitle id="form-dialog-title">Data Obtained</DialogTitle>
+            <div
+              className="data-head"
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <DialogTitle id="form-dialog-title">Data Obtained</DialogTitle>
+              <p className={"totalcomments"}>
+                Total Obtained: {props.comments.length}
+              </p>
+            </div>
             <DialogContent>
               <div className="showData-tablediv">
                 <table className="showData-table">
                   <tr>
-                    <th>Id</th>
-                    <th>Comment</th>
+                    <th>comments</th>
                     <th>Result</th>
                   </tr>
                   {props.comments.map((element, index) => {
                     return (
                       <tr>
-                        <td>{index + 1}</td>
                         <td>{element.comment}</td>
                         <td>
                           <div>

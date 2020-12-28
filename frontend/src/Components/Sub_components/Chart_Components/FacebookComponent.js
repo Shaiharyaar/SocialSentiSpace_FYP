@@ -246,10 +246,6 @@ export const Facebookcomponent = () => {
 
   return (
     <div className="container subscreens">
-      <div className="row screens">
-        <h3>Facebook Analysis </h3>
-        <FaFacebook color="blue" size="2.2em" style={{ marginLeft: 10 }} />
-      </div>
       {/* <div className="row">
         <div className="col-xl-9 boxes" style={{ marginTop: 10 }}>
           <Autocomplete
@@ -304,7 +300,7 @@ export const Facebookcomponent = () => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Enter a Facebook page link"
+                label="Enter a Facebook public page link"
                 margin="normal"
                 variant="outlined"
                 onChange={(e) => {
@@ -455,19 +451,25 @@ const LoadComponent = (props) => {
             maxWidth={"md"}
             aria-labelledby="form-dialog-title"
           >
-            <DialogTitle id="form-dialog-title">Data Obtained</DialogTitle>
+            <div
+              className="data-head"
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <DialogTitle id="form-dialog-title">Data Obtained</DialogTitle>
+              <p className={"totalcomments"}>
+                Total Obtained: {props.comments.length}
+              </p>
+            </div>
             <DialogContent>
               <div className="showData-tablediv">
                 <table className="showData-table">
                   <tr>
-                    <th>Id</th>
-                    <th>Post Description</th>
-                    <th>Result</th>
+                    <th>Posts</th>
+                    <th>Results</th>
                   </tr>
                   {props.Posts.map((element, index) => {
                     return (
                       <tr>
-                        <td>{index + 1}</td>
                         <td>{element.post}</td>
                         <td>
                           <div>
