@@ -88,41 +88,59 @@ const Profile = (props) => {
   };
 
   const handleUPDATE = async () => {
-    var newuser = {};
-    const credentials = {
-      firstname: firstname,
-      lastname: lastname,
-      username: username,
-      email: email,
-      gender: gender,
-    };
-    await axiosInstance
-      .updateprofile(credentials)
-      .then((res) => {
-        newuser = res.data.newdata;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    var olduserdata = await axiosInstance.getUserInfo();
-    console.log("OLD USER DATA: ", olduserdata);
-    olduserdata.data.User = newuser;
-    console.log("updated user data: ", olduserdata);
-    await localStorage.setItem("UserInfo", JSON.stringify(olduserdata));
-    setOpenbox(false);
+    const emailTest = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+    if (
+      (firstname == "") |
+      (lastname == "") |
+      (username == "") |
+      (email == "") |
+      (gender == "")
+    ) {
+      alert("All fields are required.");
+    } else if (!emailTest.test(email)) {
+      alert("Enter a valid email.");
+    } else {
+      var newuser = {};
+      const credentials = {
+        firstname: firstname,
+        lastname: lastname,
+        username: username,
+        email: email,
+        gender: gender,
+      };
+      await axiosInstance
+        .updateprofile(credentials)
+        .then((res) => {
+          newuser = res.data.newdata;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      var olduserdata = await axiosInstance.getUserInfo();
+      console.log("OLD USER DATA: ", olduserdata);
+      olduserdata.data.User = newuser;
+      console.log("updated user data: ", olduserdata);
+      await localStorage.setItem("UserInfo", JSON.stringify(olduserdata));
+      alert("Profile updated");
+
+      setOpenbox(false);
+    }
   };
   const handlechangepassword = async () => {
     var newuser = {};
-    const credentials = { oldPassword: oldpassword, newPassword: newpassword };
+    const credentials = {
+      oldPassword: oldpassword,
+      newPassword: newpassword,
+    };
     await axiosInstance
       .changepassword(credentials)
       .then((res) => {
-        if(res.data.response !== undefined){
+        if (res.data.response !== undefined) {
           newuser = res.data.response;
           alert("Password Changed Successfuly");
-        }
-        else{
-          alert("Please Try Again!")
+        } else {
+          alert("Please Try Again!");
         }
       })
       .catch((err) => {
@@ -133,7 +151,6 @@ const Profile = (props) => {
     olduserdata.data.User = newuser;
     console.log("updated user data: ", olduserdata);
     await localStorage.setItem("UserInfo", JSON.stringify(olduserdata));
-
     setOpenpass(false);
   };
 
@@ -361,12 +378,9 @@ const Profile = (props) => {
               onChange={setGender}
               input={<Input />}
             >
-              
               <MenuItem value={"male"}>Male</MenuItem>
               <MenuItem value={"female"}>Female</MenuItem>
-              <MenuItem value={"prefer not to say"}>
-                Prefer not to say
-              </MenuItem>
+              <MenuItem value={"prefer not to say"}>Prefer not to say</MenuItem>
               <MenuItem value={"others"}>Others</MenuItem>
             </Select>
           </FormControl>

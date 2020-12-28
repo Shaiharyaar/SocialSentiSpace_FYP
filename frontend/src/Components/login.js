@@ -416,7 +416,7 @@ const handleValidation = async(target) => {
         validity[name] = emailTest.test(value);
         fieldValidationErrors[name] = validity[name]
           ? ""
-          : `${name} should be a valid username`;
+          : `${name} should be a valid email`;
       }
       if (isPassword) {
         validity[name] = value.length >= 6;
