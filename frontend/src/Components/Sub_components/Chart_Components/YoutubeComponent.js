@@ -59,82 +59,95 @@ export const Youtubecomponent = () => {
   const [comments, setComments] = useState([]);
   const [newinfo, setnewinfo] = useState([]);
   const checkhash = async () => {
-    setiscardloading(true);
+    if (url.includes("https://www.youtube.com/watch?v=")) {
+      setCheck(true);
+      document.getElementById("free-solo").style.border = "1px solid limegreen";
 
-    setStatenewdata(true);
-    setOpen(false);
-    var isDone = false;
-    var newdata = [];
-    var Res = [];
-    var data = [];
-    console.log("YOUTUBE: ", isDone);
+      document.getElementById("free-solo").style.borderRadius = "10px";
+      setiscardloading(true);
+      setOpen(false);
+      setStatenewdata(true);
+      var isDone = false;
+      var newdata = [];
+      var Res = [];
+      var data = [];
 
-    await axiosInstance
-      .loadyoutubeinfo(url)
-      .then((res) => {
-        console.log("YOUTUBE: ", isDone);
-        console.log("YOUTUBE: ", res);
-        isDone = true;
-        newdata = res.data;
-        Res = res.data.Results;
-        data = res.data.wordCloudWords;
-      })
-      .catch((error) => {
-        console.log("YOUTUBE: ", isDone);
-
-        isDone = false;
-      });
-    console.log("YOUTUBE: ", isDone);
-
-    if (isDone) {
-      console.log("YOUTUBE: ", isDone);
-      var comm = [],
-        wordlist = [],
-        countlist = [];
-
-      data.slice(0, 10).forEach((data, index) => {
-        if (index < 10) {
-          wordlist.push(data.text);
-          countlist.push(data.value);
-        }
-      });
-      setchartdata({ words: wordlist, counts: countlist });
-      setWordcloudData(data);
-      newdata.Comments.forEach((comment, index) => {
-        comm.push({ comment: comment, polarity: newdata.Polarity[index] });
-      });
-
-      setnewinfo({
-        title1: "Youtube Information",
-        title2: "Youtube Details",
-        title3: "posted",
-        post: newdata.description,
-        name: newdata.youtuber,
-        line1: newdata.title,
-        dt: newdata.date,
-
-        url: url,
-      });
-
-      setComments(comm);
-
-      setNewRes([Res["Neutral"], Res["Positive"], Res["Negative"]]);
-
-      setTimeout(() => {
-        setisloading(true);
-        setTimeout(() => {
+      await axiosInstance
+        .loadyoutubeinfo(url)
+        .then((res) => {
+          isDone = true;
+          newdata = res.data;
+          Res = res.data.Results;
+          data = res.data.wordCloudWords;
+        })
+        .catch((error) => {
+          isDone = false;
           setiscardloading(false);
-          setisloading(false);
-        }, 2000);
-      }, 500);
-      fetch(url).then(function (res) {
-        console.log(res);
-      });
-    } else {
-      setiscardloading(false);
+          setStatenewdata(false);
+          alert("Enter a correct Youtube Video link.");
+        });
+      if (isDone) {
+        var comm = [],
+          wordlist = [],
+          countlist = [];
+
+        data.slice(0, 10).forEach((data, index) => {
+          if (index < 10) {
+            wordlist.push(data.text);
+            countlist.push(data.value);
+          }
+        });
+        setchartdata({ words: wordlist, counts: countlist });
+        setWordcloudData(data);
+        newdata.Comments.forEach((comment, index) => {
+          comm.push({ comment: comment, polarity: newdata.Polarity[index] });
+        });
+
+        setnewinfo({
+          title1: "Youtube Information",
+          title2: "Youtube Details",
+          title3: "posted",
+          post: newdata.description,
+          name: newdata.youtuber,
+          line1: newdata.title,
+          dt: newdata.date,
+
+          url: url,
+        });
+        setComments(comm);
+
+        setNewRes([Res["Neutral"], Res["Positive"], Res["Negative"]]);
+
+        setTimeout(() => {
+          setisloading(true);
+          setTimeout(() => {
+            setiscardloading(false);
+            setisloading(false);
+          }, 2000);
+        }, 500);
+        fetch(url).then(function (res) {
+          console.log(res);
+        });
+      }
+    } else if (url == "") {
+      setCheck(false);
       setStatenewdata(false);
-      alert("Enter a correct Youtube Video link.");
+
+      document.getElementById("free-solo").style.border = "0px solid limegreen";
+    } else {
+      setCheck(false);
+      setStatenewdata(false);
+
+      document.getElementById("free-solo").style.border =
+        "1px solid rgba(255,100,150,0.5)";
+
+      document.getElementById("free-solo").style.borderRadius = "10px";
     }
+    //   }
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // });
   };
 
   const closecomponent = () => {
