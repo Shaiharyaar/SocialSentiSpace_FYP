@@ -8,15 +8,32 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import Sidenavbar from "../Navigation/sidenav";
 export const Mainscreen = (props) => {
   useEffect(() => {
     checkuserlogin();
     chatbotWatson();
   }, []);
+  useEffect(() =>{
+    if(location.pathname.includes("twitter"))
+      setpagename("Twitter")
+    else if(location.pathname.includes("facebook"))
+      setpagename("Facebook")
+    else if(location.pathname.includes("instagram"))
+      setpagename("Instagram")
+    else if(location.pathname.includes("youtube"))
+      setpagename("Youtube")
+    else if(location.pathname.includes("profile"))
+      setpagename("Profile")
+    else if(location.pathname.includes("dashboard"))
+      setpagename("Dashboard")
+  });
 
-  const [pagename, setpagename] = useState("Dashboard");
+  const [pagename, setpagename] = useState("");
   const history = useHistory();
+  const location = useLocation();
+  console.log(location.pathname);
   const handlePageName = (name) => {
     setpagename(name);
   };
