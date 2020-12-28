@@ -12,27 +12,27 @@ from sklearn.metrics import classification_report
 
 
 def preprocess_text(text):
-    text = re.sub('((www\.[^\s]+)|(https?://[^\s]+))', 'URL', text)
-    text = re.sub('@[^\s]+', 'USER', text)
-    text = text.lower().replace("ё", "е")
-    text = re.sub('[^a-zA-Zа-яА-Я1-9]+', ' ', text)
-    text = re.sub(' +', ' ', text)
+    text = re.sub('((www\.[^\s]+)|(https?://[^\s]+))', 'URL', str(text))
+    text = re.sub('@[^\s]+', 'USER', str(text))
+    text = str(text).lower().replace("ё", "е")
+    text = re.sub('[^a-zA-Zа-яА-Я1-9]+', ' ', str(text))
+    text = re.sub(' +', ' ', str(text))
     return text.strip()
 
 
 def prepare_ml_model():
-    dataset = pd.read_csv('sentiment_dataset.csv')
+    dataset = pd.read_csv('train.csv')
     dataset.head()
 
-    negativeDataFrame = dataset[dataset['sentiment'] == 'Negative'][:2000]
+    negativeDataFrame = dataset[dataset['sentiment'] == 'negative'][:6500]
 
-    positiveDataFrame = dataset[dataset['sentiment'] == 'Positive'][:2000]
+    positiveDataFrame = dataset[dataset['sentiment'] == 'positive'][:7781]
 
-    neutralDataFrame = dataset[dataset['sentiment'] == 'Neutral'][:2000]
+    neutralDataFrame = dataset[dataset['sentiment'] == 'neutral'][:5000]
 
     merged_df = pd.concat(
         [negativeDataFrame, positiveDataFrame, neutralDataFrame])
-    merged_df['sentiment'].value_counts()
+    # merged_df['sentiment'].value_counts()
 
     merged_df['text'] = [preprocess_text(t) for t in merged_df['text']]
 
@@ -48,7 +48,7 @@ def prepare_ml_model():
     }
 
     x_train, x_test, y_train, y_test = train_test_split(
-        merged_df['text'], merged_df['sentiment'], test_size=0.33, random_state=42)
+        merged_df['text'], merged_df['sentiment'], test_size=0.05, random_state=42)
 
     ml_model = GridSearchCV(text_clf, tuned_parameters, cv=2)
     ml_model.fit(x_train, y_train)
