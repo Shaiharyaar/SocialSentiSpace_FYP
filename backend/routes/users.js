@@ -15,9 +15,8 @@ var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, DIR);
   },
-
   filename: function (req, file, cb) {
-    cb(null, file.originalname);
+    cb(null, new Date().getTime() + "." + file.originalname.split(".")[1]);
   },
 });
 
@@ -104,6 +103,85 @@ userRouter.post("/login", passport.authenticate("local"), (req, res) => {
     status: "You are successfully logged in!",
     User: req.user,
   });
+});
+userRouter.post(
+  "/changePassword",
+  authenticate.verifyUser,
+  async (req, res) => {
+    try {
+      let response = await req.user.changePassword(req.body.oldPassword, req.body.newPassword);
+      let newdata = await Users.findOne({ _id: req.user._id });
+      console.log(newdata);
+      res.json({
+        response, newdata
+      });
+    } catch (e) {
+      res.json({ e: e.toString() });
+    }
+  }
+);
+
+userRouter.post(
+  "/profileImageUpdate",
+  authenticate.verifyUser,
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      console.log(req.file);
+      await Users.findOneAndUpdate(
+        { _id: req.user._id },
+
+        {
+          image: "http://localhost:8080/profilePictures/" + req.file.filename,
+        }
+      );
+      console.log("HELLO: ", req.user._id);
+      let newdata = await Users.findOne({ _id: req.user._id });
+      console.log(newdata);
+      res.json({
+        newdata,
+      });
+    } catch (e) {
+      res.json({ e: e.toString() });
+    }
+  }
+);
+userRouter.post(
+  "/updateprofileinfo",
+  authenticate.verifyUser,
+  async (req, res) => {
+    try {
+      let response = await Users.findOneAndUpdate(
+        { _id: req.user._id },
+        {
+          firstname: req.body.firstname,
+          lastname: req.body.lastname,
+          username: req.body.username,
+          email: req.body.email,
+          gender: req.body.gender,
+        }
+      );
+      let newdata = await Users.findOne({ _id: req.user._id });
+      console.log(newdata);
+      res.json({
+        newdata,
+      });
+    } catch (e) {
+      res.json({ e: e.toString() });
+    }
+  }
+);
+
+userRouter.get("/getuserdetails", authenticate.verifyUser, async (req, res) => {
+  try {
+    let newdata = await Users.findOne({ _id: req.user._id });
+    console.log(newdata);
+    res.json({
+      newdata,
+    });
+  } catch (e) {
+    res.json({ e: e.toString() });
+  }
 });
 
 userRouter.post("/getuser", function (req, res) {

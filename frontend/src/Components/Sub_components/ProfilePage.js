@@ -117,8 +117,13 @@ const Profile = (props) => {
     await axiosInstance
       .changepassword(credentials)
       .then((res) => {
-        newuser = res.data.response;
-        alert("Password Changed Successfuly");
+        if(res.data.response !== undefined){
+          newuser = res.data.response;
+          alert("Password Changed Successfuly");
+        }
+        else{
+          alert("Please Try Again!")
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -339,7 +344,7 @@ const Profile = (props) => {
                 margin="normal"
                 variant="outlined"
                 onChange={(e) => {
-                  setUsername(e.target.value);
+                  setEmail(e.target.value);
                 }}
               />
             )}
@@ -359,7 +364,7 @@ const Profile = (props) => {
               <MenuItem value={"male"}>Male</MenuItem>
               <MenuItem value={"female"}>Female</MenuItem>
               <MenuItem value={"prefer not to say"}>
-                Prefer not to say Facebook
+                Prefer not to say
               </MenuItem>
               <MenuItem value={"others"}>Others</MenuItem>
             </Select>
@@ -393,6 +398,7 @@ const Profile = (props) => {
             renderInput={(params) => (
               <TextField
                 {...params}
+                type="password"
                 label={"Enter old Password"}
                 margin="normal"
                 variant="outlined"

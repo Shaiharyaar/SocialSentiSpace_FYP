@@ -3,8 +3,8 @@ import Axios from "axios";
 const USER_API_BASE_URL = "http://localhost:8080/";
 const MEDIA_API_BASE_URL = "http://localhost:8000/";
 
-var user = "";
-if (localStorage.getItem("UserInfo")) {
+var user="";
+if (localStorage.getItem("UserInfo")){
   user = JSON.parse(localStorage.getItem("UserInfo")).data.User;
 }
 class axiosInstance {

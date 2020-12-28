@@ -8,6 +8,8 @@ import * as youtube from "./json files/youtube.json";
 import * as facebook from "./json files/facebook.json";
 import * as instagram from "./json files/instagram.json";
 import * as dashdone from "./json files/dashdone.json";
+import * as login from "./json files/login.json";
+import * as splash from "./json files/splash.json";
 
 const defaultOptions = {
   loop: true,
@@ -21,6 +23,24 @@ const defaultOptions1 = {
   loop: true,
   autoplay: true,
   animationData: loading1.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultLogin = {
+  loop: true,
+  autoplay: true,
+  animationData: login.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultSplash = {
+  loop: true,
+  autoplay: true,
+  animationData: splash.default,
   rendererSettings: {
     preserveAspectRatio: "xMidYMid slice",
   },
@@ -177,6 +197,44 @@ export const InstagramLoader = (props) => {
     >
       <Lottie
         options={props.loading ? confirmation : instagramoptions}
+        height={600}
+        width={600}
+      />
+    </div>
+  );
+};
+
+export const LoginLoader = (props) => {
+  useEffect(() => {
+    setcheck(!check);
+  }, []);
+  const [check, setcheck] = useState(false);
+  return (
+    <div
+      className="cardloader"
+      style={{ paddingTop: "5vh", paddingBottom: "10vh" }}
+    >
+      <Lottie
+        options={defaultLogin}
+        height={400}
+        width={400}
+      />
+    </div>
+  );
+};
+
+export const SplashLoader = (props) => {
+  useEffect(() => {
+    setcheck(!check);
+  }, []);
+  const [check, setcheck] = useState(false);
+  return (
+    <div
+      className="cardloader"
+      style={{ paddingTop: "5vh", paddingBottom: "10vh" }}
+    >
+      <Lottie
+        options={defaultSplash}
         height={400}
         width={400}
       />
