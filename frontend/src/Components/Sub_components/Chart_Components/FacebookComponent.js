@@ -457,7 +457,7 @@ const LoadComponent = (props) => {
             >
               <DialogTitle id="form-dialog-title">Data Obtained</DialogTitle>
               <p className={"totalcomments"}>
-                Total Obtained: {props.comments.length}
+                Total Obtained: {props.Posts.length}
               </p>
             </div>
             <DialogContent>
