@@ -361,6 +361,7 @@ const Profile = (props) => {
               onChange={setGender}
               input={<Input />}
             >
+              
               <MenuItem value={"male"}>Male</MenuItem>
               <MenuItem value={"female"}>Female</MenuItem>
               <MenuItem value={"prefer not to say"}>
