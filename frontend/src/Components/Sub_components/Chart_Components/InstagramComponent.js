@@ -165,9 +165,9 @@ export const Instagramcomponent = () => {
       })
       .catch((error) => {
         isDone = false;
-        setiscardloading(false);
         setStatenewdata(false);
         alert("Enter a public instagram post link.");
+        setiscardloading(false);
       });
     if (isDone) {
       var comm = [],

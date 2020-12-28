@@ -82,9 +82,9 @@ export const Youtubecomponent = () => {
         })
         .catch((error) => {
           isDone = false;
-          setiscardloading(false);
           setStatenewdata(false);
           alert("Enter a correct Youtube Video link.");
+          setiscardloading(false);
         });
       if (isDone) {
         var comm = [],

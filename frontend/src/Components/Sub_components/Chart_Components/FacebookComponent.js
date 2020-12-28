@@ -173,9 +173,9 @@ export const Facebookcomponent = () => {
       })
       .catch((error) => {
         isDone = false;
-        setiscardloading(false);
         setStatenewdata(false);
         alert("Enter a public Facebook page link.");
+        setiscardloading(false);
       });
     if (isDone) {
       var comm = [],
