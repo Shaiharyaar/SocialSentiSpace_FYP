@@ -8,7 +8,7 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
-import { Sidenavbar } from "../Navigation/sidenav";
+import Sidenavbar from "../Navigation/sidenav";
 export const Mainscreen = (props) => {
   useEffect(() => {
     checkuserlogin();
@@ -20,7 +20,7 @@ export const Mainscreen = (props) => {
   const handlePageName = (name) => {
     setpagename(name);
   };
-
+  const [image, setImage] = useState("");
   const chatbotWatson = () => {
     window
       .loadWatsonAssistantChat({
@@ -40,7 +40,7 @@ export const Mainscreen = (props) => {
   };
   return (
     <div>
-      <Sidenavbar setname={handlePageName} />
+      <Sidenavbar setname={handlePageName} logo={image} />
       <div className={"Mainscreen"}>
         <div className="row sticky-header">
           <div className={"col-xl-2"}></div>

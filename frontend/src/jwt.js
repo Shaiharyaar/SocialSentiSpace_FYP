@@ -14,6 +14,12 @@ class axiosInstance {
   getuser(credentials) {
     return Axios.post(USER_API_BASE_URL + "users/getuser", credentials);
   }
+  getUSER() {
+    return Axios.get(
+      USER_API_BASE_URL + "users/getuserdetails",
+      this.getAuthHeader()
+    );
+  }
   updatechips(credentials) {
     return Axios.post(USER_API_BASE_URL + "users/updatechips", credentials);
   }
@@ -22,10 +28,34 @@ class axiosInstance {
     return Axios.post(USER_API_BASE_URL + "users/signup", credentials);
   }
   getUserInfo() {
-    return JSON.parse(localStorage.getItem("userInfo"));
+    return JSON.parse(localStorage.getItem("UserInfo"));
   }
   getAuthHeader() {
-    return { headers: { Authorization: "bearer " + this.getUserInfo().token } };
+    return {
+      headers: { Authorization: "bearer " + this.getUserInfo().data.token },
+    };
+  }
+  updateimage(data) {
+    return Axios.post(
+      USER_API_BASE_URL + "users/profileImageUpdate",
+      data,
+      this.getAuthHeader()
+    );
+  }
+  changepassword(credentials) {
+    return Axios.post(
+      USER_API_BASE_URL + "users/changePassword",
+      credentials,
+      this.getAuthHeader()
+    );
+  }
+
+  updateprofile(credentials) {
+    return Axios.post(
+      USER_API_BASE_URL + "users/updateprofileinfo",
+      credentials,
+      this.getAuthHeader()
+    );
   }
   getTwitterInfo(_id) {
     return Axios.post(USER_API_BASE_URL + "dashboard/getTwitter", {

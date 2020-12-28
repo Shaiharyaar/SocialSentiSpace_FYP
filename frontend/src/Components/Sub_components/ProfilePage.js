@@ -12,9 +12,13 @@ import {
   Select,
   TextField,
 } from "@material-ui/core";
+import { connect } from "react-redux";
+import { getuserimage } from "../../Components/Auth/authAction";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { Autocomplete } from "@material-ui/lab";
+import axiosInstance from "../../jwt";
+import { MdModeEdit } from "react-icons/md";
 
 const useStyles2 = makeStyles((theme) => ({
   container: {
@@ -27,9 +31,10 @@ const useStyles2 = makeStyles((theme) => ({
   },
 }));
 
-export const Profile = () => {
+const Profile = (props) => {
   useEffect(() => {
     getUser();
+    setuserdata();
   }, []);
 
   const classes2 = useStyles2();
@@ -46,17 +51,84 @@ export const Profile = () => {
   const [oldpassword, setOldpassword] = useState("");
   const [newpassword, setNewpassword] = useState("");
   const [cpassword, setCpassword] = useState("");
+  const [openimagebox, setOpenimagebox] = useState(false);
+  const [uploadimage, setUploadimage] = useState("");
 
   const [match, setMatch] = useState(false);
   const handleopenbox = () => {
     setuserdata();
     setOpenbox(true);
   };
-  const handleUPDATE = () => {
+
+  const handleupload = async () => {
+    var newuser = {};
+    console.log(uploadimage);
+    const formData1 = new FormData();
+    formData1.append("image", uploadimage);
+    await axiosInstance
+      .updateimage(formData1)
+      .then((res) => {
+        newuser = res.data.newdata;
+        console.log(newuser);
+      })
+      .catch((err) => {
+        alert("DP did not change");
+      });
+
+    setImage(newuser.image);
+
+    // change here
+    props.getuserimage();
+
+    var olduserdata = await axiosInstance.getUserInfo();
+    olduserdata.data.User = newuser;
+    await localStorage.setItem("UserInfo", JSON.stringify(olduserdata));
+
+    setOpenimagebox(false);
+  };
+
+  const handleUPDATE = async () => {
+    var newuser = {};
+    const credentials = {
+      firstname: firstname,
+      lastname: lastname,
+      username: username,
+      email: email,
+      gender: gender,
+    };
+    await axiosInstance
+      .updateprofile(credentials)
+      .then((res) => {
+        newuser = res.data.newdata;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    var olduserdata = await axiosInstance.getUserInfo();
+    console.log("OLD USER DATA: ", olduserdata);
+    olduserdata.data.User = newuser;
+    console.log("updated user data: ", olduserdata);
+    await localStorage.setItem("UserInfo", JSON.stringify(olduserdata));
     setOpenbox(false);
   };
-  const handlechangepassword = () => {
-    alert(newpassword);
+  const handlechangepassword = async () => {
+    var newuser = {};
+    const credentials = { oldPassword: oldpassword, newPassword: newpassword };
+    await axiosInstance
+      .changepassword(credentials)
+      .then((res) => {
+        newuser = res.data.response;
+        alert("Password Changed Successfuly");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    var olduserdata = await axiosInstance.getUserInfo();
+    console.log("OLD USER DATA: ", olduserdata);
+    olduserdata.data.User = newuser;
+    console.log("updated user data: ", olduserdata);
+    await localStorage.setItem("UserInfo", JSON.stringify(olduserdata));
+
     setOpenpass(false);
   };
 
@@ -65,8 +137,8 @@ export const Profile = () => {
   };
   const confirmpassword = (pass) => {
     setNewpassword(pass);
-    if (pass == cpassword) {
-      alert("Password Matched: ", newpassword);
+    console.log(pass);
+    if (pass == cpassword && pass.length > 8) {
       setMatch(true);
     } else {
       setMatch(false);
@@ -74,16 +146,19 @@ export const Profile = () => {
   };
   const confirmpassword1 = (pass) => {
     setCpassword(pass);
-    if (pass == newpassword) {
-      alert("Password Matched: ", newpassword);
+    if (pass == newpassword && pass.length > 8) {
       setMatch(true);
     } else {
       setMatch(false);
     }
   };
+  const handleopenimagebox = () => {
+    setOpenimagebox(true);
+  };
   const handleClose = () => {
     setOpenbox(false);
     setOpenpass(false);
+    setOpenimagebox(false);
   };
 
   const getUser = () => {
@@ -94,32 +169,41 @@ export const Profile = () => {
     }
   };
   const setuserdata = () => {
-    setFirstname(user.firstname);
-    setLastname(user.lastname);
-    setUsername(user.username);
-    setEmail(user.email);
-    setGender(user.gender);
-    setImage(user.image);
+    const u = axiosInstance.getUserInfo().data.User;
+    setFirstname(u.firstname);
+    setLastname(u.lastname);
+    setUsername(u.username);
+    setEmail(u.email);
+    setGender(u.gender);
+    setImage(u.image);
   };
+
   return (
     <div className="body1">
       <aside class="profile-card">
         <header>
-          <a target="_blank" href="#">
-            <img src={user.image} class="hoverZoomLink" />
+          <a>
+            <img src={image} class="hoverZoomLink" />
           </a>
-
-          <h4>{user.firstname + " " + user.lastname}</h4>
+          <a
+            href="#"
+            class={"uploadimage"}
+            style={{ position: "absolute" }}
+            onClick={handleopenimagebox}
+          >
+            <MdModeEdit size={20} color={"#e67a22"} />
+          </a>
+          <h4>{firstname + " " + lastname}</h4>
         </header>
 
         <div class="profile-bio">
           <p>
             <strong>Email: </strong>
-            {user.email}
+            {email}
             <br />
             <br />
             <strong>Gender: </strong>
-            {user.gender}
+            {gender}
             <br />
           </p>
           <div className={"d-flex flex-column justify-content-center"}>
@@ -149,6 +233,37 @@ export const Profile = () => {
           </div>
         </div>
       </aside>
+      <Dialog
+        open={openimagebox}
+        onClose={handleClose}
+        maxWidth={"lg"}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">Change Display Picture</DialogTitle>
+        <DialogContent>
+          <div
+            className="FormField uploadimage-field"
+            style={{ width: 500, height: 40 }}
+          >
+            <input
+              required="true"
+              type="file"
+              accept="image/*"
+              className="FormField__Input"
+              style={{ padding: 10 }}
+              onChange={(e) => setUploadimage(e.target.files[0])}
+            />
+          </div>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button id="okbtn" onClick={handleupload} color="primary">
+              Upload
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
       <Dialog
         open={openbox}
         onClose={handleClose}
@@ -267,6 +382,9 @@ export const Profile = () => {
       >
         <DialogTitle id="form-dialog-title">Edit Password</DialogTitle>
         <DialogContent>
+          <span style={{ color: "#a1a1a1", fontSize: 11 }}>
+            *new password length should be of at least length 8
+          </span>
           <Autocomplete
             id="free-solo-demo"
             freeSolo
@@ -292,6 +410,7 @@ export const Profile = () => {
             renderInput={(params) => (
               <TextField
                 {...params}
+                type="password"
                 label={"New Password"}
                 margin="normal"
                 variant="outlined"
@@ -309,6 +428,7 @@ export const Profile = () => {
             renderInput={(params) => (
               <TextField
                 {...params}
+                type="password"
                 label={"Confirm New Password"}
                 margin="normal"
                 variant="outlined"
@@ -347,3 +467,8 @@ export const Profile = () => {
     </div>
   );
 };
+const mapStateToProps = (state) => ({
+  userimage: state.authState.userimage,
+});
+
+export default connect(mapStateToProps, { getuserimage })(Profile);

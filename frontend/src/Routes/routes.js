@@ -8,7 +8,7 @@ import { Instagramcomponent } from "../Components/Sub_components/Chart_Component
 import { Twittercomponent } from "../Components/Sub_components/Chart_Components/TwitterComponent";
 import { Youtubecomponent } from "../Components/Sub_components/Chart_Components/YoutubeComponent";
 import { Dashboard } from "../Components/Sub_components/DashboardPage";
-import { Profile } from "../Components/Sub_components/ProfilePage";
+import Profile from "../Components/Sub_components/ProfilePage";
 export const BaseRouter = () => (
   <Switch>
     <Route exact path="/">

@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
+import { connect } from "react-redux";
+import { getuserimage } from "../Components/Auth/authAction";
 import Container from "@material-ui/core/Container";
-export const Sidenavbar = (props) => {
-  useEffect(() => {
-    getUser();
-  }, []);
-
-  const [image, setimage] = useState(null);
+const Sidenavbar = (props) => {
+  const [image, setimage] = useState("");
   var user = {};
 
   const handlename = (name) => {
     props.setname(name);
   };
+  useEffect(() => {
+    console.log("-------------------CHECK");
+    props.getuserimage();
+    getUser();
+  }, []);
 
   const getUser = () => {
     if (localStorage.getItem("UserInfo")) {
       const u = localStorage.getItem("UserInfo");
       user = JSON.parse(u).data.User;
     }
+    console.log("image call");
+
     setimage(user.image);
   };
 
@@ -31,7 +36,7 @@ export const Sidenavbar = (props) => {
 
   return (
     <nav className="main-menu">
-      <Avatar className="image" src={image} />
+      <Avatar className="image" src={props.userimage} />
       <ul>
         <li>
           <NavLink to="/dashboard" onClick={() => handlename("Dashboard")}>
@@ -106,3 +111,9 @@ export const Sidenavbar = (props) => {
     </nav>
   );
 };
+
+const mapStateToProps = (state) => ({
+  userimage: state.authState.userimage,
+});
+
+export default connect(mapStateToProps, { getuserimage })(Sidenavbar);

@@ -153,7 +153,7 @@ export const Signup = () => {
     //     "Password must at least contain one uppercase, one lowercase and a digit."
     //   );
     // }
-    else if (password < 8) {
+    else if (password.length < 8) {
       alert("Password should be of at least length 8");
     } else if (password != Cpassword) {
       alert("Password do not match.");
