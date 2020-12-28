@@ -3,8 +3,8 @@ import Axios from "axios";
 const USER_API_BASE_URL = "http://localhost:8080/";
 const MEDIA_API_BASE_URL = "http://localhost:8000/";
 
-var user="";
-if (localStorage.getItem("UserInfo")){
+var user = "";
+if (localStorage.getItem("UserInfo")) {
   user = JSON.parse(localStorage.getItem("UserInfo")).data.User;
 }
 class axiosInstance {
@@ -874,7 +874,7 @@ class axiosInstance {
 
       return { social: id, chart: chartid };
     } else {
-      alert("Enter a correct Youtube video link.");
+      alert("Enter a correct Facebook public page link.");
       return false;
     }
   }
